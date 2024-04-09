@@ -1,0 +1,15 @@
+.svg {
+    width: auto;
+    color: black;
+    position: relative;
+  }
+  
+  .container {
+    display: flex;
+    align-items: center;
+    height: 0.1vb;
+    justify-content: center;
+    font-size: 1.5rem;
+    
+  }
+  
