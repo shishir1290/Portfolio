@@ -18,6 +18,7 @@ import {
 import "react-vertical-timeline-component/style.min.css";
 import ParticlesBackground from "./components/particlesBackground";
 import { text } from "stream/consumers";
+import axios from "axios";
 
 const AnimFeTurbulence = animated("feTurbulence");
 const AnimFeDisplacementMap = animated("feDisplacementMap");
@@ -31,6 +32,13 @@ const Index = () => {
   const [open, toggle] = useState(false);
   const ref = useRef(null);
   const { scrollXProgress } = useScroll({ container: ref });
+
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
+  });
 
   useEffect(() => {
     const handleScroll = () => {
@@ -100,6 +108,30 @@ const Index = () => {
   );
   // -------------------------------------------------------------------------------------------------------------
 
+  // -------------------------------------------------------------------------------------------------------------
+
+  // send mail
+
+  const handleChange = (e: any) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    try {
+      await axios.post("/api/sendMail", formData);
+      alert("Email sent successfully");
+      setFormData({
+        name: "",
+        email: "",
+        subject: "",
+        message: "",
+      });
+    } catch (error) {
+      console.error("Error sending email:", error);
+      alert("Error sending email");
+    }
+  };
   // -------------------------------------------------------------------------------------------------------------
   return (
     <div className="bg-gray-500">
@@ -249,7 +281,7 @@ const Index = () => {
                   </div>
                 </div>
                 <div className="flex absolute bottom-0 ">
-                  <a href="https://github.com/shishir1290" target="_blank" >
+                  <a href="https://github.com/shishir1290" target="_blank">
                     <motion.div
                       animate={{
                         y: movingIconGitHub ? -40 : 0,
@@ -267,7 +299,10 @@ const Index = () => {
                       <FontAwesomeIcon icon={faGithub} />
                     </motion.div>
                   </a>
-                  <a href="https://www.linkedin.com/in/shishir1290/" target="_blank" >
+                  <a
+                    href="https://www.linkedin.com/in/shishir1290/"
+                    target="_blank"
+                  >
                     <motion.div
                       animate={{
                         y: movingIconLinkedIn ? -40 : 0,
@@ -285,7 +320,10 @@ const Index = () => {
                       <FontAwesomeIcon icon={faLinkedin} />
                     </motion.div>
                   </a>
-                  <a href="https://www.facebook.com/profile.php?id=100011398471238" target="_blank" >
+                  <a
+                    href="https://www.facebook.com/profile.php?id=100011398471238"
+                    target="_blank"
+                  >
                     <motion.div
                       animate={{
                         y: movingIconFacebook ? -40 : 0,
@@ -855,11 +893,11 @@ const Index = () => {
                     className="flex-none w-96 h-5/6 mr-10 bg-transparent backdrop-blur-[2px] backdrop-brightness-150 shadow-xl rounded-md pb-6 scroll-smooth focus:scroll-auto scroll-py-1 snap-center"
                   >
                     <div className="mx-4 group relative overflow-hidden mt-4">
-                      <div className="flex items-center justify-center">
+                      <div className="flex items-center justify-center h-2/4">
                         <img
                           src="https://pnghq.com/wp-content/uploads/vending-machine-free-unlimited-png-download-23729.png"
                           alt="food vending machine"
-                          className="bg-transparent pt-4 w-48"
+                          className="bg-transparent pt-4 w-60"
                         />
                       </div>
                       <div className="pl-4">
@@ -875,11 +913,15 @@ const Index = () => {
                           buy food.
                         </p>
                       </div>
-                      <div className="-bottom-10 h-full w-full group-hover:bottom-0 opacity-0 group-hover:opacity-100 transition-all duration-300 pt-10">
+                      <div className="-bottom-10 h-full w-full group-hover:bottom-0 opacity-0 group-hover:opacity-100 transition-all duration-300 pt-10 flex justify-center">
                         <button className="border-2 text-md mt-5 rounded-md py-2 px-4 ml-4 mr-10 bg-slate-700 hover:bg-cyan-300 text-gray-100 hover:text-black transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-600">
                           Read More
                         </button>
-                        <a href="https://github.com/shishir1290/Food-Vending-Machine.git" target="_blank" className="border-2 text-md mt-5 rounded-md py-2 px-4 ml-10 bg-slate-700 hover:bg-cyan-300 text-gray-100 hover:text-black transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-600">
+                        <a
+                          href="https://github.com/shishir1290/Food-Vending-Machine.git"
+                          target="_blank"
+                          className="border-2 text-md mt-5 rounded-md py-2 px-4 ml-10 bg-slate-700 hover:bg-cyan-300 text-gray-100 hover:text-black transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-600"
+                        >
                           GitHub
                         </a>
                       </div>
@@ -892,7 +934,42 @@ const Index = () => {
                     whileHover={{ scale: 1.1 }}
                     transition={{ duration: 0.5 }}
                     className="flex-none w-96 h-5/6 mr-10 bg-transparent backdrop-blur-[2px] backdrop-brightness-150 shadow-xl rounded-md pb-6 scroll-smooth focus:scroll-auto scroll-py-1 snap-start"
-                  ></motion.li>
+                  >
+                    <div className="mx-4 group relative overflow-hidden mt-4">
+                      <div className="flex items-center justify-center h-2/4">
+                        <img
+                          src="image/cityView.png"
+                          alt="food vending machine"
+                          className="bg-transparent pt-4"
+                        />
+                      </div>
+                      <div className="pl-4">
+                        <h3 className="text-lg uppercase pt-4 text-center font-bold md:text-2xl text-lime-300">
+                          Designing a city view
+                        </h3>
+                      </div>
+                      <div>
+                        <p className="text-center pt-4 text-white text-lg">
+                          This project mainly used C++ language for a better
+                          solution for design a city view as well this one is
+                          user-friendly, and as a result, looking a beautiful
+                          city view.
+                        </p>
+                      </div>
+                      <div className="-bottom-10 h-full w-full group-hover:bottom-0 opacity-0 group-hover:opacity-100 transition-all duration-300 pt-10 flex justify-center">
+                        <button className="border-2 text-md mt-5 rounded-md py-2 px-4 ml-4 mr-10 bg-slate-700 hover:bg-cyan-300 text-gray-100 hover:text-black transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-600">
+                          Read More
+                        </button>
+                        <a
+                          href="https://github.com/shishir1290/Designing-A-City-View"
+                          target="_blank"
+                          className="border-2 text-md mt-5 rounded-md py-2 px-4 ml-10 bg-slate-700 hover:bg-cyan-300 text-gray-100 hover:text-black transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-600"
+                        >
+                          GitHub
+                        </a>
+                      </div>
+                    </div>
+                  </motion.li>
 
                   {/* ----------------------------------------------------------------------------------- */}
 
@@ -900,7 +977,47 @@ const Index = () => {
                     whileHover={{ scale: 1.1 }}
                     transition={{ duration: 0.5 }}
                     className="flex-none w-96 h-5/6 mr-10 bg-transparent backdrop-blur-[2px] backdrop-brightness-150 shadow-xl rounded-md pb-6 scroll-smooth focus:scroll-auto scroll-py-1 snap-start"
-                  ></motion.li>
+                  >
+                    <div className="mx-4 group relative overflow-hidden mt-4">
+                      <div className="flex items-center justify-center h-2/4">
+                        <img
+                          src="image/demoLive.png"
+                          alt="food vending machine"
+                          className="bg-transparent pt-4"
+                        />
+                      </div>
+                      <div className="pl-4">
+                        <h3 className="text-lg uppercase pt-4 text-center font-bold md:text-2xl text-lime-400">
+                          Ghore ghore an ecommerce site
+                        </h3>
+                      </div>
+                      <div>
+                        <p className="text-center pt-4 text-white text-lg">
+                          This project mainly used PHP, HTML, CSS, and
+                          JavaScript language for that project as well this one
+                          is user-friendly, and as a result, customers can
+                          easily buy any items. And also this project is live as
+                          a demo.
+                        </p>
+                      </div>
+                      <div className="-bottom-10 h-full w-full group-hover:bottom-0 opacity-0 group-hover:opacity-100 transition-all duration-300 pt-10 flex justify-center">
+                        <a
+                          href="http://ghoreghore.000webhostapp.com/view/homepage.php"
+                          target="_blank"
+                          className="border-2 text-md mt-5 rounded-md py-2 px-4 ml-4 mr-10 bg-slate-700 hover:bg-cyan-300 text-gray-100 hover:text-black transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-600"
+                        >
+                          Live
+                        </a>
+                        <a
+                          href="https://github.com/shishir1290/Gore-Gore-an-ecommerce-site"
+                          target="_blank"
+                          className="inline-block border-2 text-md mt-5 rounded-md py-2 px-4 ml-10 bg-slate-700 hover:bg-cyan-300 text-gray-100 hover:text-black transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-600"
+                        >
+                          GitHub
+                        </a>
+                      </div>
+                    </div>
+                  </motion.li>
 
                   {/* ----------------------------------------------------------------------------------- */}
 
@@ -948,7 +1065,10 @@ const Index = () => {
                   <h1 className="text-white text-center pb-8 font-light text-4xl md:text-5xl lg:text-6xl">
                     Contact Me
                   </h1>
-                  <form className="flex flex-col items-center">
+                  <form
+                    className="flex flex-col items-center"
+                    onSubmit={handleSubmit}
+                  >
                     <div className="md:w-3/4 lg:w-2/3 xl:w-1/2">
                       <div className="flex flex-col md:flex-row">
                         <input
@@ -956,12 +1076,15 @@ const Index = () => {
                           type="text"
                           className="my-2 py-2 px-4 rounded-md bg-gray-900 text-gray-300 w-full md:w-1/2 md:mr-2 outline-none focus:ring-2 focus:ring-blue-600"
                           placeholder="Name"
+                          onChange={handleChange}
                         />
                         <input
                           id="email"
                           type="email"
                           className="my-2 py-2 px-4 rounded-md bg-gray-900 text-gray-300 w-full md:w-1/2 md:ml-2 outline-none focus:ring-2 focus:ring-blue-600"
                           placeholder="Email"
+                          
+                          onChange={handleChange}
                         />
                       </div>
                       <input
@@ -969,15 +1092,18 @@ const Index = () => {
                         type="text"
                         placeholder="Subject"
                         className="my-2 py-2 px-4 rounded-md bg-gray-900 text-gray-300 w-full outline-none focus:ring-2 focus:ring-blue-600"
+                        
+                        onChange={handleChange}
                       />
                       <textarea
                         id="message"
                         rows={5}
                         placeholder="Say Something"
+                        onChange={handleChange}
                         className="my-2 py-2 px-4 rounded-md bg-gray-900 text-gray-300 w-full outline-none focus:ring-2 focus:ring-blue-600"
                       ></textarea>
                     </div>
-                    <button className="border-2 text-md mt-5 rounded-md py-2 px-4 bg-blue-600 hover:bg-blue-700 text-gray-100 transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-600">
+                    <button type="submit" className="border-2 text-md mt-5 rounded-md py-2 px-4 bg-blue-600 hover:bg-blue-700 text-gray-100 transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-600">
                       Send Message
                     </button>
                   </form>
