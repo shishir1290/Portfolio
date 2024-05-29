@@ -20,6 +20,7 @@ import ParticlesBackground from "./components/particlesBackground";
 import { text } from "stream/consumers";
 import axios from "axios";
 import ContactForm from "@/components/ContactForm";
+import Link from "next/link";
 
 const AnimFeTurbulence = animated("feTurbulence");
 const AnimFeDisplacementMap = animated("feDisplacementMap");
@@ -149,12 +150,12 @@ const Index = () => {
         <header className="fixed w-full top-0 z-50">
           <nav className="bg-neutral-400 text-white">
             <div className="container mx-auto flex justify-between items-center p-4">
-              <a
+              <Link
                 href="/"
                 className="text-lg font-bold pl-5 md:text-2xl sm:text-sm lg:text-2xl"
               >
                 MD SADMANUR ISLAM SHISHIR
-              </a>
+              </Link>
 
               <div className="block lg:hidden relative">
                 <button
@@ -349,19 +350,18 @@ const Index = () => {
                   <div className="relative inline-flex  group p-4">
                     <div className="absolute transitiona-all duration-1000 opacity-30 -inset-px bg-gradient-to-r from-[#44BCFF] via-[#FF44EC] to-[#FF675E] rounded-xl blur-lg group-hover:opacity-100 group-hover:-inset-1 group-hover:duration-200 animate-tilt"></div>
 
-                    <a
-                      // href="https://drive.google.com/file/d/1P3vffeFdBoYhbffCMvYNG57nFilXA2SA/view?usp=sharing"
+                    <Link
                       href="image/CV.pdf"
                       title="Resume"
                       className="relative inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-white transition-all duration-200 bg-gray-900 font-pj rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900"
                       role="button"
                     >
                       View Resume
-                    </a>
+                    </Link>
                   </div>
                 </div>
                 <div className="flex absolute bottom-0 ">
-                  <a href="https://github.com/shishir1290" target="_blank">
+                  <Link href="https://github.com/shishir1290" target="_blank">
                     <motion.div
                       animate={{
                         y: movingIconGitHub ? -40 : 0,
@@ -378,8 +378,8 @@ const Index = () => {
                     >
                       <FontAwesomeIcon icon={faGithub} />
                     </motion.div>
-                  </a>
-                  <a
+                  </Link>
+                  <Link
                     href="https://www.linkedin.com/in/shishir1290/"
                     target="_blank"
                   >
@@ -399,8 +399,8 @@ const Index = () => {
                     >
                       <FontAwesomeIcon icon={faLinkedin} />
                     </motion.div>
-                  </a>
-                  <a
+                  </Link>
+                  <Link
                     href="https://www.facebook.com/profile.php?id=100011398471238"
                     target="_blank"
                   >
@@ -420,7 +420,7 @@ const Index = () => {
                     >
                       <FontAwesomeIcon icon={faFacebook} />
                     </motion.div>
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -997,13 +997,13 @@ const Index = () => {
                         <button className="border-2 text-md mt-5 rounded-md py-2 px-4 ml-4 mr-10 bg-slate-700 hover:bg-cyan-300 text-gray-100 hover:text-black transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-600">
                           Read More
                         </button>
-                        <a
+                        <Link
                           href="https://github.com/shishir1290/Food-Vending-Machine.git"
                           target="_blank"
                           className="border-2 text-md mt-5 rounded-md py-2 px-4 ml-10 bg-slate-700 hover:bg-cyan-300 text-gray-100 hover:text-black transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-600"
                         >
                           GitHub
-                        </a>
+                        </Link>
                       </div>
                     </div>
                   </motion.li>
@@ -1040,13 +1040,13 @@ const Index = () => {
                         <button className="border-2 text-md mt-5 rounded-md py-2 px-4 ml-4 mr-10 bg-slate-700 hover:bg-cyan-300 text-gray-100 hover:text-black transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-600">
                           Read More
                         </button>
-                        <a
+                        <Link
                           href="https://github.com/shishir1290/Designing-A-City-View"
                           target="_blank"
                           className="border-2 text-md mt-5 rounded-md py-2 px-4 ml-10 bg-slate-700 hover:bg-cyan-300 text-gray-100 hover:text-black transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-600"
                         >
                           GitHub
-                        </a>
+                        </Link>
                       </div>
                     </div>
                   </motion.li>
@@ -1081,20 +1081,20 @@ const Index = () => {
                         </p>
                       </div>
                       <div className="-bottom-10 h-full w-full group-hover:bottom-0 opacity-0 group-hover:opacity-100 transition-all duration-300 pt-10 flex justify-center">
-                        <a
+                        <Link
                           href="http://ghoreghore.000webhostapp.com/view/homepage.php"
                           target="_blank"
                           className="border-2 text-md mt-5 rounded-md py-2 px-4 ml-4 mr-10 bg-slate-700 hover:bg-cyan-300 text-gray-100 hover:text-black transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-600"
                         >
                           Live
-                        </a>
-                        <a
+                        </Link>
+                        <Link
                           href="https://github.com/shishir1290/Gore-Gore-an-ecommerce-site"
                           target="_blank"
                           className="inline-block border-2 text-md mt-5 rounded-md py-2 px-4 ml-10 bg-slate-700 hover:bg-cyan-300 text-gray-100 hover:text-black transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-600"
                         >
                           GitHub
-                        </a>
+                        </Link>
                       </div>
                     </div>
                   </motion.li>
