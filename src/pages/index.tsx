@@ -19,6 +19,7 @@ import "react-vertical-timeline-component/style.min.css";
 import ParticlesBackground from "./components/particlesBackground";
 import { text } from "stream/consumers";
 import axios from "axios";
+import ContactForm from "@/components/ContactForm";
 
 const AnimFeTurbulence = animated("feTurbulence");
 const AnimFeDisplacementMap = animated("feDisplacementMap");
@@ -32,6 +33,12 @@ const Index = () => {
   const [open, toggle] = useState(false);
   const ref = useRef(null);
   const { scrollXProgress } = useScroll({ container: ref });
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleToggle = () => {
+    setIsOpen(!isOpen);
+  };
 
   const [formData, setFormData] = useState({
     name: "",
@@ -144,12 +151,84 @@ const Index = () => {
             <div className="container mx-auto flex justify-between items-center p-4">
               <a
                 href="/"
-                className="text-lg font-bold pl-5 md:text-2xl sm:text-sm"
+                className="text-lg font-bold pl-5 md:text-2xl sm:text-sm lg:text-2xl"
               >
                 MD SADMANUR ISLAM SHISHIR
               </a>
 
-              <ul className="flex space-x-4 text-xl font-semibold">
+              <div className="block lg:hidden relative">
+                <button
+                  onClick={handleToggle}
+                  className="flex items-center px-3 py-2 border rounded text-gray-500 border-gray-600 hover:text-white hover:border-white"
+                >
+                  {isOpen ? (
+                    <svg
+                      className="w-5 h-5 fill-current"
+                      viewBox="0 0 20 20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        clip-rule="evenodd"
+                        d="M6.293 6.293a.999.999 0 0 1 1.414 0L10 8.586l2.293-2.293a.999.999 0 1 1 1.414 1.414L11.414 10l2.293 2.293a.999.999 0 1 1-1.414 1.414L10 11.414l-2.293 2.293a.999.999 0 1 1-1.414-1.414L8.586 10 6.293 7.707a.999.999 0 0 1 0-1.414z"
+                      />
+                    </svg>
+                  ) : (
+                    <svg
+                      className="w-5 h-5 fill-current"
+                      viewBox="0 0 20 20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        clip-rule="evenodd"
+                        d="M0 1.5C0 .671573 0 .5 0 .5S.671573 0 1.5 0h17C18.3284 0 18.5 0.671573 18.5 1.5S18.3284 3 17.5 3h-17C.671573 3 0 2.32843 0 1.5ZM0 9C0 8.17157 .671573 8 .671573 8h17.6569c.828427 0 .671573 .171573 .671573 .171573S19.3284 8 18.5 8H.671573C.671573 8 0 8.67157 0 9ZM0 17.5C0 18.3284 .671573 18.5 .671573 18.5h17.6569c.828427 0 .671573-.1716 .671573-.1716s.156854 .1716-.671573 .1716H.671573C.671573 18.5 0 17.8284 0 17.5Z"
+                      />
+                    </svg>
+                  )}
+                </button>
+                {isOpen && (
+                  <ul className="absolute top-full right-0 bg-neutral-400 text-white py-2 px-4 rounded-lg shadow-md">
+                    <NavItem
+                      sectionId="home"
+                      activeSection={activeSection}
+                      onClick={() => handleNavClick("home")}
+                    >
+                      Home
+                    </NavItem>
+                    <NavItem
+                      sectionId="about"
+                      activeSection={activeSection}
+                      onClick={() => handleNavClick("about")}
+                    >
+                      About
+                    </NavItem>
+                    <NavItem
+                      sectionId="skill"
+                      activeSection={activeSection}
+                      onClick={() => handleNavClick("skill")}
+                    >
+                      Skill
+                    </NavItem>
+                    <NavItem
+                      sectionId="projects"
+                      activeSection={activeSection}
+                      onClick={() => handleNavClick("projects")}
+                    >
+                      Projects
+                    </NavItem>
+                    <NavItem
+                      sectionId="contact"
+                      activeSection={activeSection}
+                      onClick={() => handleNavClick("contact")}
+                    >
+                      Contact
+                    </NavItem>
+                  </ul>
+                )}
+              </div>
+
+              <ul className="hidden lg:flex space-x-4 text-xl font-semibold">
                 <NavItem
                   sectionId="home"
                   activeSection={activeSection}
@@ -197,10 +276,11 @@ const Index = () => {
           <section
             id="home"
             title="Home Page"
-            className="flex flex-col md:flex-row justify-center items-center h-screen pt-20 md:pt-0"
+            className=" flex flex-col md:flex-row justify-center items-center h-[100dvh] pt-20 md:pt-0"
+            // style={{ marginTop: "10px" }} // Adjust based on your navbar height
           >
             <div className="flex-grow md:w-2/3 text-center md:text-left">
-              <h1 className="text-6xl font-bold mb-4">
+              <h1 className=" text-2xl md:text-6xl font-bold mb-4">
                 {/* ----------------------------------------------------- */}
 
                 <div className={styles.container} onClick={() => toggle(!open)}>
@@ -239,7 +319,7 @@ const Index = () => {
 
                 {/* ---------------------------------------------------------------------------------- */}
               </h1>
-              <h2 className="text-4xl relative mb-2 pt-4 inline-block shadow-xl shadow-teal-500/50">
+              <h2 className=" text-lg md:text-4xl relative mb-2 pt-4 inline-block shadow-xl shadow-teal-500/50">
                 <span className={`font-bold text-cyan-400`}>{Text}</span>
                 <span className="relative typed-cursor text-transparent">
                   |
@@ -1059,57 +1139,7 @@ const Index = () => {
             title="Contact Page"
             className="relative h-screen"
           >
-            <div className="w-full">
-              <div className="pt-10 md:pt-20">
-                <div className="p-4 md:p-8">
-                  <h1 className="text-white text-center pb-8 font-light text-4xl md:text-5xl lg:text-6xl">
-                    Contact Me
-                  </h1>
-                  <form
-                    className="flex flex-col items-center"
-                    onSubmit={handleSubmit}
-                  >
-                    <div className="md:w-3/4 lg:w-2/3 xl:w-1/2">
-                      <div className="flex flex-col md:flex-row">
-                        <input
-                          id="name"
-                          type="text"
-                          className="my-2 py-2 px-4 rounded-md bg-gray-900 text-gray-300 w-full md:w-1/2 md:mr-2 outline-none focus:ring-2 focus:ring-blue-600"
-                          placeholder="Name"
-                          onChange={handleChange}
-                        />
-                        <input
-                          id="email"
-                          type="email"
-                          className="my-2 py-2 px-4 rounded-md bg-gray-900 text-gray-300 w-full md:w-1/2 md:ml-2 outline-none focus:ring-2 focus:ring-blue-600"
-                          placeholder="Email"
-                          
-                          onChange={handleChange}
-                        />
-                      </div>
-                      <input
-                        id="subject"
-                        type="text"
-                        placeholder="Subject"
-                        className="my-2 py-2 px-4 rounded-md bg-gray-900 text-gray-300 w-full outline-none focus:ring-2 focus:ring-blue-600"
-                        
-                        onChange={handleChange}
-                      />
-                      <textarea
-                        id="message"
-                        rows={5}
-                        placeholder="Say Something"
-                        onChange={handleChange}
-                        className="my-2 py-2 px-4 rounded-md bg-gray-900 text-gray-300 w-full outline-none focus:ring-2 focus:ring-blue-600"
-                      ></textarea>
-                    </div>
-                    <button type="submit" className="border-2 text-md mt-5 rounded-md py-2 px-4 bg-blue-600 hover:bg-blue-700 text-gray-100 transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-600">
-                      Send Message
-                    </button>
-                  </form>
-                </div>
-              </div>
-            </div>
+            <ContactForm />
           </section>
           {/* Add your contact information or a contact form here */}
         </main>
