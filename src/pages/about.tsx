@@ -5,6 +5,9 @@ import {
   VerticalTimelineElement,
 } from "react-vertical-timeline-component";
 import "react-vertical-timeline-component/style.min.css";
+import { experiences } from "../components/JSON/experiences";
+import { skills } from "@/components/JSON/skills";
+import { educationHistory } from "@/components/JSON/educationHistory";
 
 export default function About() {
   return (
@@ -107,136 +110,56 @@ export default function About() {
           <div className="md:w-2/3 text-center md:text-left">
             {/* Vertical Timeline with Animation */}
             <VerticalTimeline>
-              {/* First Timeline Item - Bachelors */}
-              <VerticalTimelineElement
-                className="vertical-timeline-element--school"
-                contentStyle={{
-                  background: "#2d3748", // Dark background color
-                  color: "#fff",
-                  borderRadius: "10px", // Rounded corners for the content box
-                }}
-                contentArrowStyle={{
-                  borderRight: "9px solid  #2d3748", // Arrow color to match the background
-                }}
-                date=""
-                iconStyle={{
-                  background: "#fbbf24", // Golden icon color
-                  color: "#000000",
-                  fontSize: "0.6rem", // Font size for date inside the circle
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  border: "2px solid #000", // Black border color for the circle
-                }}
-                icon={<span>{"2020 - 2024"}</span>} // Date inside the circle
-              >
-                <motion.h3
-                  className="text-xl font-semibold"
-                  initial={{ opacity: 0 }}
-                  whileInView={{ opacity: 1 }}
-                  transition={{ duration: 1 }}
+              {educationHistory.map((edu, index) => (
+                <VerticalTimelineElement
+                  key={index}
+                  className={
+                    index === 0
+                      ? "vertical-timeline-element--school"
+                      : "vertical-timeline-element--work"
+                  }
+                  contentStyle={{
+                    background: edu.bgColor,
+                    color: "#fff",
+                    borderRadius: "10px", // Rounded corners for the content box
+                  }}
+                  contentArrowStyle={{
+                    borderRight:
+                      index === 0 ? "9px solid #2d3748" : "7px solid #2d3748",
+                  }}
+                  // date={edu.duration}
+                  iconStyle={{
+                    background: edu.iconBg,
+                    color: "#000000",
+                    fontSize: edu.iconSize,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    border: "2px solid #000", // Black border color for the circle
+                  }}
+                  icon={<span>{edu.iconText}</span>} // Date inside the circle
                 >
-                  Bachelor of Computer Science and Engineering
-                </motion.h3>
-                <motion.h1
-                  className="text-2xl font-bold"
-                  initial={{ opacity: 0 }}
-                  whileInView={{ opacity: 1 }}
-                  transition={{ duration: 1, delay: 0.2 }}
-                >
-                  American International University-Bangladesh (AIUB)
-                </motion.h1>
-                <p className="text-lg">CGPA: 3.60</p>
-                <p className="text-lg">Major: Software Engineering</p>
-              </VerticalTimelineElement>
-
-              {/* Second Timeline Item - HSC */}
-              <VerticalTimelineElement
-                className="vertical-timeline-element--work"
-                contentStyle={{
-                  background: "#2d3748", // Dark background color
-                  color: "#fff",
-                  borderRadius: "10px", // Rounded corners for the content box
-                }}
-                contentArrowStyle={{
-                  borderRight: "7px solid  #2d3748", // Arrow color to match the background
-                }}
-                date=""
-                iconStyle={{
-                  background: "#4caf50", // Green icon color
-                  color: "#000000",
-                  fontSize: "0.6rem", // Font size for date inside the circle
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  border: "2px solid #000", // Black border color for the circle
-                }}
-                icon={<span>{"2017 - 2019"}</span>} // Date inside the circle
-              >
-                <motion.h3
-                  className="text-xl font-semibold"
-                  initial={{ opacity: 0 }}
-                  whileInView={{ opacity: 1 }}
-                  transition={{ duration: 1 }}
-                >
-                  Higher Secondary Certificate (HSC)
-                </motion.h3>
-                <motion.h1
-                  className="text-2xl font-bold"
-                  initial={{ opacity: 0 }}
-                  whileInView={{ opacity: 1 }}
-                  transition={{ duration: 1, delay: 0.2 }}
-                >
-                  Milestone College, Uttara
-                </motion.h1>
-                <p className="text-lg">GPA: 5.00</p>
-                <p className="text-lg">Group: Science</p>
-                <p className="text-lg">Board: Dhaka</p>
-              </VerticalTimelineElement>
-
-              {/* Third Timeline Item - SSC */}
-              <VerticalTimelineElement
-                className="vertical-timeline-element--work"
-                contentStyle={{
-                  background: "#2d3748", // Dark background color
-                  color: "#fff",
-                  borderRadius: "10px", // Rounded corners for the content box
-                }}
-                contentArrowStyle={{
-                  borderRight: " solid  #2d3748", // Arrow color to match the background
-                }}
-                date=""
-                iconStyle={{
-                  background: "#e53e3e", // Red icon color
-                  color: "#000000",
-                  fontSize: "0.6rem", // Font size for date inside the circle
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  border: "2px solid #000", // Black border color for the circle
-                }}
-                icon={<span>{"2015 - 2017"}</span>} // Date inside the circle
-              >
-                <motion.h3
-                  className="text-xl font-semibold"
-                  initial={{ opacity: 0 }}
-                  whileInView={{ opacity: 1 }}
-                  transition={{ duration: 1 }}
-                >
-                  Secondary School Certificate (SSC)
-                </motion.h3>
-                <motion.h1
-                  className="text-2xl font-bold"
-                  initial={{ opacity: 0 }}
-                  whileInView={{ opacity: 1 }}
-                  transition={{ duration: 1, delay: 0.2 }}
-                >
-                  Sristy Academic School, Tangail
-                </motion.h1>
-                <p className="text-lg">GPA: 5.00</p>
-                <p className="text-lg">Group: Science</p>
-                <p className="text-lg">Board: Dhaka</p>
-              </VerticalTimelineElement>
+                  <motion.h3
+                    className="text-xl font-semibold"
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    transition={{ duration: 1 }}
+                  >
+                    {edu.title}
+                  </motion.h3>
+                  <motion.h1
+                    className="text-2xl font-bold"
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    transition={{ duration: 1, delay: 0.2 }}
+                  >
+                    {edu.institution}
+                  </motion.h1>
+                  <p className="text-lg">{edu.cgpa || edu.gpa}</p>
+                  <p className="text-lg">{edu.major || edu.group}</p>
+                  <p className="text-lg">{edu.board}</p>
+                </VerticalTimelineElement>
+              ))}
             </VerticalTimeline>
           </div>
         </section>
@@ -253,107 +176,26 @@ export default function About() {
             transition={{ delay: 0.5, duration: 1 }}
           >
             <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 text-lg text-gray-700">
-              {/* Skill Item for HTML */}
-              <motion.li
-                className="flex items-center space-x-2 hover:text-blue-500 hover:scale-105 transition-all duration-300 ease-in-out"
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                whileHover={{ scale: 1.1 }}
-                transition={{ duration: 0.5 }}
-              >
-                <i className="fab fa-html5 text-2xl"></i>
-                <span className="font-semibold">HTML</span>
-              </motion.li>
-
-              {/* Skill Item for CSS */}
-              <motion.li
-                className="flex items-center space-x-2 hover:text-blue-500 hover:scale-105 transition-all duration-300 ease-in-out"
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                whileHover={{ scale: 1.1 }}
-                transition={{ duration: 0.5 }}
-              >
-                <i className="fab fa-css3-alt text-2xl"></i>
-                <span className="font-semibold">CSS</span>
-              </motion.li>
-
-              {/* Skill Item for JavaScript */}
-              <motion.li
-                className="flex items-center space-x-2 hover:text-yellow-500 hover:scale-105 transition-all duration-300 ease-in-out"
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                whileHover={{ scale: 1.1 }}
-                transition={{ duration: 0.5 }}
-              >
-                <i className="fab fa-js-square text-2xl"></i>
-                <span className="font-semibold">JavaScript</span>
-              </motion.li>
-
-              {/* Skill Item for React */}
-              <motion.li
-                className="flex items-center space-x-2 hover:text-blue-400 hover:scale-105 transition-all duration-300 ease-in-out"
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                whileHover={{ scale: 1.1 }}
-                transition={{ duration: 0.5 }}
-              >
-                <i className="fab fa-react text-2xl"></i>
-                <span className="font-semibold">React</span>
-              </motion.li>
-
-              {/* Skill Item for Node.js */}
-              <motion.li
-                className="flex items-center space-x-2 hover:text-black hover:scale-105 transition-all duration-300 ease-in-out"
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                whileHover={{ scale: 1.1 }}
-                transition={{ duration: 0.5 }}
-              >
-                <i className="fab fa-node text-2xl"></i>
-                <span className="font-semibold">Node.js</span>
-              </motion.li>
-
-              {/* Skill Item for Next.js (using custom icon or placeholder) */}
-              <motion.li
-                className="flex items-center space-x-2 hover:text-black hover:scale-105 transition-all duration-300 ease-in-out"
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                whileHover={{ scale: 1.1 }}
-                transition={{ duration: 0.5 }}
-              >
-                {/* Custom Next.js Icon - replace with actual SVG or image */}
-                <Image
-                  src="/image/nextjs.svg"
-                  alt="Next.js"
-                  width={20}
-                  height={20}
-                />
-                <span className="font-semibold">Next.js</span>
-              </motion.li>
-
-              {/* Skill Item for Tailwind CSS */}
-              <motion.li
-                className="flex items-center space-x-2 hover:text-pink-400 hover:scale-105 transition-all duration-300 ease-in-out"
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                whileHover={{ scale: 1.1 }}
-                transition={{ duration: 0.5 }}
-              >
-                <i className="fas fa-cogs text-2xl"></i>
-                <span className="font-semibold">Tailwind CSS</span>
-              </motion.li>
-
-              {/* Skill Item for Git */}
-              <motion.li
-                className="flex items-center space-x-2 hover:text-black hover:scale-105 transition-all duration-300 ease-in-out"
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                whileHover={{ scale: 1.1 }}
-                transition={{ duration: 0.5 }}
-              >
-                <i className="fab fa-git-alt text-2xl"></i>
-                <span className="font-semibold">Git</span>
-              </motion.li>
+              {/* Skill items */}
+              {skills.map(({ icon, label, color, isImage }, index) => (
+                <motion.li
+                  key={index}
+                  className={`flex items-center space-x-2 hover:${color} hover:scale-105 transition-all duration-300 ease-in-out`}
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  whileHover={{ scale: 1.1 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  {isImage ? (
+                    <div className={`text-gray-500 hover:${color}`}>
+                      <Image src={icon} alt={label} width={20} height={20} />
+                    </div>
+                  ) : (
+                    <i className={`${icon} text-2xl`} />
+                  )}
+                  <span className="font-semibold">{label}</span>
+                </motion.li>
+              ))}
             </ul>
           </motion.div>
         </section>
@@ -370,24 +212,24 @@ export default function About() {
             transition={{ delay: 1.5, duration: 1 }}
           >
             <ul className="space-y-4">
-              <motion.li className="text-lg text-gray-700">
-                <span className="font-bold">Front-End Developer Intern</span> -
-                Example Tech Company (2023)
-                <p className="text-sm text-gray-500">
-                  Contributed to the development of user interfaces using React
-                  and Tailwind CSS. Worked closely with the design team to
-                  implement responsive designs.
-                </p>
-              </motion.li>
-              <motion.li className="text-lg text-gray-700">
-                <span className="font-bold">Freelance Web Developer</span> (2022
-                - Present)
-                <p className="text-sm text-gray-500">
-                  Built custom websites and web applications for various clients
-                  using HTML, CSS, JavaScript, and React. Focused on creating
-                  clean, responsive, and accessible web experiences.
-                </p>
-              </motion.li>
+              {experiences.map((exp, index) => (
+                <motion.li key={index} className="text-lg text-gray-700">
+                  <span className="font-bold">{exp.title}</span> - {exp.company}{" "}
+                  ({exp.date})
+                  <p className="text-sm text-gray-500">{exp.description}</p>
+                  <p className="text-sm text-gray-500">
+                    Website:{" "}
+                    <a
+                      href={exp.website}
+                      className="text-blue-500"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {exp.websiteText}
+                    </a>
+                  </p>
+                </motion.li>
+              ))}
             </ul>
           </motion.div>
         </section>

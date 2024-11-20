@@ -108,7 +108,7 @@ type NavItemProps = {
 
 function NavItem({ href, icon: Icon, label, active, onClick }: NavItemProps) {
   return (
-    <li className={`relative group ${active ? "text-cyan-500" : "text-black"}`}>
+    <li className={`relative group ${active ? "text-cyan-400" : "text-black"}`}>
       <Link
         href={href}
         className={`block text-lg flex items-center space-x-4 py-2 ${
