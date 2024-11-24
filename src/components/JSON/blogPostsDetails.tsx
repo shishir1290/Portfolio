@@ -1,82 +1,79 @@
 export const blogPostsDetails = [
+  //My own Blog
+
   {
-    slug: "how-to-build-nextjs-app",
-    title: "How to Build a Responsive Web Application with Next.js",
+    slug: "aiub-campus-life-project",
+    title: "AIUB Campus Life: A Digital Showcase of University Spirit",
     content: [
       {
         type: "text",
         content:
-          "In this post, I will walk you through the process of creating a simple, responsive web application using Next.js. Next.js allows you to build fast, SEO-friendly websites with minimal configuration. Here's how you can get started...",
-      },
-      { type: "image", src: "/images/nextjs-app.png", alt: "Next.js App" },
-      {
-        type: "text",
-        content:
-          "Next.js is a powerful React framework that supports both static site generation (SSG) and server-side rendering (SSR). It provides an excellent developer experience, optimized for building fast websites.",
+          "The AIUB Campus Life project captures the essence of life at the American International University-Bangladesh (AIUB). Designed with modern web technologies like Tailwind CSS, this open-source initiative provides a platform for documenting events, activities, and student experiences.",
       },
       {
         type: "image",
-        src: "/images/nextjs-features.png",
-        alt: "Next.js Features",
+        src: "/blogs/aiubCampusLife.png",
+        alt: "AIUB Campus Life Banner",
+      },
+      {
+        type: "image",
+        src: "/blogs/aiubCampusLife-2.png",
+        alt: "AIUB Campus Life Banner",
+      },
+      {
+        type: "image",
+        src: "/blogs/aiubCampusLife-3.png",
+        alt: "AIUB Campus Life Banner",
       },
       {
         type: "text",
         content:
-          "By using Next.js, you can automatically optimize images, create custom server-side routes, and much more. Let's take a closer look at how we can implement it in your project.",
+          "This project blends dynamic and static content to present university life interactively. It's a tool for student engagement, event documentation, and even collaborative development, making it versatile and impactful.",
+      },
+      {
+        type: "code",
+        language: "html",
+        content: `
+          <div class="bg-green-500 text-white p-6 text-center">
+            <h1 class="text-3xl font-semibold">Experience AIUB Like Never Before</h1>
+            <p class="mt-2 text-base">Your digital guide to events, activities, and experiences.</p>
+          </div>
+        `,
+      },
+      {
+        type: "text",
+        content:
+          "The use of Tailwind CSS ensures that the project is not only visually appealing but also optimized for responsiveness across devices. Its open-source nature allows developers to contribute and expand the project's capabilities.",
+      },
+      {
+        type: "research",
+        title: "Digital Platforms for Enhancing University Engagement",
+        abstract:
+          "This paper explores the use of digital platforms like AIUB Campus Life to foster student engagement and improve university branding. By leveraging modern web technologies, the project demonstrates an effective model for creating interactive, user-friendly university platforms.",
+        sections: [
+          {
+            heading: "Introduction",
+            content:
+              "Digital platforms play a crucial role in education today. The AIUB Campus Life project is an excellent example of how such tools can document and promote university culture interactively.",
+          },
+          {
+            heading: "Technology Stack and Features",
+            content:
+              "The project utilizes Tailwind CSS for responsive design, dynamic routing for flexible content presentation, and potential CMS integration for scalability.",
+          },
+          {
+            heading: "Impact and Future Prospects",
+            content:
+              "Projects like AIUB Campus Life enhance engagement by providing a unified platform for students and alumni. Future improvements could include AI-driven personalization and mobile app integration.",
+          },
+        ],
+        keywords: [
+          "Digital Education",
+          "Tailwind CSS",
+          "University Engagement",
+          "Open Source",
+        ],
       },
     ],
   },
-  {
-    slug: "tailwind-for-prototyping",
-    title: "The Power of Tailwind CSS for Rapid Prototyping",
-    content: [
-      {
-        type: "text",
-        content:
-          "Tailwind CSS is an incredible utility-first CSS framework that allows you to build stunning web designs quickly. In this post, I'll show you how Tailwind makes prototyping faster and easier, especially for developers who prefer a minimalistic approach.",
-      },
-      {
-        type: "image",
-        src: "/images/tailwind-design.png",
-        alt: "Tailwind Design",
-      },
-      {
-        type: "text",
-        content:
-          "With Tailwind, you can quickly apply pre-designed utility classes to your HTML elements, making it super easy to prototype and build complex layouts in no time.",
-      },
-      {
-        type: "image",
-        src: "/images/tailwind-grid.png",
-        alt: "Tailwind Grid System",
-      },
-      {
-        type: "text",
-        content:
-          "Tailwind doesn't force you to follow any design patterns, so you can create unique, custom designs while still benefiting from a utility-first approach.",
-      },
-    ],
-  },
-  {
-    slug: "web-accessibility-best-practices",
-    title: "Web Accessibility: Best Practices for Inclusion",
-    content: [
-      {
-        type: "text",
-        content:
-          "Web accessibility is a vital part of modern web development. Ensuring that your site is usable by people with disabilities is not only ethical but also increases your site's reach.",
-      },
-      {
-        type: "image",
-        src: "/images/web-accessibility.png",
-        alt: "Web Accessibility",
-      },
-      {
-        type: "text",
-        content:
-          "This post discusses best practices for making your website more accessible, from color contrast to keyboard navigation and beyond.",
-      },
-    ],
-  },
-  // Add more posts here...
 ];
