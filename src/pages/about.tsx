@@ -8,6 +8,7 @@ import "react-vertical-timeline-component/style.min.css";
 import { experiences } from "../components/JSON/experiences";
 import { skills } from "@/components/JSON/skills";
 import { educationHistory } from "@/components/JSON/educationHistory";
+import Link from "next/link";
 
 export default function About() {
   return (
@@ -50,6 +51,8 @@ export default function About() {
               <li>React, Next.js, Nest.js</li>
               <li>PHP, .Net</li>
               <li>Tailwind CSS</li>
+              <li>SQL</li>
+              <li>MongoDB</li>
             </ul>
           </div>
 
@@ -88,6 +91,12 @@ export default function About() {
               I am always excited to collaborate on new projects, exchange
               ideas, or discuss potential opportunities. Feel free to reach out,
               and let’s create something amazing together!
+              <Link
+                href="/contact"
+                className="mx-2 inline-block bg-orange-500 text-white text-lg font-semibold px-4 rounded-lg shadow-lg hover:bg-orange-600 transform hover:scale-105 transition duration-300 ease-in-out"
+              >
+                Contact Me
+              </Link>
             </p>
           </div>
         </section>
@@ -95,7 +104,7 @@ export default function About() {
         {/* Education Section */}
         <section
           id="education"
-          className="relative flex flex-col justify-center items-center py-20 bg-orange-300 text-black"
+          className="relative flex flex-col justify-center items-center py-20 bg-orange-300 text-black rounded-md mb-12"
         >
           {/* Section Header with Animation */}
           <motion.h1
@@ -136,6 +145,7 @@ export default function About() {
                     alignItems: "center",
                     justifyContent: "center",
                     border: "2px solid #000", // Black border color for the circle
+                    fontWeight: "bold",
                   }}
                   icon={<span>{edu.iconText}</span>} // Date inside the circle
                 >
@@ -147,6 +157,7 @@ export default function About() {
                   >
                     {edu.title}
                   </motion.h3>
+                  <motion.hr />
                   <motion.h1
                     className="text-2xl font-bold"
                     initial={{ opacity: 0 }}
@@ -215,8 +226,19 @@ export default function About() {
               {experiences.map((exp, index) => (
                 <motion.li key={index} className="text-lg text-gray-700">
                   <span className="font-bold">{exp.title}</span> - {exp.company}{" "}
-                  ({exp.date})
-                  <p className="text-sm text-gray-500">{exp.description}</p>
+                  ({exp.date}){/* Display Role */}
+                  <p className="text-sm text-gray-500">
+                    {exp.description.role}
+                  </p>
+                  {/* Display Responsibilities */}
+                  <ul className="list-disc pl-5 text-sm text-gray-500">
+                    {exp.description.responsibilities.map(
+                      (responsibility, i) => (
+                        <li key={i}>{responsibility}</li>
+                      )
+                    )}
+                  </ul>
+                  {/* Website Link */}
                   <p className="text-sm text-gray-500">
                     Website:{" "}
                     <a

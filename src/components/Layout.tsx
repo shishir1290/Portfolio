@@ -8,7 +8,7 @@ import {
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import Footer from "./Footer";
+// import Footer from "./Footer";
 import Navbar from "./Navbar";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
@@ -17,8 +17,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
 
   const handleLinkClick = (section: string) => {
-    setActiveSection(section);
     setIsSidebarOpen(false); // Close sidebar on link click (for mobile)
+    setActiveSection(section);
   };
 
   useEffect(() => {
@@ -93,7 +93,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <div id="home">{children}</div>
       </main>
 
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 }
@@ -112,7 +112,7 @@ function NavItem({ href, icon: Icon, label, active, onClick }: NavItemProps) {
       <Link
         href={href}
         className={`block text-lg flex items-center space-x-4 py-2 ${
-          active ? "text-cyan-500" : "text-white"
+          active ? "text-cyan-200" : "text-white"
         }`}
         onClick={onClick}
       >
@@ -121,14 +121,14 @@ function NavItem({ href, icon: Icon, label, active, onClick }: NavItemProps) {
         />
         <span
           className={`absolute left-8 lg:left-16 text-sm ${
-            active ? "text-cyan-500" : "text-black"
+            active ? "text-cyan-200 font-bold" : "text-black"
           } opacity-100 lg:transition-all lg:transform lg:translate-x-[-20px] lg:opacity-0 lg:group-hover:opacity-100 lg:group-hover:translate-x-0`}
         >
           {label}
         </span>
         <div
           className={`absolute bottom-0 left-0 w-0 h-1 ${
-            active ? "bg-cyan-500" : "bg-black"
+            active ? "bg-cyan-200" : "bg-black"
           } transition-all group-hover:w-full`}
         />
       </Link>

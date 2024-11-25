@@ -44,10 +44,9 @@ export const skills = [
     color: "text-orange-500",
   },
   {
-    icon: "/image/mysql.svg",
+    icon: "fas fa-database",
     label: "MySQL",
     color: "text-blue-500",
-    isImage: true,
   },
   {
     icon: "/image/mongodb.svg",

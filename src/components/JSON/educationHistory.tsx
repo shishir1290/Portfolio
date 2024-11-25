@@ -5,7 +5,7 @@ export const educationHistory = [
     duration: "2020 - 2024",
     cgpa: "CGPA: 3.60",
     major: "Major: Software Engineering",
-    iconBg: "#fbbf24", // Golden icon color
+    iconBg: "#FFE6A9", // Golden icon color
     iconText: "2020 - 2024",
     iconSize: "0.6rem",
     bgColor: "#2d3748", // Dark background color
@@ -17,7 +17,7 @@ export const educationHistory = [
     gpa: "GPA: 5.00",
     group: "Group: Science",
     board: "Board: Dhaka",
-    iconBg: "#4caf50", // Green icon color
+    iconBg: "#B1C29E", // Green icon color
     iconText: "2017 - 2019",
     iconSize: "0.6rem",
     bgColor: "#2d3748", // Dark background color
@@ -29,7 +29,7 @@ export const educationHistory = [
     gpa: "GPA: 5.00",
     group: "Group: Science",
     board: "Board: Dhaka",
-    iconBg: "#e53e3e", // Red icon color
+    iconBg: "#9EDF9C", // Red icon color
     iconText: "2015 - 2017",
     iconSize: "0.6rem",
     bgColor: "#2d3748", // Dark background color
