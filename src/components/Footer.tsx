@@ -21,7 +21,7 @@ const Footer = () => {
           <p className="text-sm lg:text-base mt-1 flex items-center space-x-4">
             <FaEnvelope />
             <Link
-              href="mailto:shishir@example.com"
+              href="mailto:shishir1290@gmail.com"
               className="text-blue-400 hover:underline"
               passHref
             >
@@ -31,7 +31,7 @@ const Footer = () => {
           <p className="text-sm lg:text-base flex items-center space-x-4">
             <FaPhoneAlt />
             <Link
-              href="tel:+123456789"
+              href="tel:+8801946432534"
               className="text-blue-400 hover:underline"
               passHref
             >
