@@ -47,7 +47,8 @@ export default function Home() {
           {/* Skills List */}
           <ul className="list-disc pl-6 text-lg sm:text-xl text-gray-700 mb-8 animate__animated animate__fadeIn animate__fast animate__delay-4s text-left">
             <li>HTML, CSS, JavaScript</li>
-            <li>React, Next.js, Nest.js</li>
+            <li>React, Next.js</li>
+            <li>Nest.js, Node.js</li>
             <li>PHP, .Net</li>
             <li>Tailwind CSS</li>
           </ul>
@@ -81,6 +82,8 @@ export default function Home() {
               target="_blank"
               rel="noopener noreferrer"
               className="inline-block  py-3 px-6"
+              role="button"
+              title="Resume"
             >
               <button className="relative flex items-center px-6 py-3 overflow-hidden font-medium transition-all bg-indigo-500 rounded-md group">
                 <span className="absolute top-0 right-0 inline-block w-4 h-4 transition-all duration-500 ease-in-out bg-indigo-700 rounded group-hover:-mr-4 group-hover:-mt-4">

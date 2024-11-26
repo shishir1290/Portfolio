@@ -43,17 +43,17 @@ const BlogPost = ({ post }: BlogPostProps) => {
     );
   }
 
-  useEffect(() => {
-    const handleRouteChange = () => {
-      window.scrollTo(0, 0);
-    };
+  // useEffect(() => {
+  //   const handleRouteChange = () => {
+  //     window.scrollTo(0, 0);
+  //   };
 
-    router.events.on("routeChangeComplete", handleRouteChange);
+  //   router.events.on("routeChangeComplete", handleRouteChange);
 
-    return () => {
-      router.events.off("routeChangeComplete", handleRouteChange);
-    };
-  }, [router]);
+  //   return () => {
+  //     router.events.off("routeChangeComplete", handleRouteChange);
+  //   };
+  // }, [router]);
 
   const handleCopy = (index: number, content: string) => {
     navigator.clipboard.writeText(content);

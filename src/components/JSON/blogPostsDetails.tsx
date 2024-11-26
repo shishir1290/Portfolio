@@ -76,4 +76,36 @@ export const blogPostsDetails = [
       },
     ],
   },
+  {
+    slug: "designing-a-city-view",
+    title: "Designing A City View: A C++ Graphics Project",
+    content: [
+      {
+        type: "text",
+        content:
+          "Designing A City View is a graphics project created using C++. It visually represents a cityscape, showcasing an immersive city environment through programmed design.",
+      },
+      {
+        type: "image",
+        src: "/blogs/cityView.png",
+        alt: "AIUB Campus Life Banner",
+      },
+      {
+        type: "text",
+        content:
+          "This project highlights creative use of graphics libraries in C++ to build interactive and visually engaging designs. It is a learning-focused initiative, offering insights into C++ graphics programming.",
+      },
+      {
+        type: "code",
+        language: "cpp",
+        content:
+          "// Example C++ snippet\n#include <graphics.h>\nint main() {\n    initgraph();\n    // City design code\n    closegraph();\n    return 0;\n}",
+      },
+      {
+        type: "text",
+        content:
+          "The repository includes a PDF file with comprehensive project details, guiding users through the concept and implementation process.",
+      },
+    ],
+  },
 ];
