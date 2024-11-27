@@ -14,7 +14,7 @@ const Footer = () => {
       <div className="container mx-auto flex flex-col lg:flex-row items-center justify-between gap-4">
         {/* Contact Information */}
         <div className="text-center lg:text-left">
-          <p className="text-sm lg:text-base">
+          <p className="text-xs lg:text-base">
             &copy; {new Date().getFullYear()} MD SADMANUR ISLAM SHISHIR. All
             rights reserved.
           </p>
