@@ -65,7 +65,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       >
         <div className="p-5">
           <h1 className={`text-2xl font-bold mb-8 text-black hidden lg:block`}>
-            My Portfolio
+            <Link href={"/"}>
+              My Portfolio
+            </Link>
           </h1>
           <ul className="mt-8 lg:mt-0 space-y-6">
             {[
