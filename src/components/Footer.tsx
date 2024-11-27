@@ -18,6 +18,7 @@ const Footer = () => {
             &copy; {new Date().getFullYear()} MD SADMANUR ISLAM SHISHIR. All
             rights reserved.
           </p>
+          <div>
           <p className="text-sm lg:text-base mt-1 flex items-center space-x-4">
             <FaEnvelope />
             <Link
@@ -38,6 +39,7 @@ const Footer = () => {
               +8801946432534
             </Link>
           </p>
+          </div>
         </div>
 
         {/* Social Media Links */}
