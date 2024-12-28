@@ -8,7 +8,7 @@ import {
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import Footer from "./Footer";
+// import Footer from "./Footer";
 import Navbar from "./Navbar";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
@@ -65,7 +65,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       >
         <div className="p-5">
           <h1 className={`text-2xl font-bold mb-8 text-black hidden lg:block`}>
-            My Portfolio
+            <Link href={"/"}>
+              My Portfolio
+            </Link>
           </h1>
           <ul className="mt-8 lg:mt-0 space-y-6">
             {[
@@ -93,7 +95,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <div id="home">{children}</div>
       </main>
 
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 }

@@ -1,16 +1,37 @@
 import { GetStaticPaths, GetStaticProps } from "next";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { blogPostsDetails } from "@/components/JSON/blogPostsDetails";
 
-// Dynamic route to handle each blog post based on slug
-const BlogPost = ({ post }: { post: { title: string; content: any[] } }) => {
-  const router = useRouter();
+interface BlogPostProps {
+  post: {
+    slug: string;
+    title: string;
+    content: {
+      type: string;
+      content?: string;
+      src?: string;
+      alt?: string;
+      language?: string;
+      caption?: string;
+      title?: string;
+      abstract?: string;
+      sections?: { heading: string; content: string }[];
+      keywords?: string[];
+    }[];
+  };
+}
 
-  // Ensure the post is available before rendering
+// Dynamic route to handle each blog post based on slug
+const BlogPost = ({ post }: BlogPostProps) => {
+  const router = useRouter();
+  const [copiedDetails, setCopiedDetails] = useState<{
+    [key: number]: boolean;
+  }>({});
+
   if (router.isFallback) {
-    return <div>Loading...</div>; // Show loading state if the page is being generated
+    return <div>Loading...</div>;
   }
 
   if (!post) {
@@ -34,13 +55,26 @@ const BlogPost = ({ post }: { post: { title: string; content: any[] } }) => {
     };
   }, [router]);
 
+  const handleCopy = (index: number, content: string) => {
+    navigator.clipboard.writeText(content);
+    setCopiedDetails((prevState) => ({
+      ...prevState,
+      [index]: true,
+    }));
+    setTimeout(() => {
+      setCopiedDetails((prevState) => ({
+        ...prevState,
+        [index]: false,
+      }));
+    }, 3000);
+  };
+
   return (
     <div className="max-w-7xl mx-auto p-6">
       <h1 className="text-4xl font-bold text-center text-gray-800 mb-8">
         {post.title}
       </h1>
 
-      {/* Render content blocks */}
       <div className="prose lg:prose-xl">
         {post.content.map((block, index) => {
           if (block.type === "text") {
@@ -49,12 +83,54 @@ const BlogPost = ({ post }: { post: { title: string; content: any[] } }) => {
             return (
               <div key={index} className="flex justify-center mb-8">
                 <Image
-                  src={block.src}
-                  alt={block.alt}
+                  src={block.src || ""}
+                  alt={block.alt || "Image"}
                   width={800}
                   height={450}
                   className="rounded-lg shadow-lg"
                 />
+              </div>
+            );
+          } else if (block.type === "code") {
+            return (
+              <div key={index} className="mb-4 relative">
+                <pre className="bg-gray-800 text-white rounded-md overflow-x-auto p-4">
+                  <code>{block.content}</code>
+                </pre>
+                {block.caption && (
+                  <p className="text-sm text-gray-500 mt-2">{block.caption}</p>
+                )}
+                <button
+                  onClick={() => handleCopy(index, block.content || "")}
+                  className="absolute top-4 right-4 text-white bg-gray-500 hover:bg-gray-600 p-2 rounded-md"
+                >
+                  {copiedDetails[index] ? (
+                    <i className="fas fa-check"> Copied</i>
+                  ) : (
+                    <i className="fas fa-copy"> Copy</i>
+                  )}
+                </button>
+              </div>
+            );
+          } else if (block.type === "research") {
+            return (
+              <div key={index} className="mb-8">
+                <h2 className="text-2xl font-bold">{block.title}</h2>
+                <p className="italic">{block.abstract}</p>
+                {block.sections &&
+                  block.sections.map((section, idx) => (
+                    <div key={idx}>
+                      <h3 className="text-xl font-semibold mt-4">
+                        {section.heading}
+                      </h3>
+                      <p>{section.content}</p>
+                    </div>
+                  ))}
+                {block.keywords && (
+                  <p className="mt-4">
+                    <strong>Keywords:</strong> {block.keywords.join(", ")}
+                  </p>
+                )}
               </div>
             );
           }
@@ -73,7 +149,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
   return {
     paths,
-    fallback: true, // Set fallback to true so that Next.js can handle the slug dynamically
+    fallback: true,
   };
 };
 
@@ -83,10 +159,9 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
   const post = blogPostsDetails.find((p) => p.slug === slug);
 
-  // If no post is found, return a fallback post (or an error message)
   return {
     props: {
-      post: post || null, // If the post doesn't exist, pass null to the page
+      post: post || null,
     },
   };
 };

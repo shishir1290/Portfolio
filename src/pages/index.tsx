@@ -47,7 +47,8 @@ export default function Home() {
           {/* Skills List */}
           <ul className="list-disc pl-6 text-lg sm:text-xl text-gray-700 mb-8 animate__animated animate__fadeIn animate__fast animate__delay-4s text-left">
             <li>HTML, CSS, JavaScript</li>
-            <li>React, Next.js, Nest.js</li>
+            <li>React, Next.js</li>
+            <li>Nest.js, Node.js</li>
             <li>PHP, .Net</li>
             <li>Tailwind CSS</li>
           </ul>
