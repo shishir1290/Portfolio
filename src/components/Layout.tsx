@@ -57,7 +57,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
       {/* Sidebar */}
       <nav
-        className={`fixed lg:relative z-40 bg-orange-400 text-white w-40 lg:w-1/6 h-full transform ${
+        className={`fixed lg:relative z-40 bg-[#81BFDA] text-white w-40 lg:w-1/6 h-full transform ${
           isSidebarOpen
             ? "translate-x-0"
             : "-translate-x-full transition-all transform bg-opacity-0 hover:bg-opacity-100 hover:translate-x-0"
@@ -65,9 +65,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       >
         <div className="p-5">
           <h1 className={`text-2xl font-bold mb-8 text-black hidden lg:block`}>
-            <Link href={"/"}>
-              My Portfolio
-            </Link>
+            <Link href={"/"}>My Portfolio</Link>
           </h1>
           <ul className="mt-8 lg:mt-0 space-y-6">
             {[
