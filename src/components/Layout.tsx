@@ -38,7 +38,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <div className="h-screen flex flex-col lg:flex-row">
       {/* Sidebar Toggle for Small Screens */}
       <button
-        className="lg:hidden p-4 bg-[#4C585B] text-white fixed z-50 flex items-center justify-center transition-transform duration-300"
+        className="lg:hidden p-4 bg-[#063970] text-white fixed z-50 flex items-center justify-center transition-transform duration-300"
         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
         aria-label="Toggle Sidebar"
       >
@@ -57,7 +57,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
       {/* Sidebar */}
       <nav
-        className={`fixed lg:relative z-40 bg-[#4C585B] text-white w-40 lg:w-1/6 h-full transform ${
+        className={`fixed lg:relative z-40 bg-[#063970] text-white w-40 lg:w-1/6 h-full transform ${
           isSidebarOpen
             ? "translate-x-0"
             : "-translate-x-full transition-all transform bg-opacity-0 hover:bg-opacity-100 hover:translate-x-0"
