@@ -81,7 +81,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 icon={icon}
                 label={label}
                 active={activeSection === href}
-                onClick={() => {handleLinkClick(href);setIsSidebarOpen(!isSidebarOpen)}}
+                onClick={() => handleLinkClick(href)}
               />
             ))}
           </ul>
