@@ -117,7 +117,7 @@ function NavItem({ href, icon: Icon, label, active, onClick }: NavItemProps) {
         onClick={onClick}
       >
         <Icon
-          className={`text-3xl ${active ? "text-cyan-500" : "text-black"}`}
+          className={`text-3xl ${active ? "text-[#A5F3FC]" : "text-black"}`}
         />
         <span
           className={`absolute left-8 lg:left-16 text-sm ${
