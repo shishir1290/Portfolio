@@ -38,7 +38,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <div className="h-screen flex flex-col lg:flex-row">
       {/* Sidebar Toggle for Small Screens */}
       <button
-        className="lg:hidden p-4 bg-[#063970] text-white fixed z-50 flex items-center justify-center transition-transform duration-300"
+        className="lg:hidden p-4 text-white fixed z-50 flex items-center justify-center transition-transform duration-300"
         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
         aria-label="Toggle Sidebar"
       >
