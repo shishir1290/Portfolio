@@ -67,7 +67,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <h1 className={`text-2xl font-bold mb-8 text-black hidden lg:block`}>
             <Link href={"/"}>My Portfolio</Link>
           </h1>
-          <ul className="mt-8 lg:mt-0 space-y-6">
+          <ul className="mt-8 lg:mt-0 space-y-6" onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
             {[
               { href: "/", icon: FaHome, label: "Home" },
               { href: "/about", icon: FaInfoCircle, label: "About" },
