@@ -57,7 +57,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
       {/* Sidebar */}
       <nav
-        className={`fixed lg:relative z-40 bg-[#94D8E4] text-white w-40 lg:w-1/6 h-full transform ${
+        className={`fixed lg:relative z-40 bg-[#B7E5ED] text-white w-40 lg:w-1/6 h-full transform ${
           isSidebarOpen
             ? "translate-x-0"
             : "-translate-x-full transition-all transform bg-opacity-0 hover:bg-opacity-100 hover:translate-x-0"
