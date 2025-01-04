@@ -57,7 +57,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
       {/* Sidebar */}
       <nav
-        className={`fixed lg:relative z-40 bg-[#0662C0] text-white w-40 lg:w-1/6 h-full transform ${
+        className={`fixed lg:relative z-40 bg-[#4DBED2] text-white w-40 lg:w-1/6 h-full transform ${
           isSidebarOpen
             ? "translate-x-0"
             : "-translate-x-full transition-all transform bg-opacity-0 hover:bg-opacity-100 hover:translate-x-0"
@@ -117,11 +117,11 @@ function NavItem({ href, icon: Icon, label, active, onClick }: NavItemProps) {
         onClick={onClick}
       >
         <Icon
-          className={`text-3xl ${active ? "text-[#024652]" : "text-black"}`}
+          className={`text-3xl ${active ? "text-[#058DA4]" : "text-black"}`}
         />
         <span
           className={`absolute left-8 lg:left-16 text-sm ${
-            active ? "text-[#024652] font-bold" : "text-black"
+            active ? "text-[#058DA4] font-bold" : "text-black"
           } opacity-100 lg:transition-all lg:transform lg:translate-x-[-20px] lg:opacity-0 lg:group-hover:opacity-100 lg:group-hover:translate-x-0`}
         >
           {label}
