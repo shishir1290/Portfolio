@@ -130,6 +130,7 @@ export const OSProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
 
   const playSound = useCallback(
     (soundName: string) => {
+      if (volume === 0) return;
       const audio = new Audio(`/sounds/${soundName}.mp3`);
       audio.volume = volume / 100;
       audio.play().catch((e) => console.log("Audio play failed:", e));

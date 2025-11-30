@@ -47,6 +47,7 @@ export const TicTacToeApp: React.FC = () => {
   const handleClick = (i: number) => {
     if (board[i] || winner || isBotTurn) return;
 
+    playClickSound();
     const newBoard = [...board];
     newBoard[i] = "X";
     setBoard(newBoard);

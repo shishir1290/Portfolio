@@ -1,9 +1,13 @@
 /** @format */
 
 import { useCallback } from "react";
+import { useOS } from "@/contexts/OSContext";
 
 export const useSound = () => {
+  const { volume } = useOS();
+
   const playClickSound = useCallback(() => {
+    if (volume === 0) return;
     try {
       const AudioContext =
         window.AudioContext || (window as any).webkitAudioContext;
@@ -24,9 +28,10 @@ export const useSound = () => {
         audioCtx.currentTime + 0.05
       );
 
-      gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+      const vol = volume / 100;
+      gainNode.gain.setValueAtTime(0.1 * vol, audioCtx.currentTime);
       gainNode.gain.exponentialRampToValueAtTime(
-        0.01,
+        0.01 * vol,
         audioCtx.currentTime + 0.05
       );
 
@@ -35,9 +40,10 @@ export const useSound = () => {
     } catch (error) {
       console.error("Audio playback failed", error);
     }
-  }, []);
+  }, [volume]);
 
   const playWinSound = useCallback(() => {
+    if (volume === 0) return;
     try {
       const AudioContext =
         window.AudioContext || (window as any).webkitAudioContext;
@@ -54,8 +60,9 @@ export const useSound = () => {
         osc.type = "sine";
         osc.frequency.value = freq;
 
-        gain.gain.setValueAtTime(0.1, time);
-        gain.gain.exponentialRampToValueAtTime(0.01, time + duration);
+        const vol = volume / 100;
+        gain.gain.setValueAtTime(0.1 * vol, time);
+        gain.gain.exponentialRampToValueAtTime(0.01 * vol, time + duration);
 
         osc.start(time);
         osc.stop(time + duration);
@@ -68,9 +75,10 @@ export const useSound = () => {
     } catch (error) {
       console.error("Audio playback failed", error);
     }
-  }, []);
+  }, [volume]);
 
   const playLoseSound = useCallback(() => {
+    if (volume === 0) return;
     try {
       const AudioContext =
         window.AudioContext || (window as any).webkitAudioContext;
@@ -87,8 +95,9 @@ export const useSound = () => {
         osc.type = "sawtooth";
         osc.frequency.value = freq;
 
-        gain.gain.setValueAtTime(0.1, time);
-        gain.gain.exponentialRampToValueAtTime(0.01, time + duration);
+        const vol = volume / 100;
+        gain.gain.setValueAtTime(0.1 * vol, time);
+        gain.gain.exponentialRampToValueAtTime(0.01 * vol, time + duration);
 
         osc.start(time);
         osc.stop(time + duration);
@@ -101,7 +110,7 @@ export const useSound = () => {
     } catch (error) {
       console.error("Audio playback failed", error);
     }
-  }, []);
+  }, [volume]);
 
   return { playClickSound, playWinSound, playLoseSound };
 };
