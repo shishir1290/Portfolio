@@ -1,3 +1,5 @@
+/** @format */
+
 import {
   FaHome,
   FaInfoCircle,
@@ -10,11 +12,16 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 // import Footer from "./Footer";
 import Navbar from "./Navbar";
+import { useSound } from "@/hooks/useSound";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const [activeSection, setActiveSection] = useState<string>(router.pathname);
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
+  const { playClickSound } = useSound();
+
+  // Check if we're on the homepage (OS desktop)
+  const isHomePage = router.pathname === "/";
 
   const handleLinkClick = (section: string) => {
     setActiveSection(section);
@@ -34,19 +41,27 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     }
   }, [router.pathname]);
 
+  // If on homepage, render children without layout but with sound
+  if (isHomePage) {
+    return <div onClick={playClickSound}>{children}</div>;
+  }
+
   return (
-    <div className="h-screen flex flex-col lg:flex-row">
+    <div
+      className="h-screen flex flex-col lg:flex-row"
+      onClick={playClickSound}>
       {/* Sidebar Toggle for Small Screens */}
       <button
         className="lg:hidden p-4 text-white fixed z-50 flex items-center justify-center transition-transform duration-300"
-        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-        aria-label="Toggle Sidebar"
-      >
+        onClick={(e) => {
+          e.stopPropagation();
+          setIsSidebarOpen(!isSidebarOpen);
+        }}
+        aria-label="Toggle Sidebar">
         <span
           className={`transform transition-transform duration-300 ${
             isSidebarOpen ? "rotate-90" : ""
-          }`}
-        >
+          }`}>
           {isSidebarOpen ? "✕" : "☰"}
         </span>
       </button>
@@ -61,8 +76,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           isSidebarOpen
             ? "translate-x-0"
             : "-translate-x-full transition-all transform bg-opacity-0 hover:bg-opacity-100 hover:translate-x-0"
-        } lg:translate-x-0 transition-transform`}
-      >
+        } lg:translate-x-0 transition-transform`}>
         <div className="p-5">
           <h1 className={`text-2xl font-bold mb-8 text-black hidden lg:block`}>
             <Link href={"/"}>My Portfolio</Link>
@@ -114,16 +128,14 @@ function NavItem({ href, icon: Icon, label, active, onClick }: NavItemProps) {
         className={`block text-lg flex items-center space-x-4 py-2 ${
           active ? "text-cyan-200" : "text-white"
         }`}
-        onClick={onClick}
-      >
+        onClick={onClick}>
         <Icon
           className={`text-3xl ${active ? "text-[#058DA4]" : "text-black"}`}
         />
         <span
           className={`absolute left-8 lg:left-16 text-sm ${
             active ? "text-[#058DA4] font-bold" : "text-black"
-          } opacity-100 lg:transition-all lg:transform lg:translate-x-[-20px] lg:opacity-0 lg:group-hover:opacity-100 lg:group-hover:translate-x-0`}
-        >
+          } opacity-100 lg:transition-all lg:transform lg:translate-x-[-20px] lg:opacity-0 lg:group-hover:opacity-100 lg:group-hover:translate-x-0`}>
           {label}
         </span>
         <div
