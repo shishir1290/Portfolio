@@ -10,7 +10,7 @@ export interface SearchResult {
   title: string;
   description: string;
   action: () => void;
-  icon?: string;
+  icon?: React.ReactNode;
 }
 
 export const useSearch = (onOpenApp?: (appId: string) => void) => {
@@ -26,16 +26,17 @@ export const useSearch = (onOpenApp?: (appId: string) => void) => {
     appRegistry.forEach((app) => {
       const nameMatch = app.name.toLowerCase().includes(lowerQuery);
       const keywordMatch = app.searchKeywords.some((k) =>
-        k.toLowerCase().includes(lowerQuery)
+        k.toLowerCase().includes(lowerQuery),
       );
       const descMatch = app.description.toLowerCase().includes(lowerQuery);
 
       if (nameMatch || keywordMatch || descMatch) {
+        const IconComponent = app.icon;
         searchResults.push({
           type: "app",
           title: app.name,
           description: app.description,
-          icon: app.icon,
+          icon: <IconComponent />,
           action: () => onOpenApp?.(app.id),
         });
       }

@@ -152,7 +152,9 @@ export const DesktopIcon: React.FC<DesktopIconProps> = ({
       onClick={handleClick}
       onTouchStart={handleTouchStart}>
       <div className="desktop-icon-content">
-        <div className="desktop-icon-emoji">{app.icon}</div>
+        <div className="desktop-icon-emoji">
+          <app.icon />
+        </div>
         <div className="desktop-icon-name">{app.name}</div>
       </div>
     </div>

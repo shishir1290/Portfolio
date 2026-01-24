@@ -90,6 +90,7 @@ export const Taskbar: React.FC = () => {
             const app = appRegistry.find((a) => a.id === window.appId);
             const isActive =
               window.id === activeWindowId && !window.isMinimized;
+            const IconComponent = app?.icon;
 
             return (
               <button
@@ -103,7 +104,11 @@ export const Taskbar: React.FC = () => {
                   }
                 }}
                 title={window.title}>
-                <span>{app?.icon || "📱"}</span>
+                <span>
+                  {IconComponent ?
+                    <IconComponent />
+                  : "📱"}
+                </span>
                 <span className="hidden md:inline text-sm">{window.title}</span>
               </button>
             );

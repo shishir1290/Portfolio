@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useSound } from "@/hooks/useSound";
+import { saveTetrisScore, getTetrisHighScore } from "@/utils/highScoreStorage";
 
 type Difficulty = "Easy" | "Medium" | "Hard";
 
@@ -49,7 +50,7 @@ const COLORS = [
 
 export const TetrisApp: React.FC = () => {
   const [grid, setGrid] = useState<number[][]>(
-    Array.from({ length: ROWS }, () => Array(COLS).fill(0))
+    Array.from({ length: ROWS }, () => Array(COLS).fill(0)),
   );
   const [currentPiece, setCurrentPiece] = useState<any>(null);
   const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -57,8 +58,16 @@ export const TetrisApp: React.FC = () => {
   const [gameOver, setGameOver] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [difficulty, setDifficulty] = useState<Difficulty>("Medium");
+  const [highScore, setHighScore] = useState(0);
+  const [showNewHighScore, setShowNewHighScore] = useState(false);
+  const [linesCleared, setLinesCleared] = useState(0);
   const gameLoopRef = useRef<NodeJS.Timeout | null>(null);
   const { playLoseSound, playClickSound } = useSound();
+
+  // Load high score on mount and difficulty change
+  useEffect(() => {
+    setHighScore(getTetrisHighScore(difficulty));
+  }, [difficulty]);
 
   const getSpeed = () => {
     switch (difficulty) {
@@ -86,14 +95,22 @@ export const TetrisApp: React.FC = () => {
       setGameOver(true);
       setIsPlaying(false);
       playLoseSound();
+      // Save score when game over
+      if (score > 0) {
+        saveTetrisScore(score, difficulty);
+        if (score > highScore) {
+          setShowNewHighScore(true);
+          setHighScore(score);
+        }
+      }
     }
-  }, [grid, playLoseSound]);
+  }, [grid, playLoseSound, score, difficulty, highScore]);
 
   const checkCollision = (
     shape: number[][],
     x: number,
     y: number,
-    currentGrid: number[][]
+    currentGrid: number[][],
   ) => {
     for (let r = 0; r < shape.length; r++) {
       for (let c = 0; c < shape[r].length; c++) {
@@ -130,18 +147,19 @@ export const TetrisApp: React.FC = () => {
     }
 
     // Clear lines
-    let linesCleared = 0;
+    let linesClearedNow = 0;
     for (let r = ROWS - 1; r >= 0; r--) {
       if (newGrid[r].every((cell) => cell !== 0)) {
         newGrid.splice(r, 1);
         newGrid.unshift(Array(COLS).fill(0));
-        linesCleared++;
+        linesClearedNow++;
         r++; // Check same row again
       }
     }
 
-    if (linesCleared > 0) {
-      setScore((prev) => prev + linesCleared * 100);
+    if (linesClearedNow > 0) {
+      setScore((prev) => prev + linesClearedNow * 100);
+      setLinesCleared((prev) => prev + linesClearedNow);
       playClickSound();
     }
 
@@ -157,7 +175,7 @@ export const TetrisApp: React.FC = () => {
         currentPiece.shape,
         position.x + dx,
         position.y + dy,
-        grid
+        grid,
       )
     ) {
       setPosition((prev) => ({ x: prev.x + dx, y: prev.y + dy }));
@@ -170,7 +188,7 @@ export const TetrisApp: React.FC = () => {
     if (!currentPiece || gameOver || !isPlaying) return;
 
     const rotatedShape = currentPiece.shape[0].map((_: any, index: number) =>
-      currentPiece.shape.map((row: any[]) => row[index]).reverse()
+      currentPiece.shape.map((row: any[]) => row[index]).reverse(),
     );
 
     if (!checkCollision(rotatedShape, position.x, position.y, grid)) {
@@ -203,7 +221,7 @@ export const TetrisApp: React.FC = () => {
               currentPiece.shape,
               position.x,
               position.y + dropY + 1,
-              grid
+              grid,
             )
           ) {
             dropY++;
@@ -212,7 +230,7 @@ export const TetrisApp: React.FC = () => {
           break;
       }
     },
-    [currentPiece, position, grid, isPlaying, gameOver]
+    [currentPiece, position, grid, isPlaying, gameOver],
   );
 
   useEffect(() => {
@@ -237,30 +255,55 @@ export const TetrisApp: React.FC = () => {
   const resetGame = () => {
     setGrid(Array.from({ length: ROWS }, () => Array(COLS).fill(0)));
     setScore(0);
+    setLinesCleared(0);
     setGameOver(false);
     setIsPlaying(true);
+    setShowNewHighScore(false);
     spawnPiece();
   };
 
   return (
-    <div className="h-full w-full bg-gray-900 flex flex-col items-center justify-center p-4 text-white">
-      <h2 className="text-2xl font-bold mb-4">Tetris</h2>
+    <div className="h-full w-full bg-gradient-to-br from-gray-900 via-indigo-900 to-gray-900 flex flex-col items-center justify-center p-2 md:p-4 text-white overflow-auto">
+      <h2 className="text-xl md:text-3xl font-bold mb-2 md:mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">
+        🎮 Tetris
+      </h2>
 
-      <div className="mb-4 flex gap-4 items-center">
-        <div className="text-lg">Score: {score}</div>
+      {/* Score and Controls */}
+      <div className="mb-2 md:mb-4 flex flex-col md:flex-row gap-2 md:gap-6 items-center">
+        <div className="flex gap-4 md:gap-6">
+          <div className="text-center">
+            <div className="text-xs text-gray-400">Score</div>
+            <div className="text-xl md:text-2xl font-bold text-purple-400">
+              {score}
+            </div>
+          </div>
+          <div className="text-center">
+            <div className="text-xs text-gray-400">High Score</div>
+            <div className="text-xl md:text-2xl font-bold text-yellow-400">
+              {highScore}
+            </div>
+          </div>
+          <div className="text-center">
+            <div className="text-xs text-gray-400">Lines</div>
+            <div className="text-xl md:text-2xl font-bold text-green-400">
+              {linesCleared}
+            </div>
+          </div>
+        </div>
         <select
           value={difficulty}
           onChange={(e) => setDifficulty(e.target.value as Difficulty)}
-          className="bg-gray-800 border border-gray-700 rounded px-2 py-1 text-sm"
+          className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-1.5 text-sm hover:bg-gray-700 transition-colors"
           disabled={isPlaying}>
-          <option value="Easy">Easy</option>
-          <option value="Medium">Medium</option>
-          <option value="Hard">Hard</option>
+          <option value="Easy">🐢 Easy</option>
+          <option value="Medium">🏃 Medium</option>
+          <option value="Hard">🚀 Hard</option>
         </select>
       </div>
 
+      {/* Game Board */}
       <div
-        className="relative bg-black border-2 border-gray-700"
+        className="relative bg-red-500 border-4 border-purple-700/50 rounded-lg shadow-2xl shadow-purple-500/20"
         style={{
           width: COLS * BLOCK_SIZE,
           height: ROWS * BLOCK_SIZE,
@@ -272,7 +315,7 @@ export const TetrisApp: React.FC = () => {
               return (
                 <div
                   key={`${r}-${c}`}
-                  className={`absolute border border-black/20 ${
+                  className={`absolute border border-black/20 rounded-sm shadow-md ${
                     COLORS[cell - 1]
                   }`}
                   style={{
@@ -285,7 +328,7 @@ export const TetrisApp: React.FC = () => {
               );
             }
             return null;
-          })
+          }),
         )}
 
         {/* Render Current Piece */}
@@ -297,9 +340,9 @@ export const TetrisApp: React.FC = () => {
                 return (
                   <div
                     key={`piece-${r}-${c}`}
-                    className={`absolute border border-black/20 ${
+                    className={`absolute border border-black/20 rounded-sm shadow-lg ${
                       COLORS[currentPiece.colorIndex - 1]
-                    }`}
+                    } animate-pulse`}
                     style={{
                       left: (position.x + c) * BLOCK_SIZE,
                       top: (position.y + r) * BLOCK_SIZE,
@@ -310,34 +353,59 @@ export const TetrisApp: React.FC = () => {
                 );
               }
               return null;
-            })
+            }),
           )}
 
+        {/* Game Over Overlay */}
         {gameOver && (
-          <div className="absolute inset-0 bg-black/80 flex flex-col items-center justify-center">
-            <h3 className="text-3xl font-bold text-red-500 mb-4">Game Over</h3>
+          <div className="absolute inset-0 bg-black/90 backdrop-blur-sm flex flex-col items-center justify-center gap-4 animate-in fade-in zoom-in duration-300">
+            <h3 className="text-3xl md:text-4xl font-bold text-red-500 drop-shadow-lg">
+              Game Over!
+            </h3>
+            {showNewHighScore && (
+              <p className="text-xl text-yellow-400 animate-bounce">
+                🎉 New High Score!
+              </p>
+            )}
+            <div className="text-center space-y-2">
+              <div>
+                <p className="text-gray-400 text-sm">Final Score</p>
+                <p className="text-4xl font-bold text-purple-400">{score}</p>
+              </div>
+              <div>
+                <p className="text-gray-400 text-sm">Lines Cleared</p>
+                <p className="text-2xl font-bold text-green-400">
+                  {linesCleared}
+                </p>
+              </div>
+            </div>
             <button
               onClick={resetGame}
-              className="px-6 py-2 bg-blue-600 rounded hover:bg-blue-700 transition-colors">
+              className="px-8 py-3 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all shadow-lg hover:shadow-xl transform hover:scale-105 font-semibold">
               Play Again
             </button>
           </div>
         )}
 
+        {/* Start Overlay */}
         {!isPlaying && !gameOver && (
-          <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/70 backdrop-blur-sm flex flex-col items-center justify-center gap-4">
+            <div className="text-6xl animate-bounce">🎮</div>
             <button
               onClick={resetGame}
-              className="px-6 py-2 bg-green-600 rounded hover:bg-green-700 transition-colors">
+              className="px-8 py-3 bg-gradient-to-r from-purple-500 to-pink-600 rounded-lg hover:from-purple-600 hover:to-pink-700 transition-all shadow-lg hover:shadow-xl transform hover:scale-105 font-semibold">
               Start Game
             </button>
           </div>
         )}
       </div>
 
-      <div className="mt-4 text-sm text-gray-400 text-center">
-        <p>Arrows to Move/Rotate</p>
-        <p>Space to Drop</p>
+      {/* Instructions */}
+      <div className="mt-2 md:mt-4 text-xs md:text-sm text-gray-400 text-center">
+        <p>⬅️ ➡️ Move • ⬆️ Rotate • ⬇️ Soft Drop • Space Hard Drop</p>
+        <p className="text-xs text-gray-500 mt-1">
+          Clear lines to score points!
+        </p>
       </div>
     </div>
   );

@@ -7,7 +7,7 @@ interface WindowProps {
   windowId: string;
   title: string;
   children: ReactNode;
-  icon?: string;
+  icon?: ReactNode;
 }
 
 export const Window: React.FC<WindowProps> = ({
@@ -156,16 +156,17 @@ export const Window: React.FC<WindowProps> = ({
     }
   };
 
-  const windowStyle: React.CSSProperties = isMobile
-    ? {
+  const windowStyle: React.CSSProperties =
+    isMobile ?
+      {
         top: 0,
         left: 0,
         width: "100vw",
         height: "calc(100vh - 70px)",
         zIndex: windowState.zIndex,
       }
-    : windowState.isMaximized
-    ? {
+    : windowState.isMaximized ?
+      {
         top: 0,
         left: 0,
         width: "100vw",

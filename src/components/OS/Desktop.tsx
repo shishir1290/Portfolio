@@ -53,6 +53,10 @@ interface DesktopProps {
   backgroundImage: string;
 }
 
+import { MobileDesktop } from "./Mobile/MobileDesktop";
+
+// ... (keep existing imports)
+
 export const Desktop: React.FC<DesktopProps> = ({ backgroundImage }) => {
   const { getVisibleWindows } = useWindowManager();
   const {
@@ -66,7 +70,18 @@ export const Desktop: React.FC<DesktopProps> = ({ backgroundImage }) => {
   const visibleWindows = getVisibleWindows();
   const [isLocked, setIsLocked] = React.useState(true);
   const [typewriterText, setTypewriterText] = React.useState("");
-  const titles = ["Full Stack Developer", "UI/UX Designer", "Creative Coder"];
+  const [isMobile, setIsMobile] = React.useState(false);
+  const titles = ["Full Stack Developer"];
+
+  React.useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   React.useEffect(() => {
     let currentTitleIndex = 0;
@@ -113,10 +128,12 @@ export const Desktop: React.FC<DesktopProps> = ({ backgroundImage }) => {
     setIsLocked(false);
   };
 
-  // ... (handlers remain same)
-
   if (isShuttingDown) {
     return <ShutdownScreen />;
+  }
+
+  if (isMobile && !isBooting) {
+    return <MobileDesktop backgroundImage={backgroundImage} />;
   }
 
   return (
@@ -164,18 +181,17 @@ export const Desktop: React.FC<DesktopProps> = ({ backgroundImage }) => {
           {visibleWindows.map((window) => {
             const app = appRegistry.find((a) => a.id === window.appId);
             const AppComponent = app ? appComponents[app.component] : null;
+            const IconComponent = app?.icon;
 
             return (
               <Window
                 key={window.id}
                 windowId={window.id}
                 title={window.title}
-                icon={app?.icon}>
-                {AppComponent ? (
+                icon={IconComponent ? <IconComponent /> : undefined}>
+                {AppComponent ?
                   <AppComponent />
-                ) : (
-                  <div className="p-4">App not found</div>
-                )}
+                : <div className="p-4">App not found</div>}
               </Window>
             );
           })}

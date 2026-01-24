@@ -49,22 +49,25 @@ export const StartMenu: React.FC = () => {
 
         {/* App Grid */}
         <div className="p-4 grid grid-cols-4 gap-4 max-h-[400px] overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
-          {appRegistry.map((app) => (
-            <button
-              key={app.id}
-              className="flex flex-col items-center gap-2 group"
-              onClick={() => {
-                openWindow(app.id, app.name, app.defaultSize);
-                setStartMenuOpen(false);
-              }}>
-              <div className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center text-2xl group-hover:bg-white/20 transition-colors">
-                {app.icon}
-              </div>
-              <span className="text-[10px] text-white/70 group-hover:text-white text-center truncate w-full">
-                {app.name}
-              </span>
-            </button>
-          ))}
+          {appRegistry.map((app) => {
+            const IconComponent = app.icon;
+            return (
+              <button
+                key={app.id}
+                className="flex flex-col items-center gap-2 group"
+                onClick={() => {
+                  openWindow(app.id, app.name, app.defaultSize);
+                  setStartMenuOpen(false);
+                }}>
+                <div className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center text-2xl group-hover:bg-white/20 transition-colors">
+                  <IconComponent />
+                </div>
+                <span className="text-[10px] text-white/70 group-hover:text-white text-center truncate w-full">
+                  {app.name}
+                </span>
+              </button>
+            );
+          })}
         </div>
 
         {/* Footer */}
