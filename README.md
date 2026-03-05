@@ -1,40 +1,90 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Shishir Portfolio — Next.js + Three.js
+
+A futuristic, dark-themed portfolio website for **Md Sadmanur Islam Shishir**, Full-Stack Developer.
+
+## Tech Stack
+
+- **Next.js 14** (App Router)
+- **Three.js** — 3D icosahedron globe animation on hero
+- **Canvas API** — interactive particle network background
+- **Tailwind CSS** — utility-first styling
+- **Framer Motion** — (optional, installed for future enhancements)
+- **Lenis** — smooth scroll
+- **TypeScript**
+- **Google Fonts**: Bebas Neue, Syne, Space Mono
 
 ## Getting Started
 
-First, run the development server:
+### 1. Install Dependencies
+
+```bash
+npm install
+```
+
+### 2. Run Development Server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to view the portfolio.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+### 3. Build for Production
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+```bash
+npm run build
+npm start
+```
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+## Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+```
+shishir-portfolio/
+├── app/
+│   ├── layout.tsx       # Root layout with fonts
+│   ├── page.tsx         # Main page
+│   └── globals.css      # Global styles + design tokens
+├── components/
+│   ├── Navbar.tsx
+│   ├── Footer.tsx
+│   ├── SmoothScroll.tsx
+│   ├── three/
+│   │   ├── ParticleBackground.tsx   # Canvas particle network
+│   │   └── ThreeGlobe.tsx           # Three.js icosahedron globe
+│   └── sections/
+│       ├── HeroSection.tsx
+│       ├── AboutSection.tsx
+│       ├── SkillsSection.tsx
+│       ├── ExperienceSection.tsx
+│       ├── ProjectsSection.tsx
+│       └── ContactSection.tsx
+├── tailwind.config.ts
+├── tsconfig.json
+└── next.config.js
+```
 
-## Learn More
+## Sections
 
-To learn more about Next.js, take a look at the following resources:
+1. **Hero** — Typewriter effect, Three.js globe, particle background
+2. **About** — Bio, personal info, education timeline
+3. **Skills** — Grouped by category with animated skill tags
+4. **Experience** — Timeline with Pakiza Software Limited role
+5. **Projects** — Featured + other projects with tech stack
+6. **Contact** — Contact form + direct contact info
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Customization
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+- **Colors**: Edit CSS variables in `app/globals.css` and `tailwind.config.ts`
+- **Projects**: Edit the `projects` array in `components/sections/ProjectsSection.tsx`
+- **Skills**: Edit `skillGroups` in `components/sections/SkillsSection.tsx`
+- **Personal Info**: Update text in the relevant section components
 
-## Deploy on Vercel
+## Deployment
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Deploy to **Vercel** in one command:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+```bash
+npx vercel
+```
+
+Or connect your GitHub repo to Vercel for automatic deployments.
