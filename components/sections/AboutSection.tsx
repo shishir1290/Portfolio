@@ -1,12 +1,25 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { scrollTo } from "../Navbar";
+
+function getExperienceDuration(startDate: Date): string {
+  const now = new Date();
+  let years = now.getFullYear() - startDate.getFullYear();
+  let months = now.getMonth() - startDate.getMonth();
+  if (now.getDate() < startDate.getDate()) months--;
+  if (months < 0) { years--; months += 12; }
+  const parts: string[] = [];
+  if (years > 0) parts.push(`${years} Year${years > 1 ? "s" : ""}`);
+  if (months > 0) parts.push(`${months} Month${months > 1 ? "s" : ""}`);
+  return parts.length > 0 ? parts.join(" ") : "< 1 Month";
+}
 
 export default function AboutSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const [visible, setVisible] = useState(false);
+  const experience = useMemo(() => getExperienceDuration(new Date(2024, 9, 1)), []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -104,7 +117,7 @@ export default function AboutSection() {
                 { label: "Email", value: "shishir1290@gmail.com" },
                 { label: "Phone", value: "+880 1946-432534" },
                 { label: "Available", value: "Full-Time / Remote" },
-                { label: "Experience", value: "1 Year 4 Months" },
+                { label: "Experience", value: experience },
               ].map((item) => (
                 <div key={item.label} className="border-l border-primary/20 pl-4">
                   <p
@@ -184,10 +197,10 @@ export default function AboutSection() {
                       className="text-primary/70 text-xs tracking-wider mt-1"
                       style={{ fontFamily: "Space Mono, monospace" }}
                     >
-                      JUNIOR EXECUTIVE @ PAKIZA SOFTWARE
+                      JUNIOR EXECUTIVE @ PAKIZA SOFTWARE LIMITED
                     </p>
                     <p className="text-white/30 text-xs mt-2">
-                      Mirpur 11, Dhaka 1216
+                      College Gate, Konabari, Gazipur 1437
                     </p>
                   </div>
                 </div>
