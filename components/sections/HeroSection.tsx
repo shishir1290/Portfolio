@@ -14,10 +14,9 @@ const ThreeGlobe = dynamic(() => import("@/components/three/ThreeGlobe"), {
 
 const roles = [
   "Full-Stack Developer",
+  "Node.js Developer",
   "WebRTC Specialist",
   "Live Streaming Engineer",
-  "UI/UX Enthusiast",
-  "Node.js Developer",
 ];
 
 export default function HeroSection() {

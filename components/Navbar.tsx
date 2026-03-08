@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 
 const navItems = [
   { label: "ABOUT", href: "#about" },
@@ -8,6 +9,7 @@ const navItems = [
   { label: "EXPERIENCE", href: "#experience" },
   { label: "PROJECTS", href: "#projects" },
   { label: "CONTACT", href: "#contact" },
+  { label: "GAMES", href: "/games", isRoute: true },
 ];
 
 export const scrollTo = (href: string) => {
@@ -37,8 +39,8 @@ export default function Navbar() {
     <>
       <nav
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled
-            ? "bg-dark/80 backdrop-blur-xl border-b border-primary/10"
-            : "bg-transparent"
+          ? "bg-dark/80 backdrop-blur-xl border-b border-primary/10"
+          : "bg-transparent"
           }`}
       >
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
@@ -65,15 +67,25 @@ export default function Navbar() {
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-8">
-            {navItems.map((item) => (
-              <button
-                key={item.label}
-                onClick={() => scrollTo(item.href)}
-                className="nav-link"
-              >
-                {item.label}
-              </button>
-            ))}
+            {navItems.map((item) =>
+              (item as any).isRoute ? (
+                <Link
+                  key={item.label}
+                  href={item.href}
+                  className="nav-link"
+                >
+                  {item.label}
+                </Link>
+              ) : (
+                <button
+                  key={item.label}
+                  onClick={() => scrollTo(item.href)}
+                  className="nav-link"
+                >
+                  {item.label}
+                </button>
+              )
+            )}
           </div>
 
           {/* CTA */}
@@ -107,23 +119,38 @@ export default function Navbar() {
       {/* Mobile Menu */}
       <div
         className={`fixed inset-0 z-40 bg-dark/95 backdrop-blur-xl flex flex-col items-center justify-center gap-8 transition-all duration-500 md:hidden ${menuOpen
-            ? "opacity-100 pointer-events-auto"
-            : "opacity-0 pointer-events-none"
+          ? "opacity-100 pointer-events-auto"
+          : "opacity-0 pointer-events-none"
           }`}
       >
-        {navItems.map((item, i) => (
-          <button
-            key={item.label}
-            onClick={() => { scrollTo(item.href); setMenuOpen(false) }}
-            className="text-3xl font-display text-white/60 hover:text-primary transition-colors tracking-widest"
-            style={{
-              fontFamily: "Bebas Neue, sans-serif",
-              transitionDelay: `${i * 50}ms`,
-            }}
-          >
-            {item.label}
-          </button>
-        ))}
+        {navItems.map((item, i) =>
+          (item as any).isRoute ? (
+            <Link
+              key={item.label}
+              href={item.href}
+              onClick={() => setMenuOpen(false)}
+              className="text-3xl font-display text-white/60 hover:text-primary transition-colors tracking-widest"
+              style={{
+                fontFamily: "Bebas Neue, sans-serif",
+                transitionDelay: `${i * 50}ms`,
+              }}
+            >
+              {item.label}
+            </Link>
+          ) : (
+            <button
+              key={item.label}
+              onClick={() => { scrollTo(item.href); setMenuOpen(false) }}
+              className="text-3xl font-display text-white/60 hover:text-primary transition-colors tracking-widest"
+              style={{
+                fontFamily: "Bebas Neue, sans-serif",
+                transitionDelay: `${i * 50}ms`,
+              }}
+            >
+              {item.label}
+            </button>
+          )
+        )}
         <a
           href="mailto:shishir1290@gmail.com"
           className="btn-primary mt-4"
