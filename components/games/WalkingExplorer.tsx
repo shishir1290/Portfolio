@@ -3,6 +3,10 @@
 import { useRef, useState, useEffect, useCallback, RefObject } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
+import { Text } from "@react-three/drei";
+import socketioClient from "socket.io-client";
+type SioInstance = ReturnType<typeof socketioClient>;
+const socketio = socketioClient as unknown as { io(url: string, opts?: Record<string, unknown>): SioInstance };
 
 /* ══════════════════════════════════════════════════════
    TYPES
@@ -151,9 +155,11 @@ interface CharacterProps {
     playerPosRef: RefObject<PlayerPos>;
     movingRef: RefObject<boolean>;
     sprintingRef: RefObject<boolean>;
+    name?: string;
+    color?: string;
 }
 
-function Character({ playerPosRef, movingRef, sprintingRef }: CharacterProps) {
+function Character({ playerPosRef, movingRef, sprintingRef, name, color }: CharacterProps) {
     const groupRef = useRef<THREE.Group>(null);
     const bodyRef = useRef<THREE.Group>(null);
     const headRef = useRef<THREE.Group>(null);
@@ -171,12 +177,13 @@ function Character({ playerPosRef, movingRef, sprintingRef }: CharacterProps) {
         const spd = sprint ? 16 : 9;
 
         // Character sits at player position (camera is behind, showing back)
-        groupRef.current.position.x += (pp.x - groupRef.current.position.x) * 0.18;
-        groupRef.current.position.z += (pp.z - groupRef.current.position.z) * 0.18;
+        const lerpFactor = 1 - Math.pow(0.0001, delta); // Frame-rate independent lerp
+        groupRef.current.position.x += (pp.x - groupRef.current.position.x) * lerpFactor;
+        groupRef.current.position.z += (pp.z - groupRef.current.position.z) * lerpFactor;
 
         // Smoothly rotate to face movement direction
         let targetRY = pp.ry;
-        groupRef.current.rotation.y += (targetRY - groupRef.current.rotation.y) * 0.15;
+        groupRef.current.rotation.y += (targetRY - groupRef.current.rotation.y) * lerpFactor;
 
         // Bob cycle
         if (moving) bobRef.current += delta * spd;
@@ -229,7 +236,19 @@ function Character({ playerPosRef, movingRef, sprintingRef }: CharacterProps) {
             <group ref={bodyRef} position={[0, 0.98, 0]}>
                 <mesh castShadow receiveShadow>
                     <boxGeometry args={[0.46, 0.54, 0.22]} />
-                    <meshStandardMaterial color={shirt} roughness={0.85} />
+                    <meshStandardMaterial color={color || shirt} roughness={0.85} />
+                    {name && (
+                        <Text
+                            position={[0, 0, -0.115]}
+                            rotation={[0, Math.PI, 0]}
+                            fontSize={0.07}
+                            color="#ffffff"
+                            anchorX="center"
+                            anchorY="middle"
+                        >
+                            {name}
+                        </Text>
+                    )}
                 </mesh>
 
                 {/* Head */}
@@ -490,65 +509,107 @@ interface TreeData {
     layers: number; type: "pine" | "round"; leanX: number; leanZ: number;
 }
 
+/* ══════════════════════════════════════════════════════
+   INSTANCED TREES
+══════════════════════════════════════════════════════ */
 function Trees({ weatherName }: { weatherName: string }) {
     const isSnow = weatherName === "SNOW";
-    const [trees] = useState<TreeData[]>(() =>
-        Array.from({ length: 80 }).map(() => ({
-            x: (Math.random() - 0.5) * 150, z: (Math.random() - 0.5) * 150,
+    const trunkGeom = useRef(new THREE.CylinderGeometry(0.1, 0.2, 1, 7));
+    const pineGeom = useRef(new THREE.ConeGeometry(1, 1, 8));
+    const roundGeom = useRef(new THREE.SphereGeometry(1, 7, 5));
+
+    const trunkMat = useRef(new THREE.MeshStandardMaterial({ color: isSnow ? "#4a3520" : "#2c1a0e", roughness: 1 }));
+    const pineMat = useRef(new THREE.MeshStandardMaterial({ color: isSnow ? "#c8dde8" : "#0b3d1e", roughness: 0.9 }));
+    const roundMat = useRef(new THREE.MeshStandardMaterial({ color: isSnow ? "#b8ccd8" : "#0c4020", roughness: 0.9 }));
+
+    const [instancedData] = useState(() => {
+        const trees = Array.from({ length: 85 }).map((_, i) => ({
+            x: (Math.random() - 0.5) * 160, z: (Math.random() - 0.5) * 160,
             h: 2.5 + Math.random() * 5, r: 0.8 + Math.random() * 0.8,
             layers: 2 + Math.floor(Math.random() * 3),
             type: Math.random() > 0.4 ? "pine" : "round",
-            leanX: (Math.random() - 0.5) * 0.05,
-            leanZ: (Math.random() - 0.5) * 0.05,
-        }))
-    );
+            ry: Math.random() * Math.PI * 2
+        }));
+        return trees;
+    });
+
+    const trunkRef = useRef<THREE.InstancedMesh>(null);
+    const pineRef = useRef<THREE.InstancedMesh>(null);
+    const roundRef = useRef<THREE.InstancedMesh>(null);
+
+    useEffect(() => {
+        if (!trunkRef.current || !pineRef.current || !roundRef.current) return;
+        const dummy = new THREE.Object3D();
+        let trunkIdx = 0, pineIdx = 0, roundIdx = 0;
+
+        instancedData.forEach(t => {
+            // Trunk
+            dummy.position.set(t.x, t.h * 0.25, t.z);
+            dummy.scale.set(0.6 + t.r * 0.5, t.h * 0.5, 0.6 + t.r * 0.5);
+            dummy.rotation.set(0, t.ry, 0);
+            dummy.updateMatrix();
+            trunkRef.current!.setMatrixAt(trunkIdx++, dummy.matrix);
+
+            if (t.type === "pine") {
+                for (let l = 0; l < t.layers; l++) {
+                    dummy.position.set(t.x, t.h * (0.45 + (l / t.layers) * 0.55), t.z);
+                    const scale = t.r * (1 - (l / t.layers) * 0.5) * 0.9;
+                    dummy.scale.set(scale, t.h * 0.35, scale);
+                    dummy.updateMatrix();
+                    pineRef.current!.setMatrixAt(pineIdx++, dummy.matrix);
+                }
+            } else {
+                dummy.position.set(t.x, t.h * 0.75, t.z);
+                dummy.scale.set(t.r * 0.8, t.r * 0.8, t.r * 0.8);
+                dummy.updateMatrix();
+                roundRef.current!.setMatrixAt(roundIdx++, dummy.matrix);
+            }
+        });
+        trunkRef.current.instanceMatrix.needsUpdate = true;
+        pineRef.current.instanceMatrix.needsUpdate = true;
+        roundRef.current.instanceMatrix.needsUpdate = true;
+    }, [instancedData]);
+
     return (
-        <>
-            {trees.map((t, i) => (
-                <group key={i} position={[t.x, 0, t.z]} rotation={[t.leanX, i * 0.7, t.leanZ]}>
-                    <mesh position={[0, t.h * 0.25, 0]} castShadow receiveShadow>
-                        <cylinderGeometry args={[0.06 + t.r * 0.05, 0.14 + t.r * 0.08, t.h * 0.5, 7]} />
-                        <meshStandardMaterial color={isSnow ? "#4a3520" : "#2c1a0e"} roughness={1} />
-                    </mesh>
-                    {t.type === "pine" && Array.from({ length: t.layers }).map((_, l) => (
-                        <mesh key={l} position={[0, t.h * (0.45 + (l / t.layers) * 0.55), 0]} castShadow receiveShadow>
-                            <coneGeometry args={[t.r * (1 - (l / t.layers) * 0.5) * 0.9, t.h * 0.35, 8]} />
-                            <meshStandardMaterial color={isSnow ? "#c8dde8" : l % 2 === 0 ? "#0b3d1e" : "#0d4f28"} roughness={0.9} />
-                        </mesh>
-                    ))}
-                    {t.type === "round" && (
-                        <mesh position={[0, t.h * 0.75, 0]} castShadow receiveShadow>
-                            <sphereGeometry args={[t.r * 0.8, 7, 5]} />
-                            <meshStandardMaterial color={isSnow ? "#b8ccd8" : "#0c4020"} roughness={0.9} />
-                        </mesh>
-                    )}
-                </group>
-            ))}
-        </>
+        <group>
+            <instancedMesh ref={trunkRef} args={[trunkGeom.current, trunkMat.current, instancedData.length]} castShadow receiveShadow />
+            <instancedMesh ref={pineRef} args={[pineGeom.current, pineMat.current, instancedData.length * 4]} castShadow receiveShadow />
+            <instancedMesh ref={roundRef} args={[roundGeom.current, roundMat.current, instancedData.length]} castShadow receiveShadow />
+        </group>
     );
 }
 
 /* ══════════════════════════════════════════════════════
    ROCKS
 ══════════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════════
+   INSTANCED ROCKS
+══════════════════════════════════════════════════════ */
 function Rocks() {
-    const [rocks] = useState(() =>
-        Array.from({ length: 40 }).map(() => ({
-            x: (Math.random() - 0.5) * 140, z: (Math.random() - 0.5) * 140,
+    const rockGeom = useRef(new THREE.DodecahedronGeometry(1, 0));
+    const rockMat = useRef(new THREE.MeshStandardMaterial({ color: "#1a1e2a", roughness: 0.95, metalness: 0.05 }));
+    const [rockData] = useState(() =>
+        Array.from({ length: 50 }).map(() => ({
+            x: (Math.random() - 0.5) * 150, z: (Math.random() - 0.5) * 150,
             s: 0.2 + Math.random() * 1.1, ry: Math.random() * Math.PI, rx: Math.random() * 0.4,
         }))
     );
-    const cols = ["#1a1e2a", "#151922", "#202533", "#181c24", "#222030"];
-    return (
-        <>
-            {rocks.map((r, i) => (
-                <mesh key={i} position={[r.x, r.s * 0.38, r.z]} rotation={[r.rx, r.ry, 0]} castShadow receiveShadow>
-                    <dodecahedronGeometry args={[r.s, 0]} />
-                    <meshStandardMaterial color={cols[i % cols.length]} roughness={0.95} metalness={0.05} />
-                </mesh>
-            ))}
-        </>
-    );
+    const ref = useRef<THREE.InstancedMesh>(null);
+
+    useEffect(() => {
+        if (!ref.current) return;
+        const dummy = new THREE.Object3D();
+        rockData.forEach((r, i) => {
+            dummy.position.set(r.x, r.s * 0.38, r.z);
+            dummy.rotation.set(r.rx, r.ry, 0);
+            dummy.scale.set(r.s, r.s, r.s);
+            dummy.updateMatrix();
+            ref.current!.setMatrixAt(i, dummy.matrix);
+        });
+        ref.current.instanceMatrix.needsUpdate = true;
+    }, [rockData]);
+
+    return <instancedMesh ref={ref} args={[rockGeom.current, rockMat.current, rockData.length]} castShadow receiveShadow />;
 }
 
 /* ══════════════════════════════════════════════════════
@@ -881,13 +942,20 @@ function FPSController({ orbs, setOrbs, setCollected, activities, setActivities,
     const pitchRef = useRef(0);
     const isLocked = useRef(false);
     const bobTime = useRef(0);
+    const frontViewRef = useRef(false);
     const eWasDown = useRef(false);
     const CAM_DIST = 3.4;
     const CAM_H = 1.6;
 
     useEffect(() => {
-        const dn = (e: KeyboardEvent) => keys.current.add(e.key.toLowerCase());
-        const up = (e: KeyboardEvent) => keys.current.delete(e.key.toLowerCase());
+        const dn = (e: KeyboardEvent) => {
+            keys.current.add(e.key.toLowerCase());
+            if (e.key.toLowerCase() === "c") frontViewRef.current = true;
+        };
+        const up = (e: KeyboardEvent) => {
+            keys.current.delete(e.key.toLowerCase());
+            if (e.key.toLowerCase() === "c") frontViewRef.current = false;
+        };
         window.addEventListener("keydown", dn); window.addEventListener("keyup", up);
         const onClick = () => gl.domElement.requestPointerLock();
         const onLock = () => { isLocked.current = document.pointerLockElement === gl.domElement; };
@@ -939,14 +1007,30 @@ function FPSController({ orbs, setOrbs, setCollected, activities, setActivities,
         nz = Math.max(-90, Math.min(90, nz));
         if (moving) bobTime.current += dt * (sprint ? 14 : 9);
 
-        // Third-person: camera behind and above player
-        const camTX = nx + sinY * CAM_DIST;
-        const camTZ = nz + cosY * CAM_DIST;
-        const camTY = CAM_H + Math.sin(pitchRef.current) * CAM_DIST * 0.6;
-        camera.position.x += (camTX - camera.position.x) * 0.14;
-        camera.position.y += (camTY - camera.position.y) * 0.14;
-        camera.position.z += (camTZ - camera.position.z) * 0.14;
-        camera.lookAt(nx, 1.05, nz);
+        // Third-person camera behavior
+        let camDistDelta = CAM_DIST;
+        let camYawDelta = 0;
+        let finalPitch = pitchRef.current;
+
+        if (frontViewRef.current) {
+            camYawDelta = Math.PI; // Flip to front
+            finalPitch = -0.1; // Slight tilt up to see face
+        }
+
+        const camTX = nx + Math.sin(yaw + camYawDelta) * camDistDelta;
+        const camTZ = nz + Math.cos(yaw + camYawDelta) * camDistDelta;
+        const camTY = CAM_H + Math.sin(finalPitch) * camDistDelta * 0.6;
+
+        const camLerp = 1 - Math.pow(0.00005, delta);
+        camera.position.x += (camTX - camera.position.x) * camLerp;
+        camera.position.y += (camTY - camera.position.y) * camLerp;
+        camera.position.z += (camTZ - camera.position.z) * camLerp;
+
+        if (frontViewRef.current) {
+            camera.lookAt(nx, 1.2, nz); // Look more at the head/face
+        } else {
+            camera.lookAt(nx, 1.05, nz);
+        }
 
         playerPosRef.current = { x: nx, z: nz, ry: yaw };
         movingRef.current = moving;
@@ -1003,9 +1087,26 @@ function CameraTracker({ playerPosRef }: { playerPosRef: React.MutableRefObject<
 /* ══════════════════════════════════════════════════════
    MINIMAP
 ══════════════════════════════════════════════════════ */
-function Minimap({ playerPos, orbs, weatherName, activities }: { playerPos: PlayerPos; orbs: Orb[]; weatherName: string; activities: Activity[] }) {
+function Minimap({ playerPosRef, orbs, weatherName, activities, others }: { playerPosRef: React.MutableRefObject<PlayerPos>; orbs: Orb[]; weatherName: string; activities: Activity[]; others: Map<string, RemotePlayer> }) {
     const scale = 0.5;
     const orbColor = WEATHER_COLORS[weatherName] ?? "#00f5d4";
+    const playerIconRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        let raf: number;
+        const sync = () => {
+            if (playerIconRef.current) {
+                const pp = playerPosRef.current;
+                playerIconRef.current.style.left = `${50 + pp.x * scale}%`;
+                playerIconRef.current.style.top = `${50 + pp.z * scale}%`;
+                playerIconRef.current.style.transform = `translate(-50%,-50%) rotate(${pp.ry}rad)`;
+            }
+            raf = requestAnimationFrame(sync);
+        };
+        raf = requestAnimationFrame(sync);
+        return () => cancelAnimationFrame(raf);
+    }, [playerPosRef, scale]);
+
     return (
         <div style={{
             position: "absolute", bottom: 24, right: 24, width: 152, height: 152,
@@ -1037,15 +1138,23 @@ function Minimap({ playerPos, orbs, weatherName, activities }: { playerPos: Play
                     }} />
                 ))}
                 {/* Player arrow */}
-                <div style={{
+                <div ref={playerIconRef} style={{
                     position: "absolute",
-                    left: `${50 + playerPos.x * scale}%`, top: `${50 + playerPos.z * scale}%`,
-                    transform: `translate(-50%,-50%) rotate(${playerPos.ry}rad)`,
+                    left: `50%`, top: `50%`,
                     width: 0, height: 0, zIndex: 3,
                     borderLeft: "4px solid transparent", borderRight: "4px solid transparent",
                     borderBottom: "10px solid #fff",
                     filter: "drop-shadow(0 0 5px rgba(255,255,255,0.95))"
                 }} />
+                {/* Other players - simplified for minimap performance if needed, but currently Map.map */}
+                {Array.from(others.values()).map(p => (
+                    <div key={p.id} style={{
+                        position: "absolute", width: 4, height: 4, borderRadius: "50%",
+                        background: p.color, border: "1px solid #fff",
+                        left: `${50 + p.x * scale}%`, top: `${50 + p.z * scale}%`, transform: "translate(-50%,-50%)",
+                        zIndex: 2
+                    }} />
+                ))}
                 <div style={{ position: "absolute", top: 4, left: 7, fontSize: 7, color: "rgba(255,255,255,0.22)", fontFamily: "monospace", letterSpacing: 2 }}>MAP</div>
                 {/* Legend */}
                 <div style={{ position: "absolute", bottom: 4, left: 5, display: "flex", flexDirection: "column", gap: 1 }}>
@@ -1205,7 +1314,7 @@ function HUD({ collected, total, weather, onWeatherChange, interactHint, activit
                 fontFamily: "monospace", fontSize: 8, color: "rgba(255,255,255,0.18)", lineHeight: 2.2, letterSpacing: 1
             }}>
                 <div>WASD — MOVE &nbsp;&nbsp; SHIFT — SPRINT</div>
-                <div>E — INTERACT &nbsp;&nbsp; CLICK — LOOK</div>
+                <div>E — INTERACT &nbsp;&nbsp; C — FRONT VIEW (HOLD)</div>
             </div>
 
             {/* Weather label */}
@@ -1261,8 +1370,217 @@ function WinScreen({ onRestart, weatherName }: { onRestart: () => void; weatherN
 }
 
 /* ══════════════════════════════════════════════════════
-   MAIN
+   MULTIPLAYER TYPES
 ══════════════════════════════════════════════════════ */
+interface RemotePlayer {
+    id: string; name: string; color: string;
+    x: number; z: number; ry: number;
+    moving: boolean; sprinting: boolean; score: number;
+}
+interface LeaderEntry { name: string; score: number; color: string; }
+
+/* ══════════════════════════════════════════════════════
+   MULTIPLAYER HOOK
+══════════════════════════════════════════════════════ */
+function useMultiplayer(
+    playerPosRef: React.MutableRefObject<PlayerPos>,
+    movingRef: React.MutableRefObject<boolean>,
+    sprintingRef: React.MutableRefObject<boolean>,
+    score: number,
+) {
+    const socketRef = useRef<ReturnType<typeof socketio.io> | null>(null);
+    const [myId, setMyId] = useState<string>("");
+    const [myName, setMyName] = useState<string>("");
+    const [myColor, setMyColor] = useState<string>("#2244aa");
+    const [others, setOthers] = useState<Map<string, RemotePlayer>>(new Map());
+    const [leaderboard, setLeaderboard] = useState<LeaderEntry[]>([]);
+    const lastEmit = useRef(0);
+    const lastScore = useRef(-1);
+
+    useEffect(() => {
+        const socket = socketio.io(window.location.origin, {
+            transports: ["websocket", "polling"],
+        });
+        socketRef.current = socket;
+
+        socket.on("self:init", ({ id, name, color, x, z }: { id: string; name: string; color: string; x: number; z: number }) => {
+            setMyId(id); setMyName(name); setMyColor(color);
+            // Update local ref so character starts at server-assigned position
+            playerPosRef.current = { ...playerPosRef.current, x, z };
+        });
+
+        socket.on("players:snapshot", (list: RemotePlayer[]) => {
+            setOthers(new Map(list.map(p => [p.id, p])));
+        });
+
+        socket.on("player:join", (p: RemotePlayer) => {
+            setOthers(prev => new Map(prev).set(p.id, p));
+        });
+
+        socket.on("player:update", (data: Partial<RemotePlayer> & { id: string }) => {
+            setOthers(prev => {
+                const m = new Map(prev);
+                const existing = m.get(data.id);
+                if (existing) m.set(data.id, { ...existing, ...data });
+                return m;
+            });
+        });
+
+        socket.on("player:leave", (id: string) => {
+            setOthers(prev => { const m = new Map(prev); m.delete(id); return m; });
+        });
+
+        socket.on("leaderboard", (list: LeaderEntry[]) => setLeaderboard(list));
+
+        // Throttled position broadcast ~20×/sec
+        const interval = setInterval(() => {
+            const now = Date.now();
+            if (now - lastEmit.current < 48) return;
+            lastEmit.current = now;
+            const p = playerPosRef.current;
+            socket.emit("player:update", { x: p.x, z: p.z, ry: p.ry, moving: movingRef.current, sprinting: sprintingRef.current });
+        }, 50);
+
+        return () => { clearInterval(interval); socket.disconnect(); };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    // Emit score whenever it changes
+    useEffect(() => {
+        if (score !== lastScore.current && socketRef.current) {
+            lastScore.current = score;
+            socketRef.current.emit("player:score", score);
+        }
+    }, [score]);
+
+    return { myId, myName, myColor, others, leaderboard };
+}
+
+/* ══════════════════════════════════════════════════════
+   OTHER PLAYER 3D CHARACTER
+══════════════════════════════════════════════════════ */
+function OtherPlayer({ player }: { player: RemotePlayer }) {
+    const groupRef = useRef<THREE.Group>(null);
+    const lLegRef = useRef<THREE.Group>(null);
+    const rLegRef = useRef<THREE.Group>(null);
+    const lArmRef = useRef<THREE.Group>(null);
+    const rArmRef = useRef<THREE.Group>(null);
+    const bobRef = useRef(0);
+
+    useFrame((_, delta) => {
+        if (!groupRef.current) return;
+        const dt = Math.min(delta, 0.05);
+        const lerpFactor = 1 - Math.pow(0.001, delta);
+        // Smooth position
+        groupRef.current.position.x += (player.x - groupRef.current.position.x) * lerpFactor;
+        groupRef.current.position.z += (player.z - groupRef.current.position.z) * lerpFactor;
+        // Smooth rotation
+        const targetRY = player.ry;
+        groupRef.current.rotation.y += (targetRY - groupRef.current.rotation.y) * lerpFactor;
+        // Walk cycle
+        const spd = player.sprinting ? 16 : 9;
+        if (player.moving) bobRef.current += dt * spd;
+        const swing = player.moving ? Math.sin(bobRef.current) * 0.65 : 0;
+        if (lLegRef.current) lLegRef.current.rotation.x += (swing - lLegRef.current.rotation.x) * 0.25;
+        if (rLegRef.current) rLegRef.current.rotation.x += (-swing - rLegRef.current.rotation.x) * 0.25;
+        const armSwing = player.moving ? Math.sin(bobRef.current) * 0.55 : 0;
+        if (lArmRef.current) lArmRef.current.rotation.x += (-armSwing - 0.1 - lArmRef.current.rotation.x) * 0.25;
+        if (rArmRef.current) rArmRef.current.rotation.x += (armSwing - 0.1 - rArmRef.current.rotation.x) * 0.25;
+    });
+
+    const skin = "#f5c89a"; const pants = "#1a3a1a"; const shoe = "#1a1008"; const hair = "#2a1505";
+    const shirt = player.color;
+
+    return (
+        <group ref={groupRef} position={[player.x, 0, player.z]} castShadow>
+            {/* Torso */}
+            <group position={[0, 0.98, 0]}>
+                <mesh castShadow>
+                    <boxGeometry args={[0.46, 0.54, 0.22]} />
+                    <meshStandardMaterial color={shirt} roughness={0.85} />
+                    <Text
+                        position={[0, 0, -0.115]}
+                        rotation={[0, Math.PI, 0]}
+                        fontSize={0.07}
+                        color="#ffffff"
+                        anchorX="center"
+                        anchorY="middle"
+                    >
+                        {player.name}
+                    </Text>
+                </mesh>
+                {/* Head */}
+                <group position={[0, 0.47, 0]}>
+                    <mesh castShadow><boxGeometry args={[0.32, 0.33, 0.3]} /><meshStandardMaterial color={skin} roughness={0.8} /></mesh>
+                    <mesh position={[0, 0.15, -0.01]}><boxGeometry args={[0.34, 0.1, 0.31]} /><meshStandardMaterial color={hair} roughness={0.95} /></mesh>
+                </group>
+                {/* Arms */}
+                <group ref={lArmRef} position={[-0.31, 0.24, 0]}>
+                    <mesh position={[0, -0.2, 0]} castShadow><boxGeometry args={[0.14, 0.42, 0.14]} /><meshStandardMaterial color={shirt} /></mesh>
+                    <mesh position={[0, -0.44, 0]}><boxGeometry args={[0.12, 0.2, 0.12]} /><meshStandardMaterial color={skin} /></mesh>
+                </group>
+                <group ref={rArmRef} position={[0.31, 0.24, 0]}>
+                    <mesh position={[0, -0.2, 0]} castShadow><boxGeometry args={[0.14, 0.42, 0.14]} /><meshStandardMaterial color={shirt} /></mesh>
+                    <mesh position={[0, -0.44, 0]}><boxGeometry args={[0.12, 0.2, 0.12]} /><meshStandardMaterial color={skin} /></mesh>
+                </group>
+            </group>
+            {/* Legs */}
+            <group ref={lLegRef} position={[-0.12, 0.7, 0]}>
+                <mesh position={[0, -0.22, 0]} castShadow><boxGeometry args={[0.18, 0.46, 0.18]} /><meshStandardMaterial color={pants} /></mesh>
+                <mesh position={[0, -0.66, 0.04]}><boxGeometry args={[0.18, 0.1, 0.24]} /><meshStandardMaterial color={shoe} /></mesh>
+            </group>
+            <group ref={rLegRef} position={[0.12, 0.7, 0]}>
+                <mesh position={[0, -0.22, 0]} castShadow><boxGeometry args={[0.18, 0.46, 0.18]} /><meshStandardMaterial color={pants} /></mesh>
+                <mesh position={[0, -0.66, 0.04]}><boxGeometry args={[0.18, 0.1, 0.24]} /><meshStandardMaterial color={shoe} /></mesh>
+            </group>
+        </group>
+    );
+}
+
+/* ══════════════════════════════════════════════════════
+   LEADERBOARD OVERLAY
+══════════════════════════════════════════════════════ */
+function Leaderboard({ entries, myName }: { entries: LeaderEntry[]; myName: string }) {
+    if (entries.length === 0) return null;
+    return (
+        <div style={{
+            position: "absolute", top: 80, left: 20, zIndex: 15,
+            background: "rgba(2,6,16,0.88)", backdropFilter: "blur(14px)",
+            border: "1px solid rgba(255,255,255,0.07)", borderRadius: 4,
+            padding: "10px 14px", minWidth: 180,
+            boxShadow: "0 0 30px rgba(0,0,0,0.8)",
+        }}>
+            <div style={{ fontFamily: "'Courier New',monospace", fontSize: 7, letterSpacing: 5, color: "rgba(255,255,255,0.3)", marginBottom: 8, textTransform: "uppercase" }}>
+                ⚑ Leaderboard
+            </div>
+            {entries.map((e, i) => {
+                const isMe = e.name === myName;
+                return (
+                    <div key={e.name} style={{
+                        display: "flex", alignItems: "center", gap: 8,
+                        padding: "3px 0",
+                        borderBottom: i < entries.length - 1 ? "1px solid rgba(255,255,255,0.04)" : "none",
+                        background: isMe ? "rgba(255,255,255,0.05)" : "transparent",
+                        borderRadius: 2, paddingLeft: isMe ? 4 : 0,
+                    }}>
+                        <span style={{ fontFamily: "monospace", fontSize: 8, color: "rgba(255,255,255,0.3)", width: 14, textAlign: "right" }}>
+                            {i + 1}.
+                        </span>
+                        <div style={{ width: 6, height: 6, borderRadius: "50%", background: e.color, flexShrink: 0 }} />
+                        <span style={{
+                            fontFamily: "monospace", fontSize: 9,
+                            color: isMe ? "#fff" : "rgba(255,255,255,0.65)",
+                            fontWeight: isMe ? "bold" : "normal",
+                            flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+                        }}>{e.name}</span>
+                        <span style={{ fontFamily: "monospace", fontSize: 9, color: e.color, fontWeight: "bold" }}>{e.score}</span>
+                    </div>
+                );
+            })}
+        </div>
+    );
+}
+
 /* ══════════════════════════════════════════════════════
    TOUCH JOYSTICK CONTROLS
 ══════════════════════════════════════════════════════ */
@@ -1343,8 +1661,8 @@ export default function RealisticExplorer() {
             id: i, x: (Math.random() - 0.5) * 110, z: (Math.random() - 0.5) * 110, collected: false,
         }))
     );
+
     const [collected, setCollected] = useState(0);
-    const [playerPos, setPlayerPos] = useState<PlayerPos>({ x: 0, z: 0, ry: 0 });
     const [interactHint, setInteractHint] = useState("");
     const [activities, setActivities] = useState<Activity[]>([
         { id: 1, type: "campfire", x: -15, z: -12, interacted: false },
@@ -1365,23 +1683,10 @@ export default function RealisticExplorer() {
     const lookJoyRef = useRef<JoyInput>({ x: 0, y: 0 });
 
     const { timeOfDay, timeRef, paused, setPaused } = useDayNight();
+    const { myName, myColor, others, leaderboard } = useMultiplayer(playerPosRef, movingRef, sprintingRef, collected);
 
     const total = orbs.length;
     const activitiesDone = activities.filter(a => a.interacted).length;
-
-    useEffect(() => {
-        const id = setInterval(() => {
-            const c = canvasRef.current?.querySelector("canvas") as HTMLCanvasElement | null;
-            if (c) {
-                setPlayerPos({
-                    x: parseFloat(c.dataset.px ?? "0"),
-                    z: parseFloat(c.dataset.pz ?? "0"),
-                    ry: playerPosRef.current.ry,
-                });
-            }
-        }, 80);
-        return () => clearInterval(id);
-    }, []);
 
     const handleRestart = useCallback(() => {
         setOrbs(Array.from({ length: 18 }).map((_, i) => ({
@@ -1417,7 +1722,10 @@ export default function RealisticExplorer() {
                     <OrbMesh key={o.id} x={o.x} z={o.z} collected={o.collected} weatherName={weather.name} />
                 ))}
 
-                <Character playerPosRef={playerPosRef} movingRef={movingRef} sprintingRef={sprintingRef} />
+                <Character playerPosRef={playerPosRef} movingRef={movingRef} sprintingRef={sprintingRef} name={myName} color={myColor} />
+
+                {/* Other players */}
+                {Array.from(others.values()).map(p => <OtherPlayer key={p.id} player={p} />)}
 
                 <FPSController
                     orbs={orbs} setOrbs={setOrbs} setCollected={setCollected}
@@ -1434,7 +1742,15 @@ export default function RealisticExplorer() {
                 interactHint={interactHint} activitiesDone={activitiesDone} totalActivities={activities.length}
             />
             <TimeDisplay timeOfDay={timeOfDay} paused={paused} onToggle={() => setPaused(p => !p)} />
-            <Minimap playerPos={playerPos} orbs={orbs} weatherName={weather.name} activities={activities} />
+            <Minimap playerPosRef={playerPosRef} orbs={orbs} weatherName={weather.name} activities={activities} others={others} />
+            <Leaderboard entries={leaderboard} myName={myName} />
+            {/* Own name + color badge top-center */}
+            {myName && (
+                <div style={{ position: "absolute", top: 10, left: "50%", transform: "translateX(-50%)", zIndex: 15, display: "flex", alignItems: "center", gap: 6, background: "rgba(0,0,0,0.55)", backdropFilter: "blur(8px)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 20, padding: "3px 12px 3px 8px" }}>
+                    <div style={{ width: 8, height: 8, borderRadius: "50%", background: myColor }} />
+                    <span style={{ fontFamily: "monospace", fontSize: 10, color: "#fff", letterSpacing: 1 }}>{myName}</span>
+                </div>
+            )}
             <TouchControls moveJoyRef={moveJoyRef} lookJoyRef={lookJoyRef} />
 
         </div>
