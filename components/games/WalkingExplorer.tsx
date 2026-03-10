@@ -122,9 +122,9 @@ function getAmbientIntensity(t: number): number {
    DAY/NIGHT HOOK
 ══════════════════════════════════════════════════════ */
 function useDayNight() {
-    const timeRef = useRef(0.28);
-    const [timeOfDay, setTimeOfDay] = useState(0.28);
-    const [paused, setPaused] = useState(false);
+    const timeRef = useRef(0.42);
+    const [timeOfDay, setTimeOfDay] = useState(0.42);
+    const [paused, setPaused] = useState(true); // always day by default
 
     useEffect(() => {
         let last = performance.now();
@@ -170,11 +170,9 @@ function Character({ playerPosRef, movingRef, sprintingRef }: CharacterProps) {
         const sprint = sprintingRef.current ?? false;
         const spd = sprint ? 16 : 9;
 
-        // Follow player position (slightly behind camera)
-        const behindX = pp.x - Math.sin(pp.ry) * 0.5;
-        const behindZ = pp.z - Math.cos(pp.ry) * 0.5;
-        groupRef.current.position.x += (behindX - groupRef.current.position.x) * 0.2;
-        groupRef.current.position.z += (behindZ - groupRef.current.position.z) * 0.2;
+        // Character sits at player position (camera is behind, showing back)
+        groupRef.current.position.x += (pp.x - groupRef.current.position.x) * 0.18;
+        groupRef.current.position.z += (pp.z - groupRef.current.position.z) * 0.18;
 
         // Smoothly rotate to face movement direction
         let targetRY = pp.ry;
@@ -240,29 +238,25 @@ function Character({ playerPosRef, movingRef, sprintingRef }: CharacterProps) {
                         <boxGeometry args={[0.32, 0.33, 0.3]} />
                         <meshStandardMaterial color={skin} roughness={0.8} />
                     </mesh>
-                    {/* Hair */}
+                    {/* Hair - top and back */}
                     <mesh position={[0, 0.15, -0.01]} castShadow>
                         <boxGeometry args={[0.34, 0.1, 0.31]} />
                         <meshStandardMaterial color={hair} roughness={0.95} />
                     </mesh>
-                    {/* Eyes */}
-                    <mesh position={[-0.09, 0.04, 0.151]}>
-                        <boxGeometry args={[0.07, 0.05, 0.02]} />
-                        <meshStandardMaterial color="#111" />
+                    {/* Back hair detail */}
+                    <mesh position={[0, 0.03, -0.152]}>
+                        <boxGeometry args={[0.3, 0.18, 0.02]} />
+                        <meshStandardMaterial color={hair} roughness={0.95} />
                     </mesh>
-                    <mesh position={[0.09, 0.04, 0.151]}>
-                        <boxGeometry args={[0.07, 0.05, 0.02]} />
-                        <meshStandardMaterial color="#111" />
+                    {/* Ear left */}
+                    <mesh position={[-0.17, 0.02, 0]}>
+                        <boxGeometry args={[0.02, 0.08, 0.06]} />
+                        <meshStandardMaterial color={skin} roughness={0.8} />
                     </mesh>
-                    {/* Nose */}
-                    <mesh position={[0, -0.04, 0.16]}>
-                        <boxGeometry args={[0.04, 0.04, 0.04]} />
-                        <meshStandardMaterial color="#e8a870" />
-                    </mesh>
-                    {/* Mouth */}
-                    <mesh position={[0, -0.1, 0.152]}>
-                        <boxGeometry args={[0.1, 0.025, 0.02]} />
-                        <meshStandardMaterial color="#b06040" />
+                    {/* Ear right */}
+                    <mesh position={[0.17, 0.02, 0]}>
+                        <boxGeometry args={[0.02, 0.08, 0.06]} />
+                        <meshStandardMaterial color={skin} roughness={0.8} />
                     </mesh>
                 </group>
 
@@ -378,7 +372,7 @@ function DynamicSun({ timeRef, weatherName }: { timeRef: React.MutableRefObject<
             <directionalLight
                 ref={dirRef}
                 castShadow
-                shadow-mapSize={[4096, 4096]}
+                shadow-mapSize={[2048, 2048]}
                 shadow-camera-far={200}
                 shadow-camera-near={0.5}
                 shadow-camera-left={-70}
@@ -864,6 +858,8 @@ function Lightning({ active }: { active: boolean }) {
 /* ══════════════════════════════════════════════════════
    FPS CONTROLLER
 ══════════════════════════════════════════════════════ */
+interface JoyInput { x: number; y: number; }
+
 interface FPSProps {
     orbs: Orb[];
     setOrbs: React.Dispatch<React.SetStateAction<Orb[]>>;
@@ -874,104 +870,131 @@ interface FPSProps {
     movingRef: React.MutableRefObject<boolean>;
     sprintingRef: React.MutableRefObject<boolean>;
     setInteractHint: (v: string) => void;
+    moveJoyRef: React.RefObject<JoyInput>;
+    lookJoyRef: React.RefObject<JoyInput>;
 }
 
-function FPSController({ orbs, setOrbs, setCollected, activities, setActivities, playerPosRef, movingRef, sprintingRef, setInteractHint }: FPSProps) {
+function FPSController({ orbs, setOrbs, setCollected, activities, setActivities, playerPosRef, movingRef, sprintingRef, setInteractHint, moveJoyRef, lookJoyRef }: FPSProps) {
     const { camera, gl } = useThree();
     const keys = useRef<Set<string>>(new Set());
-    const euler = useRef(new THREE.Euler(0, 0, 0, "YXZ"));
+    const yawRef = useRef(0);
+    const pitchRef = useRef(0);
     const isLocked = useRef(false);
     const bobTime = useRef(0);
     const eWasDown = useRef(false);
+    const CAM_DIST = 3.4;
+    const CAM_H = 1.6;
 
     useEffect(() => {
-        camera.position.set(0, 1.72, 0);
-        const down = (e: KeyboardEvent) => keys.current.add(e.key.toLowerCase());
+        const dn = (e: KeyboardEvent) => keys.current.add(e.key.toLowerCase());
         const up = (e: KeyboardEvent) => keys.current.delete(e.key.toLowerCase());
-        window.addEventListener("keydown", down); window.addEventListener("keyup", up);
+        window.addEventListener("keydown", dn); window.addEventListener("keyup", up);
         const onClick = () => gl.domElement.requestPointerLock();
         const onLock = () => { isLocked.current = document.pointerLockElement === gl.domElement; };
         const onMove = (e: MouseEvent) => {
             if (!isLocked.current) return;
-            euler.current.setFromQuaternion(camera.quaternion);
-            euler.current.y -= e.movementX * 0.0018; euler.current.x -= e.movementY * 0.0018;
-            euler.current.x = Math.max(-Math.PI / 2.2, Math.min(Math.PI / 2.2, euler.current.x));
-            camera.quaternion.setFromEuler(euler.current);
+            yawRef.current -= e.movementX * 0.0018;
+            pitchRef.current -= e.movementY * 0.0018;
+            pitchRef.current = Math.max(-0.55, Math.min(0.55, pitchRef.current));
         };
         gl.domElement.addEventListener("click", onClick);
         document.addEventListener("pointerlockchange", onLock);
         document.addEventListener("mousemove", onMove);
         return () => {
-            window.removeEventListener("keydown", down); window.removeEventListener("keyup", up);
+            window.removeEventListener("keydown", dn); window.removeEventListener("keyup", up);
             gl.domElement.removeEventListener("click", onClick);
             document.removeEventListener("pointerlockchange", onLock);
             document.removeEventListener("mousemove", onMove);
         };
-    }, [camera, gl]);
+    }, [gl]);
 
     useFrame((_, delta) => {
+        const dt = Math.min(delta, 0.05);
+        const lj = lookJoyRef.current;
+        if (lj && (Math.abs(lj.x) > 0.05 || Math.abs(lj.y) > 0.05)) {
+            yawRef.current -= lj.x * 0.055 * dt * 60;
+            pitchRef.current -= lj.y * 0.038 * dt * 60;
+            pitchRef.current = Math.max(-0.55, Math.min(0.55, pitchRef.current));
+        }
+        const yaw = yawRef.current;
+        const sinY = Math.sin(yaw), cosY = Math.cos(yaw);
         const sprint = keys.current.has("shift");
-        const speed = (sprint ? 10 : 5.5) * delta;
-        const dir = new THREE.Vector3();
-        camera.getWorldDirection(dir); dir.y = 0; dir.normalize();
-        const right = new THREE.Vector3().crossVectors(dir, new THREE.Vector3(0, 1, 0));
-        const moving = keys.current.has("w") || keys.current.has("s") || keys.current.has("a") || keys.current.has("d");
+        const speed = (sprint ? 10 : 5.5) * dt;
+        const mj = moveJoyRef.current;
+        const jMoving = mj ? Math.abs(mj.x) > 0.08 || Math.abs(mj.y) > 0.08 : false;
+        const kMoving = keys.current.has("w") || keys.current.has("s") || keys.current.has("a") || keys.current.has("d");
+        const moving = kMoving || jMoving;
 
-        if (keys.current.has("w")) camera.position.addScaledVector(dir, speed);
-        if (keys.current.has("s")) camera.position.addScaledVector(dir, -speed * 0.8);
-        if (keys.current.has("a")) camera.position.addScaledVector(right, -speed * 0.9);
-        if (keys.current.has("d")) camera.position.addScaledVector(right, speed * 0.9);
+        const pp = playerPosRef.current;
+        let nx = pp.x, nz = pp.z;
+        if (keys.current.has("w")) { nx -= sinY * speed; nz -= cosY * speed; }
+        if (keys.current.has("s")) { nx += sinY * speed * 0.8; nz += cosY * speed * 0.8; }
+        if (keys.current.has("a")) { nx -= cosY * speed * 0.9; nz += sinY * speed * 0.9; }
+        if (keys.current.has("d")) { nx += cosY * speed * 0.9; nz -= sinY * speed * 0.9; }
+        if (mj && jMoving) {
+            nx -= (sinY * (-mj.y) - cosY * mj.x) * speed * 1.1;
+            nz -= (cosY * (-mj.y) + sinY * mj.x) * speed * 1.1;
+        }
+        nx = Math.max(-90, Math.min(90, nx));
+        nz = Math.max(-90, Math.min(90, nz));
+        if (moving) bobTime.current += dt * (sprint ? 14 : 9);
 
-        if (moving) { bobTime.current += delta * (sprint ? 14 : 9); camera.position.y = 1.72 + Math.sin(bobTime.current) * 0.04; }
-        else { camera.position.y += (1.72 - camera.position.y) * 0.15; }
-        camera.position.x = Math.max(-90, Math.min(90, camera.position.x));
-        camera.position.z = Math.max(-90, Math.min(90, camera.position.z));
+        // Third-person: camera behind and above player
+        const camTX = nx + sinY * CAM_DIST;
+        const camTZ = nz + cosY * CAM_DIST;
+        const camTY = CAM_H + Math.sin(pitchRef.current) * CAM_DIST * 0.6;
+        camera.position.x += (camTX - camera.position.x) * 0.14;
+        camera.position.y += (camTY - camera.position.y) * 0.14;
+        camera.position.z += (camTZ - camera.position.z) * 0.14;
+        camera.lookAt(nx, 1.05, nz);
 
-        playerPosRef.current = { x: camera.position.x, z: camera.position.z, ry: euler.current.y };
+        playerPosRef.current = { x: nx, z: nz, ry: yaw };
         movingRef.current = moving;
         sprintingRef.current = sprint;
 
-        // Orbs
         setOrbs(prev => {
             let changed = false;
             const next = prev.map(o => {
-                if (!o.collected) {
-                    const dx = camera.position.x - o.x, dz = camera.position.z - o.z;
-                    if (dx * dx + dz * dz < 2.2) { changed = true; setCollected(c => c + 1); return { ...o, collected: true }; }
+                const dx = nx - o.x, dz = nz - o.z;
+                if (dx * dx + dz * dz < 2.2) {
+                    changed = true;
+                    setCollected(c => c + 1);
+                    // Respawn orb at new random position far from player
+                    let rx: number, rz: number;
+                    do { rx = (Math.random() - 0.5) * 110; rz = (Math.random() - 0.5) * 110; }
+                    while ((rx - nx) * (rx - nx) + (rz - nz) * (rz - nz) < 100);
+                    return { ...o, x: rx, z: rz };
                 }
                 return o;
             });
             return changed ? next : prev;
         });
 
-        // Activities
         let nearAct: Activity | null = null;
         for (const a of activities) {
-            const dx = camera.position.x - a.x, dz = camera.position.z - a.z;
+            const dx = nx - a.x, dz = nz - a.z;
             if (dx * dx + dz * dz < 5 && !a.interacted) { nearAct = a; break; }
         }
         const labels: Record<string, string> = { campfire: "[E] Extinguish fire", well: "[E] Drink water", chest: "[E] Open chest", signpost: "[E] Read sign" };
         setInteractHint(nearAct ? labels[nearAct.type] ?? "" : "");
-
         const eDown = keys.current.has("e");
         if (eDown && !eWasDown.current && nearAct && !nearAct.interacted) {
             setActivities(prev => prev.map(a => a.id === nearAct!.id ? { ...a, interacted: true } : a));
         }
         eWasDown.current = eDown;
     });
-
     return null;
 }
 
 /* ══════════════════════════════════════════════════════
    CAMERA TRACKER
 ══════════════════════════════════════════════════════ */
-function CameraTracker({ canvasRef }: { canvasRef: RefObject<HTMLDivElement | null> }) {
-    const { camera, gl } = useThree();
+function CameraTracker({ playerPosRef }: { playerPosRef: React.MutableRefObject<PlayerPos> }) {
+    const { gl } = useThree();
     useFrame(() => {
         if (gl.domElement) {
-            gl.domElement.dataset.px = camera.position.x.toFixed(1);
-            gl.domElement.dataset.pz = camera.position.z.toFixed(1);
+            gl.domElement.dataset.px = playerPosRef.current.x.toFixed(1);
+            gl.domElement.dataset.pz = playerPosRef.current.z.toFixed(1);
         }
     });
     return null;
@@ -1089,7 +1112,7 @@ interface HUDProps {
 }
 
 function HUD({ collected, total, weather, onWeatherChange, interactHint, activitiesDone, totalActivities }: HUDProps) {
-    const pct = total > 0 ? (collected / total) * 100 : 0;
+    const pct = (collected % 10) * 10; // progress bar fills every 10 orbs collected
     const accent = WEATHER_COLORS[weather.name] ?? "#00f5d4";
 
     return (
@@ -1106,7 +1129,7 @@ function HUD({ collected, total, weather, onWeatherChange, interactHint, activit
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
                     <div style={{ fontFamily: "monospace", color: accent, fontSize: 11, letterSpacing: 2, textShadow: `0 0 8px ${accent}` }}>
-                        {WEATHER_ICONS[weather.name]} {weather.name}
+                        ◆ SCORE <span style={{ fontWeight: "bold" }}>{collected}</span>
                     </div>
                     <div style={{ width: 1, height: 12, background: "rgba(255,255,255,0.1)" }} />
                     <div style={{ fontFamily: "monospace", color: "rgba(255,255,255,0.6)", fontSize: 10, letterSpacing: 2 }}>
@@ -1240,6 +1263,77 @@ function WinScreen({ onRestart, weatherName }: { onRestart: () => void; weatherN
 /* ══════════════════════════════════════════════════════
    MAIN
 ══════════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════════
+   TOUCH JOYSTICK CONTROLS
+══════════════════════════════════════════════════════ */
+function TouchControls({ moveJoyRef, lookJoyRef }: { moveJoyRef: React.RefObject<JoyInput>; lookJoyRef: React.RefObject<JoyInput>; }) {
+    const [isMobile] = useState(() => typeof window !== "undefined" && navigator.maxTouchPoints > 0);
+    const [mBase, setMBase] = useState<{ x: number; y: number } | null>(null);
+    const [lBase, setLBase] = useState<{ x: number; y: number } | null>(null);
+    const [mk, setMk] = useState({ x: 0, y: 0 });
+    const [lk, setLk] = useState({ x: 0, y: 0 });
+    const mId = useRef<number | null>(null);
+    const lId = useRef<number | null>(null);
+    const mC = useRef({ x: 0, y: 0 });
+    const lC = useRef({ x: 0, y: 0 });
+    const R = 46;
+    useEffect(() => {
+        if (!isMobile) return;
+        const clamp = (v: number) => Math.max(-R, Math.min(R, v));
+        const onStart = (e: TouchEvent) => {
+            for (const t of Array.from(e.changedTouches)) {
+                const left = t.clientX < window.innerWidth / 2;
+                if (left && mId.current === null) { mId.current = t.identifier; mC.current = { x: t.clientX, y: t.clientY }; setMBase({ x: t.clientX, y: t.clientY }); }
+                else if (!left && lId.current === null) { lId.current = t.identifier; lC.current = { x: t.clientX, y: t.clientY }; setLBase({ x: t.clientX, y: t.clientY }); }
+            }
+        };
+        const onMove = (e: TouchEvent) => {
+            e.preventDefault();
+            for (const t of Array.from(e.changedTouches)) {
+                if (t.identifier === mId.current) {
+                    const dx = clamp(t.clientX - mC.current.x), dy = clamp(t.clientY - mC.current.y);
+                    if (moveJoyRef.current) { moveJoyRef.current.x = dx / R; moveJoyRef.current.y = dy / R; }
+                    setMk({ x: dx, y: dy });
+                }
+                if (t.identifier === lId.current) {
+                    const dx = clamp(t.clientX - lC.current.x), dy = clamp(t.clientY - lC.current.y);
+                    if (lookJoyRef.current) { lookJoyRef.current.x = dx / R; lookJoyRef.current.y = dy / R; }
+                    setLk({ x: dx, y: dy });
+                }
+            }
+        };
+        const onEnd = (e: TouchEvent) => {
+            for (const t of Array.from(e.changedTouches)) {
+                if (t.identifier === mId.current) { mId.current = null; if (moveJoyRef.current) { moveJoyRef.current.x = moveJoyRef.current.y = 0; } setMk({ x: 0, y: 0 }); setMBase(null); }
+                if (t.identifier === lId.current) { lId.current = null; if (lookJoyRef.current) { lookJoyRef.current.x = lookJoyRef.current.y = 0; } setLk({ x: 0, y: 0 }); setLBase(null); }
+            }
+        };
+        window.addEventListener("touchstart", onStart, { passive: false });
+        window.addEventListener("touchmove", onMove, { passive: false });
+        window.addEventListener("touchend", onEnd);
+        window.addEventListener("touchcancel", onEnd);
+        return () => {
+            window.removeEventListener("touchstart", onStart);
+            window.removeEventListener("touchmove", onMove);
+            window.removeEventListener("touchend", onEnd);
+            window.removeEventListener("touchcancel", onEnd);
+        };
+    }, [isMobile, moveJoyRef, lookJoyRef]);
+    if (!isMobile) return null;
+    const Stick = ({ base, knob }: { base: { x: number; y: number } | null; knob: { x: number; y: number } }) => base ? (
+        <div style={{ position: "fixed", left: base.x - 46, top: base.y - 46, width: 92, height: 92, borderRadius: "50%", border: "1.5px solid rgba(255,255,255,0.2)", background: "rgba(0,0,0,0.22)", backdropFilter: "blur(6px)", pointerEvents: "none", zIndex: 25 }}>
+            <div style={{ position: "absolute", left: `calc(50% + ${knob.x}px)`, top: `calc(50% + ${knob.y}px)`, width: 38, height: 38, borderRadius: "50%", background: "rgba(255,255,255,0.28)", border: "1px solid rgba(255,255,255,0.45)", transform: "translate(-50%,-50%)" }} />
+        </div>
+    ) : null;
+    return (
+        <div style={{ position: "absolute", inset: 0, pointerEvents: "none", zIndex: 20, touchAction: "none" }}>
+            <Stick base={mBase} knob={mk} />
+            <Stick base={lBase} knob={lk} />
+            <div style={{ position: "absolute", bottom: 14, left: "50%", transform: "translateX(-50%)", fontFamily: "monospace", fontSize: 9, color: "rgba(255,255,255,0.18)", letterSpacing: 2, whiteSpace: "nowrap" }}>LEFT: MOVE &nbsp;·&nbsp; RIGHT: LOOK</div>
+        </div>
+    );
+}
+
 export default function RealisticExplorer() {
     const [weatherIdx, setWeatherIdx] = useState(0);
     const weather = WEATHERS[weatherIdx];
@@ -1267,6 +1361,8 @@ export default function RealisticExplorer() {
     const playerPosRef = useRef<PlayerPos>({ x: 0, z: 0, ry: 0 });
     const movingRef = useRef<boolean>(false);
     const sprintingRef = useRef<boolean>(false);
+    const moveJoyRef = useRef<JoyInput>({ x: 0, y: 0 });
+    const lookJoyRef = useRef<JoyInput>({ x: 0, y: 0 });
 
     const { timeOfDay, timeRef, paused, setPaused } = useDayNight();
 
@@ -1297,7 +1393,7 @@ export default function RealisticExplorer() {
 
     return (
         <div ref={canvasRef} style={{ position: "relative", width: "100%", height: "100%", background: "#000", overflow: "hidden" }}>
-            <Canvas shadows={{ type: THREE.PCFSoftShadowMap }} camera={{ fov: 72, near: 0.1, far: 250 }}>
+            <Canvas shadows={{ type: THREE.PCFSoftShadowMap }} dpr={[1, 1.5]} camera={{ fov: 62, near: 0.1, far: 220 }}>
                 <DynamicSkyAmbient timeRef={timeRef} weatherName={weather.name} />
                 <DynamicSun timeRef={timeRef} weatherName={weather.name} />
                 <Stars timeRef={timeRef} />
@@ -1328,8 +1424,9 @@ export default function RealisticExplorer() {
                     activities={activities} setActivities={setActivities}
                     playerPosRef={playerPosRef} movingRef={movingRef} sprintingRef={sprintingRef}
                     setInteractHint={setInteractHint}
+                    moveJoyRef={moveJoyRef} lookJoyRef={lookJoyRef}
                 />
-                <CameraTracker canvasRef={canvasRef} />
+                <CameraTracker playerPosRef={playerPosRef} />
             </Canvas>
 
             <HUD
@@ -1338,10 +1435,8 @@ export default function RealisticExplorer() {
             />
             <TimeDisplay timeOfDay={timeOfDay} paused={paused} onToggle={() => setPaused(p => !p)} />
             <Minimap playerPos={playerPos} orbs={orbs} weatherName={weather.name} activities={activities} />
+            <TouchControls moveJoyRef={moveJoyRef} lookJoyRef={lookJoyRef} />
 
-            {collected === total && total > 0 && (
-                <WinScreen onRestart={handleRestart} weatherName={weather.name} />
-            )}
         </div>
     );
 }
