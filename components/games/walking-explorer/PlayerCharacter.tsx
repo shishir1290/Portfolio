@@ -30,60 +30,44 @@ export const Character = React.memo(
       const sprint = sprintingRef.current ?? false;
       const spd = sprint ? 16 : 9;
 
-      const lerpFactor = 1 - Math.pow(0.0001, delta);
-      groupRef.current.position.x +=
-        (pp.x - groupRef.current.position.x) * lerpFactor;
-      groupRef.current.position.z +=
-        (pp.z - groupRef.current.position.z) * lerpFactor;
+      // Match player position exactly
+      groupRef.current.position.set(pp.x, pp.y, pp.z);
 
-      let targetRY = pp.ry;
-      groupRef.current.rotation.y +=
-        (targetRY - groupRef.current.rotation.y) * lerpFactor;
+      // Use yaw directly for rotation.
+      // Movement vectors in FPSController move towards -Z when yaw=0.
+      // So -Z is our "front".
+      groupRef.current.rotation.y = pp.ry;
 
       if (moving) bobRef.current += delta * spd;
       const swing = moving ? Math.sin(bobRef.current) : 0;
 
-      if (lLegRef.current)
-        lLegRef.current.rotation.x +=
-          (swing * 0.65 - lLegRef.current.rotation.x) * 0.25;
-      if (rLegRef.current)
-        rLegRef.current.rotation.x +=
-          (-swing * 0.65 - rLegRef.current.rotation.x) * 0.25;
+      // Animations
+      if (lLegRef.current) lLegRef.current.rotation.x = swing * 0.65;
+      if (rLegRef.current) rLegRef.current.rotation.x = -swing * 0.65;
 
       const armSwing = moving
         ? Math.sin(bobRef.current) * (sprint ? 0.9 : 0.55)
         : 0;
       if (lArmRef.current) {
-        lArmRef.current.rotation.x +=
-          (-armSwing - 0.1 - lArmRef.current.rotation.x) * 0.25;
-        lArmRef.current.rotation.z += (-0.1 - lArmRef.current.rotation.z) * 0.1;
+        lArmRef.current.rotation.x = -armSwing - 0.1;
+        lArmRef.current.rotation.z = -0.1;
       }
       if (rArmRef.current) {
-        rArmRef.current.rotation.x +=
-          (armSwing - 0.1 - rArmRef.current.rotation.x) * 0.25;
-        rArmRef.current.rotation.z += (0.1 - rArmRef.current.rotation.z) * 0.1;
+        rArmRef.current.rotation.x = armSwing - 0.1;
+        rArmRef.current.rotation.z = 0.1;
       }
 
       if (headRef.current) {
         headRef.current.rotation.y =
           Math.sin(state.clock.elapsedTime * 0.38) * 0.07;
-        const nodTarget = moving
+        headRef.current.rotation.x = moving
           ? Math.sin(bobRef.current * 2) * 0.05 - 0.04
           : 0;
-        headRef.current.rotation.x +=
-          (nodTarget - headRef.current.rotation.x) * 0.12;
       }
 
       if (bodyRef.current) {
-        const leanTarget = sprint ? -0.18 : moving ? -0.06 : 0;
-        bodyRef.current.rotation.x +=
-          (leanTarget - bodyRef.current.rotation.x) * 0.12;
+        bodyRef.current.rotation.x = sprint ? -0.18 : moving ? -0.06 : 0;
       }
-
-      const yTarget =
-        pp.y + (moving ? Math.abs(Math.sin(bobRef.current)) * 0.04 : 0);
-      groupRef.current.position.y +=
-        (yTarget - groupRef.current.position.y) * 0.18;
     });
 
     const skin = "#f5c89a";
@@ -93,16 +77,16 @@ export const Character = React.memo(
     const hair = "#2a1505";
 
     return (
-      <group ref={groupRef} castShadow>
+      <group ref={groupRef}>
         <group ref={bodyRef} position={[0, 0.98, 0]}>
+          {/* Main Body */}
           <mesh castShadow receiveShadow>
             <boxGeometry args={[0.46, 0.54, 0.22]} />
             <meshStandardMaterial color={shirt} roughness={0.85} />
             {name && (
               <Text
-                position={[0, 0, -0.115]}
-                rotation={[0, Math.PI, 0]}
-                fontSize={0.07}
+                position={[0, 0.45, -0.115]}
+                fontSize={0.08}
                 color="#ffffff"
                 anchorX="center"
                 anchorY="middle"
@@ -111,28 +95,34 @@ export const Character = React.memo(
               </Text>
             )}
           </mesh>
+
+          {/* Head */}
           <group ref={headRef} position={[0, 0.47, 0]}>
             <mesh castShadow>
               <boxGeometry args={[0.32, 0.33, 0.3]} />
               <meshStandardMaterial color={skin} roughness={0.8} />
             </mesh>
-            <mesh position={[0, 0.15, -0.01]} castShadow>
+            {/* Eyes (Front side is -Z) */}
+            <mesh position={[-0.08, 0.04, -0.155]}>
+              <boxGeometry args={[0.06, 0.06, 0.02]} />
+              <meshStandardMaterial color="#000" />
+            </mesh>
+            <mesh position={[0.08, 0.04, -0.155]}>
+              <boxGeometry args={[0.06, 0.06, 0.02]} />
+              <meshStandardMaterial color="#000" />
+            </mesh>
+            {/* Hair */}
+            <mesh position={[0, 0.15, 0.01]} castShadow>
               <boxGeometry args={[0.34, 0.1, 0.31]} />
               <meshStandardMaterial color={hair} roughness={0.95} />
             </mesh>
-            <mesh position={[0, 0.03, -0.152]}>
+            <mesh position={[0, 0.03, 0.152]}>
               <boxGeometry args={[0.3, 0.18, 0.02]} />
               <meshStandardMaterial color={hair} roughness={0.95} />
             </mesh>
-            <mesh position={[-0.17, 0.02, 0]}>
-              <boxGeometry args={[0.02, 0.08, 0.06]} />
-              <meshStandardMaterial color={skin} roughness={0.8} />
-            </mesh>
-            <mesh position={[0.17, 0.02, 0]}>
-              <boxGeometry args={[0.02, 0.08, 0.06]} />
-              <meshStandardMaterial color={skin} roughness={0.8} />
-            </mesh>
           </group>
+
+          {/* Arms */}
           <group ref={lArmRef} position={[-0.31, 0.24, 0]}>
             <mesh position={[0, -0.2, 0]} castShadow>
               <boxGeometry args={[0.14, 0.42, 0.14]} />
@@ -140,10 +130,6 @@ export const Character = React.memo(
             </mesh>
             <mesh position={[0, -0.44, 0]} castShadow>
               <boxGeometry args={[0.12, 0.2, 0.12]} />
-              <meshStandardMaterial color={skin} roughness={0.8} />
-            </mesh>
-            <mesh position={[0, -0.58, 0.01]} castShadow>
-              <boxGeometry args={[0.13, 0.13, 0.1]} />
               <meshStandardMaterial color={skin} roughness={0.8} />
             </mesh>
           </group>
@@ -156,23 +142,17 @@ export const Character = React.memo(
               <boxGeometry args={[0.12, 0.2, 0.12]} />
               <meshStandardMaterial color={skin} roughness={0.8} />
             </mesh>
-            <mesh position={[0, -0.58, 0.01]} castShadow>
-              <boxGeometry args={[0.13, 0.13, 0.1]} />
-              <meshStandardMaterial color={skin} roughness={0.8} />
-            </mesh>
           </group>
         </group>
+
+        {/* Legs & Shoes */}
         <group ref={lLegRef} position={[-0.12, 0.7, 0]}>
           <mesh position={[0, -0.22, 0]} castShadow>
             <boxGeometry args={[0.18, 0.46, 0.18]} />
             <meshStandardMaterial color={pants} roughness={0.9} />
           </mesh>
-          <mesh position={[0, -0.5, 0]} castShadow>
-            <boxGeometry args={[0.16, 0.22, 0.17]} />
-            <meshStandardMaterial color={pants} roughness={0.9} />
-          </mesh>
-          <mesh position={[0, -0.66, 0.04]} castShadow>
-            <boxGeometry args={[0.18, 0.1, 0.24]} />
+          <mesh position={[0, -0.55, -0.04]} castShadow>
+            <boxGeometry args={[0.18, 0.12, 0.26]} />
             <meshStandardMaterial color={shoe} roughness={0.9} />
           </mesh>
         </group>
@@ -181,12 +161,8 @@ export const Character = React.memo(
             <boxGeometry args={[0.18, 0.46, 0.18]} />
             <meshStandardMaterial color={pants} roughness={0.9} />
           </mesh>
-          <mesh position={[0, -0.5, 0]} castShadow>
-            <boxGeometry args={[0.16, 0.22, 0.17]} />
-            <meshStandardMaterial color={pants} roughness={0.9} />
-          </mesh>
-          <mesh position={[0, -0.66, 0.04]} castShadow>
-            <boxGeometry args={[0.18, 0.1, 0.24]} />
+          <mesh position={[0, -0.55, -0.04]} castShadow>
+            <boxGeometry args={[0.18, 0.12, 0.26]} />
             <meshStandardMaterial color={shoe} roughness={0.9} />
           </mesh>
         </group>
