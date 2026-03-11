@@ -177,7 +177,7 @@ export default function WalkingExplorer() {
 
         {placedBlocks.map((b) => (
           <mesh
-            key={b.id}
+            key={`${b.id}-${b.x}-${b.z}`}
             position={[b.x, b.y + GRID_SIZE / 2, b.z]}
             castShadow
             receiveShadow
@@ -185,6 +185,8 @@ export default function WalkingExplorer() {
             <boxGeometry args={[GRID_SIZE, GRID_SIZE, GRID_SIZE]} />
             <meshStandardMaterial
               color={b.type === "wood" ? "#5d4037" : "#757575"}
+              emissive={b.type === "wood" ? "#2d1a10" : "#222222"}
+              roughness={0.7}
             />
           </mesh>
         ))}

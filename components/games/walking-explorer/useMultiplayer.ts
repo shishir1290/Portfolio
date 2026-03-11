@@ -83,12 +83,13 @@ export function useMultiplayer(
       });
     });
 
-    socket.on("leaderboard", (list: LeaderEntry[]) => setLeaderboard(list));
-
     socket.on("blocks:snapshot", (list: Block[]) => setPlacedBlocks(list));
 
     socket.on("block:place", (block: Block) => {
-      setPlacedBlocks((prev) => [...prev, block]);
+      setPlacedBlocks((prev) => {
+        if (prev.find((b) => b.id === block.id)) return prev;
+        return [...prev, block];
+      });
     });
 
     const interval = setInterval(() => {
