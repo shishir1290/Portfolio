@@ -122,6 +122,8 @@ export const HUD = ({
   totalActivities,
   wood,
   stone,
+  myName,
+  myColor,
 }: any) => {
   const pct = (collected % 10) * 10;
   const accent = WEATHER_COLORS[weather.name] ?? "#00f5d4";
@@ -325,6 +327,45 @@ export const HUD = ({
           }}
         >
           {interactHint}
+        </div>
+      )}
+
+      {myName && (
+        <div
+          style={{
+            position: "absolute",
+            top: 10,
+            left: "50%",
+            transform: "translateX(-50%)",
+            zIndex: 15,
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
+            background: "rgba(0,0,0,0.55)",
+            backdropFilter: "blur(8px)",
+            border: "1px solid rgba(255,255,255,0.1)",
+            borderRadius: 20,
+            padding: "3px 12px 3px 8px",
+          }}
+        >
+          <div
+            style={{
+              width: 8,
+              height: 8,
+              borderRadius: "50%",
+              background: myColor,
+            }}
+          />
+          <span
+            style={{
+              fontFamily: "monospace",
+              fontSize: 10,
+              color: "#fff",
+              letterSpacing: 1,
+            }}
+          >
+            {myName}
+          </span>
         </div>
       )}
     </>

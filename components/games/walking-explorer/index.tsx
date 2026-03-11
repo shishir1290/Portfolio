@@ -135,7 +135,7 @@ export default function WalkingExplorer() {
   const lookJoyRef = useRef<JoyInput>({ x: 0, y: 0 });
 
   const { timeOfDay, timeRef, paused, setPaused } = useDayNight();
-  const { others } = useMultiplayer(
+  const { myName, myColor, others, leaderboard } = useMultiplayer(
     playerPosRef,
     movingRef,
     sprintingRef,
@@ -197,6 +197,8 @@ export default function WalkingExplorer() {
           playerPosRef={playerPosRef}
           movingRef={movingRef}
           sprintingRef={sprintingRef}
+          name={myName}
+          color={myColor}
         />
         {Array.from(others.values()).map((p) => (
           <Character
@@ -254,6 +256,8 @@ export default function WalkingExplorer() {
         totalActivities={activities.length}
         wood={wood}
         stone={stone}
+        myName={myName}
+        myColor={myColor}
       />
       <Minimap
         playerPosRef={playerPosRef}
@@ -262,7 +266,7 @@ export default function WalkingExplorer() {
         activities={activities}
         others={others}
       />
-      <Leaderboard entries={[]} myName={""} />
+      <Leaderboard entries={leaderboard} myName={myName} />
     </div>
   );
 }
