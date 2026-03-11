@@ -702,7 +702,15 @@ interface TreeData {
 /* ══════════════════════════════════════════════════════
    INSTANCED TREES
 ══════════════════════════════════════════════════════ */
-function Trees({ weatherName, data }: { weatherName: string; data: any[] }) {
+function Trees({
+  weatherName,
+  data,
+  harvested,
+}: {
+  weatherName: string;
+  data: any[];
+  harvested: Set<number>;
+}) {
   const isSnow = weatherName === "SNOW";
   const trunkGeom = useRef(new THREE.CylinderGeometry(0.1, 0.2, 1, 7));
   const pineGeom = useRef(new THREE.ConeGeometry(1, 1, 8));
@@ -738,7 +746,9 @@ function Trees({ weatherName, data }: { weatherName: string; data: any[] }) {
       pineIdx = 0,
       roundIdx = 0;
 
-    data.forEach((t) => {
+    const visibleData = data.filter((t) => !harvested.has(t.id));
+
+    visibleData.forEach((t) => {
       // Trunk
       dummy.position.set(t.x, t.h * 0.25, t.z);
       dummy.scale.set(0.6 + t.r * 0.5, t.h * 0.5, 0.6 + t.r * 0.5);
@@ -761,10 +771,28 @@ function Trees({ weatherName, data }: { weatherName: string; data: any[] }) {
         roundRef.current!.setMatrixAt(roundIdx++, dummy.matrix);
       }
     });
+
+    // Reset remaining instances to scale 0
+    for (let i = trunkIdx; i < data.length; i++) {
+      dummy.scale.set(0, 0, 0);
+      dummy.updateMatrix();
+      trunkRef.current!.setMatrixAt(i, dummy.matrix);
+    }
+    for (let i = pineIdx; i < data.length * 4; i++) {
+      dummy.scale.set(0, 0, 0);
+      dummy.updateMatrix();
+      pineRef.current!.setMatrixAt(i, dummy.matrix);
+    }
+    for (let i = roundIdx; i < data.length; i++) {
+      dummy.scale.set(0, 0, 0);
+      dummy.updateMatrix();
+      roundRef.current!.setMatrixAt(i, dummy.matrix);
+    }
+
     trunkRef.current.instanceMatrix.needsUpdate = true;
     pineRef.current.instanceMatrix.needsUpdate = true;
     roundRef.current.instanceMatrix.needsUpdate = true;
-  }, [data]);
+  }, [data, harvested]);
 
   return (
     <group>
@@ -796,7 +824,7 @@ function Trees({ weatherName, data }: { weatherName: string; data: any[] }) {
 /* ══════════════════════════════════════════════════════
    INSTANCED ROCKS
 ══════════════════════════════════════════════════════ */
-function Rocks({ data }: { data: any[] }) {
+function Rocks({ data, harvested }: { data: any[]; harvested: Set<number> }) {
   const rockGeom = useRef(new THREE.DodecahedronGeometry(1, 0));
   const rockMat = useRef(
     new THREE.MeshStandardMaterial({
@@ -811,14 +839,18 @@ function Rocks({ data }: { data: any[] }) {
     if (!ref.current) return;
     const dummy = new THREE.Object3D();
     data.forEach((r, i) => {
-      dummy.position.set(r.x, r.s * 0.38, r.z);
-      dummy.rotation.set(r.rx, r.ry, 0);
-      dummy.scale.set(r.s, r.s, r.s);
+      if (harvested.has(r.id)) {
+        dummy.scale.set(0, 0, 0);
+      } else {
+        dummy.position.set(r.x, r.s * 0.38, r.z);
+        dummy.rotation.set(r.rx, r.ry, 0);
+        dummy.scale.set(r.s, r.s, r.s);
+      }
       dummy.updateMatrix();
       ref.current!.setMatrixAt(i, dummy.matrix);
     });
     ref.current.instanceMatrix.needsUpdate = true;
-  }, [data]);
+  }, [data, harvested]);
 
   return (
     <instancedMesh
@@ -1317,6 +1349,45 @@ function Lightning({ active }: { active: boolean }) {
   );
 }
 
+interface Block {
+  id: string;
+  x: number;
+  y: number;
+  z: number;
+  type: "wood" | "stone";
+}
+
+/* ══════════════════════════════════════════════════════
+   PLACED BLOCKS
+══════════════════════════════════════════════════════ */
+function PlacedBlocks({ blocks }: { blocks: Block[] }) {
+  const woodMat = useRef(
+    new THREE.MeshStandardMaterial({ color: "#5d4037", roughness: 0.8 }),
+  );
+  const stoneMat = useRef(
+    new THREE.MeshStandardMaterial({ color: "#757575", roughness: 0.7 }),
+  );
+
+  return (
+    <group>
+      {blocks.map((b) => (
+        <mesh
+          key={b.id}
+          position={[b.x, b.y + 0.5, b.z]}
+          castShadow
+          receiveShadow
+        >
+          <boxGeometry args={[1, 1, 1]} />
+          <primitive
+            object={b.type === "wood" ? woodMat.current : stoneMat.current}
+            attach="material"
+          />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
 /* ══════════════════════════════════════════════════════
    FPS CONTROLLER
 ══════════════════════════════════════════════════════ */
@@ -1339,6 +1410,16 @@ interface FPSProps {
   lookJoyRef: React.RefObject<JoyInput>;
   trees: any[];
   rocks: any[];
+  harvestedTrees: Set<number>;
+  setHarvestedTrees: React.Dispatch<React.SetStateAction<Set<number>>>;
+  harvestedRocks: Set<number>;
+  setHarvestedRocks: React.Dispatch<React.SetStateAction<Set<number>>>;
+  wood: number;
+  setWood: React.Dispatch<React.SetStateAction<number>>;
+  stone: number;
+  setStone: React.Dispatch<React.SetStateAction<number>>;
+  placedBlocks: Block[];
+  setPlacedBlocks: React.Dispatch<React.SetStateAction<Block[]>>;
 }
 
 function FPSController({
@@ -1355,6 +1436,16 @@ function FPSController({
   lookJoyRef,
   trees,
   rocks,
+  harvestedTrees,
+  setHarvestedTrees,
+  harvestedRocks,
+  setHarvestedRocks,
+  wood,
+  setWood,
+  stone,
+  setStone,
+  placedBlocks,
+  setPlacedBlocks,
 }: FPSProps) {
   const { camera, gl } = useThree();
   const keys = useRef<Set<string>>(new Set());
@@ -1364,6 +1455,7 @@ function FPSController({
   const bobTime = useRef(0);
   const frontViewRef = useRef(true);
   const eWasDown = useRef(false);
+  const qWasDown = useRef(false);
 
   // Physics state
   const yRef = useRef(0);
@@ -1497,11 +1589,24 @@ function FPSController({
 
       // Activities
       for (const a of activities) {
+        if (a.interacted) continue;
         const dx = tx - a.x,
           dz = tz - a.z;
         const distSq = dx * dx + dz * dz;
         const radius = 1.0;
         if (distSq < radius * radius) return true;
+      }
+
+      // Placed Blocks
+      for (const b of placedBlocks) {
+        const dx = tx - b.x,
+          dz = tz - b.z;
+        const distSq = dx * dx + dz * dz;
+        const radius = 0.8; // block is 1x1
+        if (distSq < radius * radius) {
+          // Check vertical collision
+          if (yRef.current < b.y + 1 && yRef.current + 1.8 > b.y) return true;
+        }
       }
 
       return false;
@@ -1584,22 +1689,91 @@ function FPSController({
         break;
       }
     }
+
+    let nearTree: any = null;
+    let nearRock: any = null;
+
+    if (!nearAct) {
+      for (const t of trees) {
+        if (harvestedTrees.has(t.id)) continue;
+        const dx = nx - t.x,
+          dz = nz - t.z;
+        if (dx * dx + dz * dz < 6) {
+          nearTree = t;
+          break;
+        }
+      }
+      if (!nearTree) {
+        for (const r of rocks) {
+          if (harvestedRocks.has(r.id)) continue;
+          const dx = nx - r.x,
+            dz = nz - r.z;
+          if (dx * dx + dz * dz < 5) {
+            nearRock = r;
+            break;
+          }
+        }
+      }
+    }
+
     const labels: Record<string, string> = {
       campfire: "[E] Extinguish fire",
       well: "[E] Drink water",
       chest: "[E] Open chest",
       signpost: "[E] Read sign",
     };
-    setInteractHint(nearAct ? (labels[nearAct.type] ?? "") : "");
+
+    let hint = "";
+    if (nearAct) hint = labels[nearAct.type] ?? "";
+    else if (nearTree) hint = "[E] Harvest Wood";
+    else if (nearRock) hint = "[E] Harvest Stone";
+    else if (wood > 0 || stone > 0) hint = "[Q] Build Block";
+
+    setInteractHint(hint);
+
     const eDown = keys.current.has("e");
-    if (eDown && !eWasDown.current && nearAct && !nearAct.interacted) {
-      setActivities((prev) =>
-        prev.map((a) =>
-          a.id === nearAct!.id ? { ...a, interacted: true } : a,
-        ),
-      );
+    if (eDown && !eWasDown.current) {
+      if (nearAct) {
+        setActivities((prev) =>
+          prev.map((a) =>
+            a.id === nearAct!.id ? { ...a, interacted: true } : a,
+          ),
+        );
+      } else if (nearTree) {
+        setHarvestedTrees((prev) => new Set(prev).add(nearTree.id));
+        setWood((w) => w + 5);
+      } else if (nearRock) {
+        setHarvestedRocks((prev) => new Set(prev).add(nearRock.id));
+        setStone((s) => s + 3);
+      }
     }
     eWasDown.current = eDown;
+
+    const qDown = keys.current.has("q");
+    if (qDown && !qWasDown.current) {
+      if (wood > 0 || stone > 0) {
+        const type = wood > 0 ? "wood" : "stone";
+        if (type === "wood") setWood((w) => w - 1);
+        else setStone((s) => s - 1);
+
+        // Calculate placement in front of player
+        const bx = Math.round(nx - Math.sin(yaw) * 2);
+        const bz = Math.round(nz - Math.cos(yaw) * 2);
+        const by = Math.floor(yRef.current);
+
+        setPlacedBlocks((prev) => [
+          ...prev,
+          {
+            id: Math.random().toString(36).substr(2, 9),
+            x: bx,
+            y: by,
+            z: bz,
+            type,
+          },
+        ]);
+      }
+    }
+    qWasDown.current = qDown;
   });
   return null;
 }
@@ -1933,6 +2107,8 @@ interface HUDProps {
   interactHint: string;
   activitiesDone: number;
   totalActivities: number;
+  wood: number;
+  stone: number;
 }
 
 function HUD({
@@ -1943,6 +2119,8 @@ function HUD({
   interactHint,
   activitiesDone,
   totalActivities,
+  wood,
+  stone,
 }: HUDProps) {
   const pct = (collected % 10) * 10; // progress bar fills every 10 orbs collected
   const accent = WEATHER_COLORS[weather.name] ?? "#00f5d4";
@@ -2152,6 +2330,54 @@ function HUD({
         </div>
       </div>
 
+      {/* Inventory */}
+      <div
+        style={{
+          position: "absolute",
+          top: 80,
+          right: 60,
+          display: "flex",
+          flexDirection: "column",
+          gap: 6,
+          zIndex: 10,
+        }}
+      >
+        <div
+          style={{
+            background: "rgba(0,0,0,0.5)",
+            backdropFilter: "blur(10px)",
+            padding: "8px 12px",
+            borderRadius: 4,
+            border: "1px solid rgba(255,255,255,0.1)",
+            color: "#fff",
+            fontFamily: "monospace",
+            fontSize: 10,
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+          }}
+        >
+          <span style={{ color: "#8d6e63" }}>🪵</span> {wood} Wood
+        </div>
+        <div
+          style={{
+            background: "rgba(0,0,0,0.5)",
+            backdropFilter: "blur(10px)",
+            padding: "8px 12px",
+            borderRadius: 4,
+            border: "1px solid rgba(255,255,255,0.1)",
+            color: "#fff",
+            fontFamily: "monospace",
+            fontSize: 10,
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+          }}
+        >
+          <span style={{ color: "#9e9e9e" }}>🪨</span> {stone} Stone
+        </div>
+      </div>
+
       {/* Interact hint */}
       {interactHint && (
         <div
@@ -2195,6 +2421,7 @@ function HUD({
       >
         <div>
           WASD — MOVE &nbsp;&nbsp; SHIFT — SPRINT &nbsp;&nbsp; SPACE — JUMP
+          &nbsp;&nbsp; E — HARVEST &nbsp;&nbsp; Q — BUILD
         </div>
         <div>E — INTERACT &nbsp;&nbsp; C — FRONT VIEW (HOLD)</div>
       </div>
@@ -2881,8 +3108,15 @@ export default function RealisticExplorer() {
     { id: 8, type: "signpost", x: 35, z: -18, interacted: false },
   ]);
 
+  const [wood, setWood] = useState(0);
+  const [stone, setStone] = useState(0);
+  const [harvestedTrees, setHarvestedTrees] = useState<Set<number>>(new Set());
+  const [harvestedRocks, setHarvestedRocks] = useState<Set<number>>(new Set());
+  const [placedBlocks, setPlacedBlocks] = useState<Block[]>([]);
+
   const treeData = useMemo(() => {
     return Array.from({ length: 85 }).map((_, i) => ({
+      id: i,
       x: (Math.random() - 0.5) * 160,
       z: (Math.random() - 0.5) * 160,
       h: 2.5 + Math.random() * 5,
@@ -2894,7 +3128,8 @@ export default function RealisticExplorer() {
   }, []);
 
   const rockData = useMemo(() => {
-    return Array.from({ length: 50 }).map(() => ({
+    return Array.from({ length: 50 }).map((_, i) => ({
+      id: i,
       x: (Math.random() - 0.5) * 150,
       z: (Math.random() - 0.5) * 150,
       s: 0.2 + Math.random() * 1.1,
@@ -2960,8 +3195,13 @@ export default function RealisticExplorer() {
           timeRef={timeRef}
           weatherName={weather.name}
         />
-        <Trees weatherName={weather.name} data={treeData} />
-        <Rocks data={rockData} />
+        <Trees
+          weatherName={weather.name}
+          data={treeData}
+          harvested={harvestedTrees}
+        />
+        <Rocks data={rockData} harvested={harvestedRocks} />
+        <PlacedBlocks blocks={placedBlocks} />
         <Rain
           active={weather.rain}
           intensity={weather.name === "STORM" ? 1.8 : 1}
@@ -3020,6 +3260,16 @@ export default function RealisticExplorer() {
           lookJoyRef={lookJoyRef}
           trees={treeData}
           rocks={rockData}
+          harvestedTrees={harvestedTrees}
+          setHarvestedTrees={setHarvestedTrees}
+          harvestedRocks={harvestedRocks}
+          setHarvestedRocks={setHarvestedRocks}
+          wood={wood}
+          setWood={setWood}
+          stone={stone}
+          setStone={setStone}
+          placedBlocks={placedBlocks}
+          setPlacedBlocks={setPlacedBlocks}
         />
         <CameraTracker playerPosRef={playerPosRef} />
       </Canvas>
@@ -3032,6 +3282,8 @@ export default function RealisticExplorer() {
         interactHint={interactHint}
         activitiesDone={activitiesDone}
         totalActivities={activities.length}
+        wood={wood}
+        stone={stone}
       />
       <TimeDisplay
         timeOfDay={timeOfDay}
