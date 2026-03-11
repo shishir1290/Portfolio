@@ -1377,7 +1377,7 @@ function PlacedBlocks({ blocks }: { blocks: Block[] }) {
           castShadow
           receiveShadow
         >
-          <boxGeometry args={[1, 1, 1]} />
+          <boxGeometry args={[1.5, 1.5, 1.5]} />
           <primitive
             object={b.type === "wood" ? woodMat.current : stoneMat.current}
             attach="material"
@@ -1558,8 +1558,19 @@ function FPSController({
     vyRef.current += gravity * dt;
     yRef.current += vyRef.current * dt;
 
-    if (yRef.current <= 0) {
-      yRef.current = 0;
+    // Check for "ground" level (either floor or top of a block)
+    let groundHeight = 0;
+    for (const b of placedBlocks) {
+      if (Math.abs(nx - b.x) < 0.8 && Math.abs(nz - b.z) < 0.8) {
+        // If we are above this block, the ground level is at least the top of this block
+        if (yRef.current >= b.y + 1.4) {
+          groundHeight = Math.max(groundHeight, b.y + 1.5);
+        }
+      }
+    }
+
+    if (yRef.current <= groundHeight) {
+      yRef.current = groundHeight;
       vyRef.current = 0;
       onGround.current = true;
     }
@@ -1602,10 +1613,10 @@ function FPSController({
         const dx = tx - b.x,
           dz = tz - b.z;
         const distSq = dx * dx + dz * dz;
-        const radius = 0.8; // block is 1x1
+        const radius = 1.0; // box is 1.5x1.5, so 1.0 radius is safe for collision
         if (distSq < radius * radius) {
-          // Check vertical collision
-          if (yRef.current < b.y + 1 && yRef.current + 1.8 > b.y) return true;
+          // Check vertical collision (only if we are not standing on it)
+          if (yRef.current < b.y + 1.4 && yRef.current + 1.8 > b.y) return true;
         }
       }
 
@@ -1639,8 +1650,16 @@ function FPSController({
       finalPitch = -0.1; // Slight tilt up to see face
     }
 
-    const camTX = nx + Math.sin(yaw + camYawDelta) * camDistDelta;
-    const camTZ = nz + Math.cos(yaw + camYawDelta) * camDistDelta;
+    const sideOffset = frontViewRef.current ? 0 : 1.25; // Offset avatar to the left (right in camera space)
+
+    const camTX =
+      nx +
+      Math.sin(yaw + camYawDelta) * camDistDelta +
+      Math.cos(yaw) * sideOffset;
+    const camTZ =
+      nz +
+      Math.cos(yaw + camYawDelta) * camDistDelta -
+      Math.sin(yaw) * sideOffset;
     const camTY =
       yRef.current + CAM_H + Math.sin(finalPitch) * camDistDelta * 0.6;
 
@@ -1652,7 +1671,12 @@ function FPSController({
     if (frontViewRef.current) {
       camera.lookAt(nx, yRef.current + 1.4, nz); // Look more at the head/face
     } else {
-      camera.lookAt(nx, yRef.current + 1.25, nz);
+      // Look at a point slightly offset to keep crosshair aligned with player direction
+      camera.lookAt(
+        nx + Math.cos(yaw) * sideOffset * 0.5,
+        yRef.current + 1.25,
+        nz - Math.sin(yaw) * sideOffset * 0.5,
+      );
     }
 
     playerPosRef.current = { x: nx, y: yRef.current, z: nz, ry: yaw };
@@ -1756,10 +1780,17 @@ function FPSController({
         if (type === "wood") setWood((w) => w - 1);
         else setStone((s) => s - 1);
 
-        // Calculate placement in front of player
-        const bx = Math.round(nx - Math.sin(yaw) * 2);
-        const bz = Math.round(nz - Math.cos(yaw) * 2);
-        const by = Math.floor(yRef.current);
+        // Calculate placement BEHIND player
+        const bx = Math.round(nx + Math.sin(yaw) * 2);
+        const bz = Math.round(nz + Math.cos(yaw) * 2);
+
+        // Stacking logic: find the highest block at this (bx, bz)
+        let by = 0;
+        for (const b of placedBlocks) {
+          if (Math.round(b.x) === bx && Math.round(b.z) === bz) {
+            by = Math.max(by, b.y + 1.5);
+          }
+        }
 
         setPlacedBlocks((prev) => [
           ...prev,
