@@ -4,7 +4,51 @@ import { useRef, useState, useEffect, useCallback, useMemo } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 
-/* ─── Maze Generator (Recursive Backtracker) ─── */
+/* ─── Themes ─── */
+const THEMES = [
+  {
+    name: "CYBERPUNK",
+    wall: "#1a0a2e",
+    accent: "#00f5d4",
+    floor: "#0a0f1e",
+    fog: "#020817",
+    light: "#7209b7",
+  },
+  {
+    name: "MAGMA",
+    wall: "#2e0a0a",
+    accent: "#ff4400",
+    floor: "#1e0a0a",
+    fog: "#170202",
+    light: "#ff8800",
+  },
+  {
+    name: "CRYSTAL",
+    wall: "#0a2e2e",
+    accent: "#00ffff",
+    floor: "#0a1e1e",
+    fog: "#021717",
+    light: "#0088ff",
+  },
+  {
+    name: "OBSIDIAN",
+    wall: "#111111",
+    accent: "#33ff33",
+    floor: "#0a0a0a",
+    fog: "#000000",
+    light: "#00aa00",
+  },
+  {
+    name: "ROYAL",
+    wall: "#2e250a",
+    accent: "#ffd700",
+    floor: "#1e180a",
+    fog: "#171202",
+    light: "#ff00ff",
+  },
+];
+
+type Theme = (typeof THEMES)[0];
 function generateMaze(
   w: number,
   h: number,
@@ -57,7 +101,7 @@ function generateMaze(
 }
 
 /* ─── Maze Walls ─── */
-function MazeWalls({ grid }: { grid: boolean[][] }) {
+function MazeWalls({ grid, theme }: { grid: boolean[][]; theme: Theme }) {
   const wallHeight = 2.5;
   const meshes = useMemo(() => {
     const items: { x: number; z: number; w: number; d: number }[] = [];
@@ -77,8 +121,11 @@ function MazeWalls({ grid }: { grid: boolean[][] }) {
         <mesh key={i} position={[m.x, wallHeight / 2, m.z]}>
           <boxGeometry args={[m.w, wallHeight, m.d]} />
           <meshStandardMaterial
-            color={i % 7 === 0 ? "#1a0a2e" : "#111827"}
-            roughness={0.8}
+            color={i % 7 === 0 ? theme.wall : "#111827"}
+            metalness={0.6}
+            roughness={0.2}
+            emissive={i % 21 === 0 ? theme.accent : "#000"}
+            emissiveIntensity={i % 21 === 0 ? 0.2 : 0}
           />
         </mesh>
       ))}
@@ -87,7 +134,7 @@ function MazeWalls({ grid }: { grid: boolean[][] }) {
 }
 
 /* ─── Exit Marker ─── */
-function ExitMarker({ x, z }: { x: number; z: number }) {
+function ExitMarker({ x, z, theme }: { x: number; z: number; theme: Theme }) {
   const ref = useRef<THREE.Mesh>(null);
   useFrame((state) => {
     if (ref.current) {
@@ -102,8 +149,8 @@ function ExitMarker({ x, z }: { x: number; z: number }) {
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.02, 0]}>
         <circleGeometry args={[0.5, 16]} />
         <meshStandardMaterial
-          color="#00f5d4"
-          emissive="#00f5d4"
+          color={theme.accent}
+          emissive={theme.accent}
           emissiveIntensity={1}
           transparent
           opacity={0.3}
@@ -113,8 +160,8 @@ function ExitMarker({ x, z }: { x: number; z: number }) {
       <mesh ref={ref} position={[0, 1, 0]}>
         <octahedronGeometry args={[0.3]} />
         <meshStandardMaterial
-          color="#00f5d4"
-          emissive="#00f5d4"
+          color={theme.accent}
+          emissive={theme.accent}
           emissiveIntensity={2}
         />
       </mesh>
@@ -123,11 +170,23 @@ function ExitMarker({ x, z }: { x: number; z: number }) {
 }
 
 /* ─── Floor ─── */
-function Floor({ width, height }: { width: number; height: number }) {
+function Floor({
+  width,
+  height,
+  theme,
+}: {
+  width: number;
+  height: number;
+  theme: Theme;
+}) {
   return (
     <mesh rotation={[-Math.PI / 2, 0, 0]} position={[width / 2, 0, height / 2]}>
-      <planeGeometry args={[width + 2, height + 2]} />
-      <meshStandardMaterial color="#0a0f1e" />
+      <planeGeometry args={[width + 3, height + 3]} />
+      <meshStandardMaterial
+        color={theme.floor}
+        metalness={0.4}
+        roughness={0.3}
+      />
     </mesh>
   );
 }
@@ -137,10 +196,12 @@ function FPSController({
   grid,
   endPos,
   onWin,
+  startPos,
 }: {
   grid: boolean[][];
   endPos: [number, number];
   onWin: () => void;
+  startPos: [number, number];
 }) {
   const { camera, gl } = useThree();
   const keys = useRef<Set<string>>(new Set());
@@ -148,7 +209,7 @@ function FPSController({
   const isLocked = useRef(false);
 
   useEffect(() => {
-    camera.position.set(1, 1.2, 1);
+    camera.position.set(startPos[0], 1.2, startPos[1]);
 
     const down = (e: KeyboardEvent) => keys.current.add(e.key.toLowerCase());
     const up = (e: KeyboardEvent) => keys.current.delete(e.key.toLowerCase());
@@ -265,10 +326,12 @@ function MazeMinimap({
   grid,
   playerPos,
   endPos,
+  theme,
 }: {
   grid: boolean[][];
   playerPos: { x: number; z: number };
   endPos: [number, number];
+  theme: Theme;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const gridW = grid[0]?.length || 0;
@@ -289,7 +352,7 @@ function MazeMinimap({
     for (let r = 0; r < gridH; r++) {
       for (let c = 0; c < gridW; c++) {
         if (grid[r][c]) {
-          ctx.fillStyle = "#1a1a2e";
+          ctx.fillStyle = theme.wall;
           ctx.fillRect(c * cellW, r * cellH, cellW, cellH);
         }
       }
@@ -327,7 +390,10 @@ function MazeMinimap({
 
 /* ─── Main Component ─── */
 export default function MazeRunner() {
-  const mazeSize = 8;
+  const [level, setLevel] = useState(1);
+  const mazeSize = useMemo(() => 6 + level * 2, [level]);
+  const theme = useMemo(() => THEMES[(level - 1) % THEMES.length], [level]);
+
   const [mazeData, setMazeData] = useState(() =>
     generateMaze(mazeSize, mazeSize),
   );
@@ -367,8 +433,19 @@ export default function MazeRunner() {
     }
   }, []);
 
-  const restart = useCallback(() => {
-    setMazeData(generateMaze(mazeSize, mazeSize));
+  const nextLevel = useCallback(() => {
+    const nextLvl = level + 1;
+    setLevel(nextLvl);
+    const newSize = 6 + nextLvl * 2;
+    setMazeData(generateMaze(newSize, newSize));
+    setTime(0);
+    setWon(false);
+    setStarted(true);
+  }, [level]);
+
+  const restartGame = useCallback(() => {
+    setLevel(1);
+    setMazeData(generateMaze(8, 8));
     setTime(0);
     setWon(false);
     setStarted(true);
@@ -384,55 +461,68 @@ export default function MazeRunner() {
   const gridH = mazeData.grid.length;
 
   return (
-    <div className="relative w-full h-full" ref={canvasContainerRef}>
+    <div
+      className="relative w-full h-full"
+      ref={canvasContainerRef}
+      style={{ background: theme.fog }}
+    >
       <Canvas>
-        <ambientLight intensity={0.15} />
+        <ambientLight intensity={0.2} />
         <pointLight
-          position={[1, 3, 1]}
-          intensity={1}
-          color="#7209b7"
-          distance={15}
+          position={[playerPos.x, 2, playerPos.z]}
+          intensity={1.2}
+          color={theme.light}
+          distance={10}
         />
         <pointLight
           position={[mazeData.end[0], 3, mazeData.end[1]]}
-          intensity={1.5}
-          color="#00f5d4"
-          distance={10}
+          intensity={2}
+          color={theme.accent}
+          distance={15}
         />
-        <fog attach="fog" args={["#020817", 2, 12]} />
-        <color attach="background" args={["#020817"]} />
+        <fog attach="fog" args={[theme.fog, 1, 12]} />
+        <color attach="background" args={[theme.fog]} />
 
-        <Floor width={gridW} height={gridH} />
-        <MazeWalls grid={mazeData.grid} />
-        <ExitMarker x={mazeData.end[0]} z={mazeData.end[1]} />
+        <Floor width={gridW} height={gridH} theme={theme} />
+        <MazeWalls grid={mazeData.grid} theme={theme} />
+        <ExitMarker x={mazeData.end[0]} z={mazeData.end[1]} theme={theme} />
 
         {started && !won && (
           <FPSController
             grid={mazeData.grid}
             endPos={mazeData.end}
+            startPos={mazeData.start}
             onWin={handleWin}
           />
         )}
       </Canvas>
 
-      {/* Timer HUD */}
-      <div className="absolute top-16 right-4 z-10 px-3 py-2 bg-dark/80 backdrop-blur-md border border-primary/20 rounded-sm">
-        <p
-          className="text-primary text-lg font-bold"
-          style={{ fontFamily: "Bebas Neue, sans-serif" }}
-        >
-          TIME: {formatTime(time)}
-        </p>
+      {/* HUD */}
+      <div className="absolute top-16 left-4 z-10 flex gap-4">
+        <div className="px-4 py-2 bg-dark/40 backdrop-blur-xl border border-white/10 rounded-lg">
+          <p className="text-white/40 text-[10px] uppercase tracking-widest font-bold mb-1">
+            Level
+          </p>
+          <p className="text-primary text-2xl font-black leading-none">
+            {level}
+          </p>
+          <p className="text-white/60 text-[10px] mt-1">{theme.name}</p>
+        </div>
+        <div className="px-4 py-2 bg-dark/40 backdrop-blur-xl border border-white/10 rounded-lg min-w-[100px]">
+          <p className="text-white/40 text-[10px] uppercase tracking-widest font-bold mb-1">
+            Time
+          </p>
+          <p className="text-white text-2xl font-black leading-none">
+            {formatTime(time)}
+          </p>
+        </div>
       </div>
 
       {/* Click instruction */}
       {started && !won && (
-        <div className="absolute top-16 left-4 z-10 px-3 py-2 bg-dark/80 backdrop-blur-md border border-white/10 rounded-sm">
-          <p
-            className="text-white/40 text-xs"
-            style={{ fontFamily: "Space Mono, monospace" }}
-          >
-            Click to look around
+        <div className="absolute bottom-4 left-4 z-10 px-3 py-2 bg-black/20 backdrop-blur-sm border border-white/5 rounded-full">
+          <p className="text-white/40 text-[10px] uppercase tracking-tighter">
+            Click to unlock camera • WASD/Arrows to move
           </p>
         </div>
       )}
@@ -440,7 +530,9 @@ export default function MazeRunner() {
       {/* Crosshair */}
       {started && !won && (
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
-          <div className="w-1 h-1 bg-primary/50 rounded-full" />
+          <div className="w-6 h-6 border border-white/10 rounded-full flex items-center justify-center">
+            <div className="w-1 h-1 bg-white/40 rounded-full" />
+          </div>
         </div>
       )}
 
@@ -450,27 +542,33 @@ export default function MazeRunner() {
           grid={mazeData.grid}
           playerPos={playerPos}
           endPos={mazeData.end}
+          theme={theme}
         />
       )}
 
       {/* Start overlay */}
       {!started && (
-        <div className="absolute inset-0 flex items-center justify-center bg-dark/70 backdrop-blur-sm z-20">
-          <div className="text-center">
-            <h2
-              className="text-5xl font-bold gradient-text mb-4"
-              style={{ fontFamily: "Bebas Neue, sans-serif" }}
-            >
-              MAZE RUNNER
+        <div className="absolute inset-0 flex items-center justify-center bg-dark/80 backdrop-blur-md z-20">
+          <div className="text-center p-12 rounded-3xl border border-white/5 bg-white/5">
+            <h2 className="text-7xl font-black italic tracking-tighter text-white mb-2 drop-shadow-2xl">
+              MAZE<span className="text-primary">RUNNER</span>
             </h2>
-            <p
-              className="text-white/40 text-sm mb-6"
-              style={{ fontFamily: "Space Mono, monospace" }}
-            >
-              Find the glowing exit before time runs out
+            <div className="h-1 w-24 bg-primary mx-auto mb-8 rounded-full" />
+            <p className="text-white/60 max-w-sm mx-auto mb-10 text-sm leading-relaxed">
+              Experience the ultimate navigational challenge. Reach the{" "}
+              <span className="text-accent underline decoration-accent/30 underline-offset-4">
+                glowing artifact
+              </span>{" "}
+              to advance to the next visual dimension.
             </p>
-            <button onClick={() => setStarted(true)} className="btn-primary">
-              <span>START</span>
+            <button
+              onClick={() => setStarted(true)}
+              className="group relative px-12 py-4 bg-primary text-white font-bold rounded-full overflow-hidden transition-all hover:scale-105 active:scale-95"
+            >
+              <span className="relative z-10 tracking-widest">
+                INITIATE MISSION
+              </span>
+              <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform" />
             </button>
           </div>
         </div>
@@ -478,23 +576,32 @@ export default function MazeRunner() {
 
       {/* Win overlay */}
       {won && (
-        <div className="absolute inset-0 flex items-center justify-center bg-dark/70 backdrop-blur-sm z-20">
+        <div className="absolute inset-0 flex items-center justify-center bg-dark/90 backdrop-blur-xl z-20 transition-all">
           <div className="text-center">
-            <h2
-              className="text-5xl font-bold gradient-text mb-2"
-              style={{ fontFamily: "Bebas Neue, sans-serif" }}
-            >
-              MAZE COMPLETE!
+            <div className="w-24 h-24 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-6 border border-primary/30 animate-pulse">
+              <div className="w-12 h-12 bg-primary rounded-full" />
+            </div>
+            <h2 className="text-5xl font-black text-white mb-2 tracking-tighter">
+              DIMENSION CLEAR
             </h2>
-            <p
-              className="text-3xl text-primary mb-6"
-              style={{ fontFamily: "Bebas Neue, sans-serif" }}
-            >
-              TIME: {formatTime(time)}
+            <p className="text-white/40 text-sm uppercase tracking-[0.3em] mb-12">
+              Level {level} Complete • {formatTime(time)}
             </p>
-            <button onClick={restart} className="btn-primary">
-              <span>NEW MAZE</span>
-            </button>
+
+            <div className="flex gap-4 justify-center">
+              <button
+                onClick={nextLevel}
+                className="px-10 py-4 bg-white text-black font-bold rounded-full hover:bg-primary hover:text-white transition-all transform hover:-translate-y-1"
+              >
+                NEXT LEVEL
+              </button>
+              <button
+                onClick={restartGame}
+                className="px-10 py-4 bg-transparent text-white/60 font-bold rounded-full border border-white/10 hover:bg-white/5 transition-all"
+              >
+                RESTART PHASE
+              </button>
+            </div>
           </div>
         </div>
       )}
