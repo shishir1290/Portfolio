@@ -1,6 +1,13 @@
 "use client";
 
-import { useRef, useState, useEffect, useCallback, RefObject } from "react";
+import {
+  useRef,
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+  RefObject,
+} from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import { Text } from "@react-three/drei";
@@ -36,6 +43,7 @@ interface Orb {
 
 interface PlayerPos {
   x: number;
+  y: number;
   z: number;
   ry: number;
 }
@@ -335,9 +343,11 @@ function Character({
     }
 
     // Vertical bob of whole character
-    const yTarget = moving ? Math.abs(Math.sin(bobRef.current)) * 0.04 : 0;
+    // Vertical position including jump + bobbing
+    const yTarget =
+      pp.y + (moving ? Math.abs(Math.sin(bobRef.current)) * 0.04 : 0);
     groupRef.current.position.y +=
-      (yTarget - groupRef.current.position.y) * 0.15;
+      (yTarget - groupRef.current.position.y) * 0.18;
   });
 
   const skin = "#f5c89a";
@@ -692,7 +702,7 @@ interface TreeData {
 /* ══════════════════════════════════════════════════════
    INSTANCED TREES
 ══════════════════════════════════════════════════════ */
-function Trees({ weatherName }: { weatherName: string }) {
+function Trees({ weatherName, data }: { weatherName: string; data: any[] }) {
   const isSnow = weatherName === "SNOW";
   const trunkGeom = useRef(new THREE.CylinderGeometry(0.1, 0.2, 1, 7));
   const pineGeom = useRef(new THREE.ConeGeometry(1, 1, 8));
@@ -717,19 +727,6 @@ function Trees({ weatherName }: { weatherName: string }) {
     }),
   );
 
-  const [instancedData] = useState(() => {
-    const trees = Array.from({ length: 85 }).map((_, i) => ({
-      x: (Math.random() - 0.5) * 160,
-      z: (Math.random() - 0.5) * 160,
-      h: 2.5 + Math.random() * 5,
-      r: 0.8 + Math.random() * 0.8,
-      layers: 2 + Math.floor(Math.random() * 3),
-      type: Math.random() > 0.4 ? "pine" : "round",
-      ry: Math.random() * Math.PI * 2,
-    }));
-    return trees;
-  });
-
   const trunkRef = useRef<THREE.InstancedMesh>(null);
   const pineRef = useRef<THREE.InstancedMesh>(null);
   const roundRef = useRef<THREE.InstancedMesh>(null);
@@ -741,7 +738,7 @@ function Trees({ weatherName }: { weatherName: string }) {
       pineIdx = 0,
       roundIdx = 0;
 
-    instancedData.forEach((t) => {
+    data.forEach((t) => {
       // Trunk
       dummy.position.set(t.x, t.h * 0.25, t.z);
       dummy.scale.set(0.6 + t.r * 0.5, t.h * 0.5, 0.6 + t.r * 0.5);
@@ -767,25 +764,25 @@ function Trees({ weatherName }: { weatherName: string }) {
     trunkRef.current.instanceMatrix.needsUpdate = true;
     pineRef.current.instanceMatrix.needsUpdate = true;
     roundRef.current.instanceMatrix.needsUpdate = true;
-  }, [instancedData]);
+  }, [data]);
 
   return (
     <group>
       <instancedMesh
         ref={trunkRef}
-        args={[trunkGeom.current, trunkMat.current, instancedData.length]}
+        args={[trunkGeom.current, trunkMat.current, data.length]}
         castShadow
         receiveShadow
       />
       <instancedMesh
         ref={pineRef}
-        args={[pineGeom.current, pineMat.current, instancedData.length * 4]}
+        args={[pineGeom.current, pineMat.current, data.length * 4]}
         castShadow
         receiveShadow
       />
       <instancedMesh
         ref={roundRef}
-        args={[roundGeom.current, roundMat.current, instancedData.length]}
+        args={[roundGeom.current, roundMat.current, data.length]}
         castShadow
         receiveShadow
       />
@@ -799,7 +796,7 @@ function Trees({ weatherName }: { weatherName: string }) {
 /* ══════════════════════════════════════════════════════
    INSTANCED ROCKS
 ══════════════════════════════════════════════════════ */
-function Rocks() {
+function Rocks({ data }: { data: any[] }) {
   const rockGeom = useRef(new THREE.DodecahedronGeometry(1, 0));
   const rockMat = useRef(
     new THREE.MeshStandardMaterial({
@@ -808,21 +805,12 @@ function Rocks() {
       metalness: 0.05,
     }),
   );
-  const [rockData] = useState(() =>
-    Array.from({ length: 50 }).map(() => ({
-      x: (Math.random() - 0.5) * 150,
-      z: (Math.random() - 0.5) * 150,
-      s: 0.2 + Math.random() * 1.1,
-      ry: Math.random() * Math.PI,
-      rx: Math.random() * 0.4,
-    })),
-  );
   const ref = useRef<THREE.InstancedMesh>(null);
 
   useEffect(() => {
     if (!ref.current) return;
     const dummy = new THREE.Object3D();
-    rockData.forEach((r, i) => {
+    data.forEach((r, i) => {
       dummy.position.set(r.x, r.s * 0.38, r.z);
       dummy.rotation.set(r.rx, r.ry, 0);
       dummy.scale.set(r.s, r.s, r.s);
@@ -830,12 +818,12 @@ function Rocks() {
       ref.current!.setMatrixAt(i, dummy.matrix);
     });
     ref.current.instanceMatrix.needsUpdate = true;
-  }, [rockData]);
+  }, [data]);
 
   return (
     <instancedMesh
       ref={ref}
-      args={[rockGeom.current, rockMat.current, rockData.length]}
+      args={[rockGeom.current, rockMat.current, data.length]}
       castShadow
       receiveShadow
     />
@@ -1349,6 +1337,8 @@ interface FPSProps {
   setInteractHint: (v: string) => void;
   moveJoyRef: React.RefObject<JoyInput>;
   lookJoyRef: React.RefObject<JoyInput>;
+  trees: any[];
+  rocks: any[];
 }
 
 function FPSController({
@@ -1363,6 +1353,8 @@ function FPSController({
   setInteractHint,
   moveJoyRef,
   lookJoyRef,
+  trees,
+  rocks,
 }: FPSProps) {
   const { camera, gl } = useThree();
   const keys = useRef<Set<string>>(new Set());
@@ -1372,6 +1364,14 @@ function FPSController({
   const bobTime = useRef(0);
   const frontViewRef = useRef(true);
   const eWasDown = useRef(false);
+
+  // Physics state
+  const yRef = useRef(0);
+  const vyRef = useRef(0);
+  const onGround = useRef(true);
+  const gravity = -24;
+  const jumpStrength = 9;
+
   const CAM_DIST = 3.4;
   const CAM_H = 2.2;
 
@@ -1457,8 +1457,71 @@ function FPSController({
       nx -= (sinY * -mj.y - cosY * mj.x) * speed * 1.1;
       nz -= (cosY * -mj.y + sinY * mj.x) * speed * 1.1;
     }
-    nx = Math.max(-90, Math.min(90, nx));
-    nz = Math.max(-90, Math.min(90, nz));
+
+    // Jump Physics
+    if (keys.current.has(" ") && onGround.current) {
+      vyRef.current = jumpStrength;
+      onGround.current = false;
+    }
+    vyRef.current += gravity * dt;
+    yRef.current += vyRef.current * dt;
+
+    if (yRef.current <= 0) {
+      yRef.current = 0;
+      vyRef.current = 0;
+      onGround.current = true;
+    }
+
+    // Collision Detection
+    const checkCollision = (tx: number, tz: number) => {
+      // World boundary
+      if (tx < -90 || tx > 90 || tz < -90 || tz > 90) return true;
+
+      // Trees
+      for (const t of trees) {
+        const dx = tx - t.x,
+          dz = tz - t.z;
+        const distSq = dx * dx + dz * dz;
+        const radius = 0.5 + t.r * 0.3; // trunk radius proxy
+        if (distSq < radius * radius) return true;
+      }
+
+      // Rocks
+      for (const r of rocks) {
+        const dx = tx - r.x,
+          dz = tz - r.z;
+        const distSq = dx * dx + dz * dz;
+        const radius = r.s * 0.75;
+        if (distSq < radius * radius) return true;
+      }
+
+      // Activities
+      for (const a of activities) {
+        const dx = tx - a.x,
+          dz = tz - a.z;
+        const distSq = dx * dx + dz * dz;
+        const radius = 1.0;
+        if (distSq < radius * radius) return true;
+      }
+
+      return false;
+    };
+
+    // Collision response (sliding)
+    if (checkCollision(nx, nz)) {
+      // Try X only
+      if (!checkCollision(nx, pp.z)) {
+        nz = pp.z;
+      } else if (!checkCollision(pp.x, nz)) {
+        // Try Z only
+        nx = pp.x;
+      } else {
+        // Both blocked
+        nx = pp.x;
+        nz = pp.z;
+      }
+    }
+
     if (moving) bobTime.current += dt * (sprint ? 14 : 9);
 
     // Third-person camera behavior
@@ -1473,7 +1536,8 @@ function FPSController({
 
     const camTX = nx + Math.sin(yaw + camYawDelta) * camDistDelta;
     const camTZ = nz + Math.cos(yaw + camYawDelta) * camDistDelta;
-    const camTY = CAM_H + Math.sin(finalPitch) * camDistDelta * 0.6;
+    const camTY =
+      yRef.current + CAM_H + Math.sin(finalPitch) * camDistDelta * 0.6;
 
     const camLerp = 1 - Math.pow(0.00005, delta);
     camera.position.x += (camTX - camera.position.x) * camLerp;
@@ -1481,12 +1545,12 @@ function FPSController({
     camera.position.z += (camTZ - camera.position.z) * camLerp;
 
     if (frontViewRef.current) {
-      camera.lookAt(nx, 1.4, nz); // Look more at the head/face
+      camera.lookAt(nx, yRef.current + 1.4, nz); // Look more at the head/face
     } else {
-      camera.lookAt(nx, 1.25, nz);
+      camera.lookAt(nx, yRef.current + 1.25, nz);
     }
 
-    playerPosRef.current = { x: nx, z: nz, ry: yaw };
+    playerPosRef.current = { x: nx, y: yRef.current, z: nz, ry: yaw };
     movingRef.current = moving;
     sprintingRef.current = sprint;
 
@@ -2129,7 +2193,9 @@ function HUD({
           letterSpacing: 1,
         }}
       >
-        <div>WASD — MOVE &nbsp;&nbsp; SHIFT — SPRINT</div>
+        <div>
+          WASD — MOVE &nbsp;&nbsp; SHIFT — SPRINT &nbsp;&nbsp; SPACE — JUMP
+        </div>
         <div>E — INTERACT &nbsp;&nbsp; C — FRONT VIEW (HOLD)</div>
       </div>
 
@@ -2264,6 +2330,7 @@ interface RemotePlayer {
   name: string;
   color: string;
   x: number;
+  y: number;
   z: number;
   ry: number;
   moving: boolean;
@@ -2362,6 +2429,7 @@ function useMultiplayer(
       const p = playerPosRef.current;
       socket.emit("player:update", {
         x: p.x,
+        y: p.y,
         z: p.z,
         ry: p.ry,
         moving: movingRef.current,
@@ -2436,7 +2504,11 @@ function OtherPlayer({ player }: { player: RemotePlayer }) {
   const shirt = player.color;
 
   return (
-    <group ref={groupRef} position={[player.x, 0, player.z]} castShadow>
+    <group
+      ref={groupRef}
+      position={[player.x, player.y || 0, player.z]}
+      castShadow
+    >
       {/* Torso */}
       <group position={[0, 0.98, 0]}>
         <mesh castShadow>
@@ -2809,8 +2881,30 @@ export default function RealisticExplorer() {
     { id: 8, type: "signpost", x: 35, z: -18, interacted: false },
   ]);
 
+  const treeData = useMemo(() => {
+    return Array.from({ length: 85 }).map((_, i) => ({
+      x: (Math.random() - 0.5) * 160,
+      z: (Math.random() - 0.5) * 160,
+      h: 2.5 + Math.random() * 5,
+      r: 0.8 + Math.random() * 0.8,
+      layers: 2 + Math.floor(Math.random() * 3),
+      type: Math.random() > 0.4 ? "pine" : "round",
+      ry: Math.random() * Math.PI * 2,
+    }));
+  }, []);
+
+  const rockData = useMemo(() => {
+    return Array.from({ length: 50 }).map(() => ({
+      x: (Math.random() - 0.5) * 150,
+      z: (Math.random() - 0.5) * 150,
+      s: 0.2 + Math.random() * 1.1,
+      ry: Math.random() * Math.PI,
+      rx: Math.random() * 0.4,
+    }));
+  }, []);
+
   const canvasRef = useRef<HTMLDivElement>(null);
-  const playerPosRef = useRef<PlayerPos>({ x: 0, z: 0, ry: 0 });
+  const playerPosRef = useRef<PlayerPos>({ x: 0, y: 0, z: 0, ry: 0 });
   const movingRef = useRef<boolean>(false);
   const sprintingRef = useRef<boolean>(false);
   const moveJoyRef = useRef<JoyInput>({ x: 0, y: 0 });
@@ -2866,8 +2960,8 @@ export default function RealisticExplorer() {
           timeRef={timeRef}
           weatherName={weather.name}
         />
-        <Trees weatherName={weather.name} />
-        <Rocks />
+        <Trees weatherName={weather.name} data={treeData} />
+        <Rocks data={rockData} />
         <Rain
           active={weather.rain}
           intensity={weather.name === "STORM" ? 1.8 : 1}
@@ -2924,6 +3018,8 @@ export default function RealisticExplorer() {
           setInteractHint={setInteractHint}
           moveJoyRef={moveJoyRef}
           lookJoyRef={lookJoyRef}
+          trees={treeData}
+          rocks={rockData}
         />
         <CameraTracker playerPosRef={playerPosRef} />
       </Canvas>
