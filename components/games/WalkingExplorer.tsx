@@ -1370,7 +1370,7 @@ function FPSController({
   const pitchRef = useRef(0);
   const isLocked = useRef(false);
   const bobTime = useRef(0);
-  const frontViewRef = useRef(false);
+  const frontViewRef = useRef(true);
   const eWasDown = useRef(false);
   const CAM_DIST = 3.4;
   const CAM_H = 1.6;
@@ -1378,11 +1378,11 @@ function FPSController({
   useEffect(() => {
     const dn = (e: KeyboardEvent) => {
       keys.current.add(e.key.toLowerCase());
-      if (e.key.toLowerCase() === "c") frontViewRef.current = true;
+      if (e.key.toLowerCase() === "c") frontViewRef.current = false;
     };
     const up = (e: KeyboardEvent) => {
       keys.current.delete(e.key.toLowerCase());
-      if (e.key.toLowerCase() === "c") frontViewRef.current = false;
+      if (e.key.toLowerCase() === "c") frontViewRef.current = true;
     };
     window.addEventListener("keydown", dn);
     window.addEventListener("keyup", up);
@@ -1433,19 +1433,19 @@ function FPSController({
     const pp = playerPosRef.current;
     let nx = pp.x,
       nz = pp.z;
-    if (keys.current.has("w")) {
+    if (keys.current.has("w") || keys.current.has("arrowup")) {
       nx -= sinY * speed;
       nz -= cosY * speed;
     }
-    if (keys.current.has("s")) {
+    if (keys.current.has("s") || keys.current.has("arrowdown")) {
       nx += sinY * speed * 0.8;
       nz += cosY * speed * 0.8;
     }
-    if (keys.current.has("a")) {
+    if (keys.current.has("a") || keys.current.has("arrowleft")) {
       nx -= cosY * speed * 0.9;
       nz += sinY * speed * 0.9;
     }
-    if (keys.current.has("d")) {
+    if (keys.current.has("d") || keys.current.has("arrowright")) {
       nx += cosY * speed * 0.9;
       nz -= sinY * speed * 0.9;
     }
