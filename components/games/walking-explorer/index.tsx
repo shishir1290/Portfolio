@@ -75,7 +75,14 @@ export default function WalkingExplorer() {
   const [weatherIdx, setWeatherIdx] = useState(0);
   const weather = WEATHERS[weatherIdx];
 
-  const [orbs, setOrbs] = useState<Orb[]>([]);
+  const [orbs, setOrbs] = useState<Orb[]>(() =>
+    Array.from({ length: 20 }).map((_, i) => ({
+      id: i,
+      x: (Math.random() - 0.5) * 120,
+      z: (Math.random() - 0.5) * 120,
+      collected: false,
+    })),
+  );
   const [collected, setCollected] = useState(0);
   const [interactHint, setInteractHint] = useState("");
   const [activities, setActivities] = useState<Activity[]>([
@@ -97,32 +104,28 @@ export default function WalkingExplorer() {
   const [harvestedRocks, setHarvestedRocks] = useState<Set<number>>(new Set());
   const [placedBlocks, setPlacedBlocks] = useState<Block[]>([]);
 
-  const treeData = useMemo(
-    () =>
-      Array.from({ length: 50 }).map((_, i) => ({
-        id: i,
-        x: (Math.random() - 0.5) * 160,
-        z: (Math.random() - 0.5) * 160,
-        h: 2.5 + Math.random() * 5,
-        r: 0.8 + Math.random() * 0.8,
-        layers: 2,
-        type: "pine",
-        ry: Math.random() * Math.PI * 2,
-      })),
-    [],
+  const [trees, setTrees] = useState(() =>
+    Array.from({ length: 50 }).map((_, i) => ({
+      id: i,
+      x: (Math.random() - 0.5) * 160,
+      z: (Math.random() - 0.5) * 160,
+      h: 2.5 + Math.random() * 5,
+      r: 0.8 + Math.random() * 0.8,
+      layers: 2,
+      type: "pine",
+      ry: Math.random() * Math.PI * 2,
+    })),
   );
 
-  const rockData = useMemo(
-    () =>
-      Array.from({ length: 30 }).map((_, i) => ({
-        id: i,
-        x: (Math.random() - 0.5) * 160,
-        z: (Math.random() - 0.5) * 160,
-        r: 0.5 + Math.random() * 1.5,
-        type: "rock",
-        ry: Math.random() * Math.PI * 2,
-      })),
-    [],
+  const [rocks, setRocks] = useState(() =>
+    Array.from({ length: 30 }).map((_, i) => ({
+      id: i,
+      x: (Math.random() - 0.5) * 160,
+      z: (Math.random() - 0.5) * 160,
+      r: 0.5 + Math.random() * 1.5,
+      type: "rock",
+      ry: Math.random() * Math.PI * 2,
+    })),
   );
 
   const playerPosRef = useRef<PlayerPos>({ x: 0, y: 0, z: 0, ry: 0 });
@@ -159,10 +162,10 @@ export default function WalkingExplorer() {
         <Ground timeRef={timeRef} weatherName={weather.name} />
         <Trees
           weatherName={weather.name}
-          data={treeData}
+          data={trees}
           harvested={harvestedTrees}
         />
-        <Rocks data={rockData} harvested={harvestedRocks} />
+        <Rocks data={rocks} harvested={harvestedRocks} />
 
         {activities.map((a) => {
           if (a.type === "campfire") return <Campfire key={a.id} {...a} />;
@@ -218,8 +221,10 @@ export default function WalkingExplorer() {
           setInteractHint={setInteractHint}
           moveJoyRef={moveJoyRef}
           lookJoyRef={lookJoyRef}
-          trees={treeData}
-          rocks={rockData}
+          trees={trees}
+          setTrees={setTrees}
+          rocks={rocks}
+          setRocks={setRocks}
           harvestedTrees={harvestedTrees}
           setHarvestedTrees={setHarvestedTrees}
           harvestedRocks={harvestedRocks}

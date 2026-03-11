@@ -339,35 +339,109 @@ export const Minimap = ({
   activities,
   others,
 }: any) => {
-  const scale = 0.5;
+  const mapSize = 120;
+  const worldSize = 200; // Total world reach (-100 to 100)
+  const scale = mapSize / worldSize;
   const orbColor = WEATHER_COLORS[weatherName] ?? "#00f5d4";
+
   return (
     <div
       style={{
         position: "absolute",
         bottom: 24,
         right: 24,
-        width: 120,
-        height: 120,
+        width: mapSize,
+        height: mapSize,
         background: "rgba(2,6,16,0.92)",
         backdropFilter: "blur(14px)",
-        border: "1px solid rgba(255,255,255,0.1)",
-        borderRadius: 3,
+        border: "1px solid rgba(255,255,255,0.15)",
+        borderRadius: 6,
         overflow: "hidden",
+        boxShadow: "0 8px 32px rgba(0,0,0,0.5)",
       }}
     >
+      {/* Orbs */}
+      {orbs.map(
+        (o: any) =>
+          !o.collected && (
+            <div
+              key={o.id}
+              style={{
+                position: "absolute",
+                left: (o.x + 100) * scale,
+                top: (o.z + 100) * scale,
+                width: 3,
+                height: 3,
+                background: orbColor,
+                borderRadius: "50%",
+                boxShadow: `0 0 4px ${orbColor}`,
+              }}
+            />
+          ),
+      )}
+      {/* Activities */}
+      {activities.map(
+        (a: any) =>
+          !a.interacted && (
+            <div
+              key={a.id}
+              style={{
+                position: "absolute",
+                left: (a.x + 100) * scale,
+                top: (a.z + 100) * scale,
+                width: 4,
+                height: 4,
+                background: "#ffaa33",
+                border: "1px solid #fff",
+                transform: "rotate(45deg)",
+              }}
+            />
+          ),
+      )}
+      {/* Other Players */}
+      {Array.from(others.values()).map((p: any) => (
+        <div
+          key={p.id}
+          style={{
+            position: "absolute",
+            left: (p.x + 100) * scale,
+            top: (p.z + 100) * scale,
+            width: 5,
+            height: 5,
+            background: p.color || "#ff4455",
+            borderRadius: "50%",
+            border: "1px solid #fff",
+          }}
+        />
+      ))}
+      {/* Local Player */}
       <div
         style={{
           position: "absolute",
-          left: "50%",
-          top: "50%",
+          left: (playerPosRef.current.x + 100) * scale,
+          top: (playerPosRef.current.z + 100) * scale,
           width: 6,
           height: 6,
           background: "#fff",
           borderRadius: "50%",
+          border: "1px solid #00f5d4",
           transform: "translate(-50%,-50%)",
+          zIndex: 10,
         }}
-      />
+      >
+        <div
+          style={{
+            position: "absolute",
+            top: -8,
+            left: 2,
+            width: 2,
+            height: 8,
+            background: "#00f5d4",
+            transform: `rotate(${-playerPosRef.current.ry}rad)`,
+            transformOrigin: "bottom center",
+          }}
+        />
+      </div>
     </div>
   );
 };

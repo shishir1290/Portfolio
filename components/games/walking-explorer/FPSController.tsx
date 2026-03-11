@@ -16,7 +16,9 @@ interface FPSProps {
   moveJoyRef: React.RefObject<JoyInput>;
   lookJoyRef: React.RefObject<JoyInput>;
   trees: any[];
+  setTrees: React.Dispatch<React.SetStateAction<any[]>>;
   rocks: any[];
+  setRocks: React.Dispatch<React.SetStateAction<any[]>>;
   harvestedTrees: Set<number>;
   setHarvestedTrees: React.Dispatch<React.SetStateAction<Set<number>>>;
   harvestedRocks: Set<number>;
@@ -42,7 +44,9 @@ export function FPSController({
   moveJoyRef,
   lookJoyRef,
   trees,
+  setTrees,
   rocks,
+  setRocks,
   harvestedTrees,
   setHarvestedTrees,
   harvestedRocks,
@@ -68,8 +72,8 @@ export function FPSController({
   const onGround = useRef(true);
   const gravity = -24;
   const jumpStrength = 9;
-  const CAM_DIST = 3.4;
-  const CAM_H = 2.2;
+  const CAM_DIST = 4.2; // Slightly further back
+  const CAM_H = 2.4; // Slightly higher
 
   useEffect(() => {
     const dn = (e: KeyboardEvent) => {
@@ -87,9 +91,10 @@ export function FPSController({
       (isLocked.current = document.pointerLockElement === gl.domElement);
     const onMove = (e: MouseEvent) => {
       if (!isLocked.current) return;
-      yawRef.current -= e.movementX * 0.0018;
-      pitchRef.current -= e.movementY * 0.0018;
-      pitchRef.current = Math.max(-0.55, Math.min(0.55, pitchRef.current));
+      // Reverse X movement for standard third person back view behavior
+      yawRef.current -= e.movementX * 0.002;
+      pitchRef.current -= e.movementY * 0.002;
+      pitchRef.current = Math.max(-0.6, Math.min(0.6, pitchRef.current));
     };
     gl.domElement.addEventListener("click", onClick);
     document.addEventListener("pointerlockchange", onLock);
@@ -105,19 +110,20 @@ export function FPSController({
 
   useFrame((_, delta) => {
     const dt = Math.min(delta, 0.05);
+    const mj = moveJoyRef.current;
     const lj = lookJoyRef.current;
+
     if (lj && (Math.abs(lj.x) > 0.05 || Math.abs(lj.y) > 0.05)) {
       yawRef.current -= lj.x * 0.055 * dt * 60;
       pitchRef.current -= lj.y * 0.038 * dt * 60;
-      pitchRef.current = Math.max(-0.55, Math.min(0.55, pitchRef.current));
+      pitchRef.current = Math.max(-0.6, Math.min(0.6, pitchRef.current));
     }
 
     const yaw = yawRef.current;
     const sinY = Math.sin(yaw),
       cosY = Math.cos(yaw);
     const sprint = keys.current.has("shift");
-    const speed = (sprint ? 10 : 5.5) * dt;
-    const mj = moveJoyRef.current;
+    const speed = (sprint ? 11 : 6) * dt;
     const moving =
       keys.current.has("w") ||
       keys.current.has("s") ||
@@ -129,24 +135,22 @@ export function FPSController({
     let nx = pp.x,
       nz = pp.z;
 
-    // Movement direction (standard or front view)
-    const moveDir = 1; // Simplified but can be frontViewRef.current ? -1 : 1
-
+    // Fixed movement vectors to match "behind character" view
     if (keys.current.has("w")) {
-      nx -= sinY * speed * moveDir;
-      nz -= cosY * speed * moveDir;
+      nx -= sinY * speed;
+      nz -= cosY * speed;
     }
     if (keys.current.has("s")) {
-      nx += sinY * speed * 0.8 * moveDir;
-      nz += cosY * speed * 0.8 * moveDir;
+      nx += sinY * speed * 0.8;
+      nz += cosY * speed * 0.8;
     }
     if (keys.current.has("a")) {
-      nx -= cosY * speed * 0.9 * moveDir;
-      nz += sinY * speed * 0.9 * moveDir;
+      nx -= cosY * speed * 0.9;
+      nz += sinY * speed * 0.9;
     }
     if (keys.current.has("d")) {
-      nx += cosY * speed * 0.9 * moveDir;
-      nz -= sinY * speed * 0.9 * moveDir;
+      nx += cosY * speed * 0.9;
+      nz -= sinY * speed * 0.9;
     }
 
     if (mj && (Math.abs(mj.x) > 0.08 || Math.abs(mj.y) > 0.08)) {
@@ -161,14 +165,13 @@ export function FPSController({
     vyRef.current += gravity * dt;
     yRef.current += vyRef.current * dt;
 
-    // Physics check for "ground" level
     let groundHeight = 0;
     for (const b of placedBlocks) {
       if (
         Math.abs(nx - b.x) < GRID_SIZE * 0.6 &&
         Math.abs(nz - b.z) < GRID_SIZE * 0.6
       ) {
-        if (yRef.current >= b.y + GRID_SIZE * 0.9)
+        if (yRef.current >= b.y + GRID_SIZE * 0.8)
           groundHeight = Math.max(groundHeight, b.y + GRID_SIZE);
       }
     }
@@ -178,9 +181,8 @@ export function FPSController({
       onGround.current = true;
     }
 
-    // Collision Detection Function
     const checkCollision = (tx: number, tz: number) => {
-      if (tx < -90 || tx > 90 || tz < -90 || tz > 90) return true;
+      if (tx < -100 || tx > 100 || tz < -100 || tz > 100) return true;
       for (const t of trees) {
         if (harvestedTrees.has(t.id)) continue;
         const dx = tx - t.x,
@@ -191,7 +193,7 @@ export function FPSController({
         if (harvestedRocks.has(r.id)) continue;
         const dx = tx - r.x,
           dz = tz - r.z;
-        if (dx * dx + dz * dz < Math.pow(r.s * 0.75, 2)) return true;
+        if (dx * dx + dz * dz < Math.pow(r.r * 0.75, 2)) return true;
       }
       for (const a of activities) {
         if (a.interacted) continue;
@@ -204,14 +206,13 @@ export function FPSController({
           Math.abs(tx - b.x) < GRID_SIZE * 0.6 &&
           Math.abs(tz - b.z) < GRID_SIZE * 0.6
         ) {
-          if (yRef.current < b.y + GRID_SIZE * 0.9 && yRef.current + 1.8 > b.y)
+          if (yRef.current < b.y + GRID_SIZE * 0.8 && yRef.current + 1.8 > b.y)
             return true;
         }
       }
       return false;
     };
 
-    // Sliding collision response
     if (checkCollision(nx, nz)) {
       if (!checkCollision(nx, pp.z)) {
         nz = pp.z;
@@ -223,63 +224,60 @@ export function FPSController({
       }
     }
 
-    // Camera calculation
-    const sideOffset = frontViewRef.current ? 0 : 1.25;
-    const camYawDelta = frontViewRef.current ? Math.PI : 0;
-    const camTX =
-      nx + Math.sin(yaw + camYawDelta) * CAM_DIST + Math.cos(yaw) * sideOffset;
-    const camTZ =
-      nz + Math.cos(yaw + camYawDelta) * CAM_DIST - Math.sin(yaw) * sideOffset;
+    // Correct Camera logic: Stay BEHIND the player looking FORWARD
+    const sideOffset = frontViewRef.current ? 0 : 1.3;
+    const camYaw = yaw + (frontViewRef.current ? Math.PI : 0);
+    // Position camera BEHIND the player (add sinY/cosY instead of subtract, or vice-versa depending on coordinate system)
+    // The previous math camTX = nx + Math.sin(yaw) * CAM_DIST was showing the front
+    const camTX = nx + Math.sin(camYaw) * CAM_DIST + Math.cos(yaw) * sideOffset;
+    const camTZ = nz + Math.cos(camYaw) * CAM_DIST - Math.sin(yaw) * sideOffset;
     const camTY =
       yRef.current +
       CAM_H +
-      Math.sin(frontViewRef.current ? -0.1 : pitchRef.current) * CAM_DIST * 0.6;
+      Math.sin(frontViewRef.current ? -0.1 : pitchRef.current) * CAM_DIST * 0.5;
 
-    const lerp = 1 - Math.pow(0.00005, delta);
-    camera.position.x += (camTX - camera.position.x) * lerp;
-    camera.position.y += (camTY - camera.position.y) * lerp;
-    camera.position.z += (camTZ - camera.position.z) * lerp;
+    camera.position.x +=
+      (camTX - camera.position.x) * (1 - Math.pow(0.00005, delta));
+    camera.position.y += (camTY - camera.position.y) * 0.15;
+    camera.position.z +=
+      (camTZ - camera.position.z) * (1 - Math.pow(0.00005, delta));
+
     camera.lookAt(
-      nx + Math.cos(yaw) * sideOffset * 0.5,
-      yRef.current + 1.25,
-      nz - Math.sin(yaw) * sideOffset * 0.5,
+      nx - Math.sin(yaw) * 5 + Math.cos(yaw) * sideOffset * 0.5,
+      yRef.current + 1.5 - Math.sin(pitchRef.current) * 5,
+      nz - Math.cos(yaw) * 5 - Math.sin(yaw) * sideOffset * 0.5,
     );
 
     playerPosRef.current = { x: nx, y: yRef.current, z: nz, ry: yaw };
     movingRef.current = !!moving;
     sprintingRef.current = !!sprint;
 
-    // Orb Collection
     setOrbs((prev) => {
       let changed = false;
       const next = prev.map((o) => {
         const dx = nx - o.x,
           dz = nz - o.z;
-        if (dx * dx + dz * dz < 2.2) {
+        if (dx * dx + dz * dz < 2.5) {
           changed = true;
           setCollected((c) => c + 1);
-          let rx: number, rz: number;
-          do {
-            rx = (Math.random() - 0.5) * 110;
-            rz = (Math.random() - 0.5) * 110;
-          } while ((rx - nx) * (rx - nx) + (rz - nz) * (rz - nz) < 100);
-          return { ...o, x: rx, z: rz };
+          return {
+            ...o,
+            x: (Math.random() - 0.5) * 140,
+            z: (Math.random() - 0.5) * 140,
+          };
         }
         return o;
       });
       return changed ? next : prev;
     });
 
-    // Interaction Hint Logic
     let nearAct: Activity | null = null;
     for (const a of activities) {
-      if (nx * nx + nz * nz < 5 && !a.interacted) {
-        const dx = nx - a.x,
-          dz = nz - a.z;
-        if (dx * dx + dz * dz < 5) {
-          nearAct = a;
-          break;
-        }
+      const dx = nx - a.x,
+        dz = nz - a.z;
+      if (dx * dx + dz * dz < 5 && !a.interacted) {
+        nearAct = a;
+        break;
       }
     }
     let nearTree: any = null,
@@ -288,7 +286,7 @@ export function FPSController({
       for (const t of trees) {
         if (
           !harvestedTrees.has(t.id) &&
-          Math.pow(nx - t.x, 2) + Math.pow(nz - t.z, 2) < 6
+          Math.pow(nx - t.x, 2) + Math.pow(nz - t.z, 2) < 7
         ) {
           nearTree = t;
           break;
@@ -298,7 +296,7 @@ export function FPSController({
         for (const r of rocks) {
           if (
             !harvestedRocks.has(r.id) &&
-            Math.pow(nx - r.x, 2) + Math.pow(nz - r.z, 2) < 5
+            Math.pow(nx - r.x, 2) + Math.pow(nz - r.z, 2) < 6
           ) {
             nearRock = r;
             break;
@@ -307,39 +305,75 @@ export function FPSController({
       }
     }
 
-    const labels: Record<string, string> = {
-      campfire: "[E] Extinguish fire",
-      well: "[E] Drink water",
-      chest: "[E] Open chest",
-      signpost: "[E] Read sign",
-    };
     let hint = "";
-    if (nearAct) hint = labels[nearAct.type] || "";
+    if (nearAct)
+      hint =
+        nearAct.type === "campfire"
+          ? "[E] Extinguish"
+          : nearAct.type === "well"
+            ? "[E] Drink"
+            : "[E] Interact";
     else if (nearTree) hint = "[E] Harvest Wood";
     else if (nearRock) hint = "[E] Harvest Stone";
     else if (wood > 0 || stone > 0) hint = "[Q] Place Block";
     setInteractHint(hint);
 
-    // E Key Action
     const eDown = keys.current.has("e");
     if (eDown && !eWasDown.current) {
-      if (nearAct) {
+      if (nearAct)
         setActivities((prev) =>
           prev.map((a) =>
             a.id === nearAct!.id ? { ...a, interacted: true } : a,
           ),
         );
-      } else if (nearTree) {
-        setHarvestedTrees((prev) => new Set(prev).add(nearTree.id));
-        setWood((w) => w + 5);
+      else if (nearTree) {
+        setHarvestedTrees((p) => new Set(p).add(nearTree.id));
+        setWood((w) => w + 4);
+        // Respawn Logic: Replace the harvested tree with a new one after 2 seconds
+        setTimeout(() => {
+          setTrees((prev) =>
+            prev.map((t) =>
+              t.id === nearTree.id
+                ? {
+                    ...t,
+                    x: (Math.random() - 0.5) * 160,
+                    z: (Math.random() - 0.5) * 160,
+                  }
+                : t,
+            ),
+          );
+          setHarvestedTrees((p) => {
+            const n = new Set(p);
+            n.delete(nearTree.id);
+            return n;
+          });
+        }, 3000);
       } else if (nearRock) {
-        setHarvestedRocks((prev) => new Set(prev).add(nearRock.id));
+        setHarvestedRocks((p) => new Set(p).add(nearRock.id));
         setStone((s) => s + 3);
+        // Respawn Logic: Replace the harvested rock
+        setTimeout(() => {
+          setRocks((prev) =>
+            prev.map((r) =>
+              r.id === nearRock.id
+                ? {
+                    ...r,
+                    x: (Math.random() - 0.5) * 160,
+                    z: (Math.random() - 0.5) * 160,
+                  }
+                : r,
+            ),
+          );
+          setHarvestedRocks((p) => {
+            const n = new Set(p);
+            n.delete(nearRock.id);
+            return n;
+          });
+        }, 3000);
       }
     }
     eWasDown.current = eDown;
 
-    // Q Key Action (Minecraft Style Grid Placement)
     const qDown = keys.current.has("q");
     if (qDown && !qWasDown.current && (wood > 0 || stone > 0)) {
       const type = wood > 0 ? "wood" : "stone";
