@@ -2,10 +2,9 @@ import { useRef, useEffect, useState } from "react";
 import socketioClient from "socket.io-client";
 import { PlayerPos, RemotePlayer, LeaderEntry } from "./types";
 
+// Robust socket factory type handling
 type SioInstance = ReturnType<typeof socketioClient>;
-const socketio = socketioClient as unknown as {
-  io(url: string, opts?: Record<string, unknown>): SioInstance;
-};
+const socketio = (socketioClient as any).io || socketioClient;
 
 export function useMultiplayer(
   playerPosRef: React.MutableRefObject<PlayerPos>,
@@ -24,38 +23,56 @@ export function useMultiplayer(
 
   useEffect(() => {
     const SERVER_URL = "https://portfolio-6zko.onrender.com/";
-    const socket = socketio.io(SERVER_URL, {
-      transports: ["websocket", "polling"],
-    });
+    // Use the factory pattern that is most reliable
+    const socket: SioInstance =
+      typeof socketio === "function"
+        ? socketio(SERVER_URL, { transports: ["websocket", "polling"] })
+        : (socketio as any).connect(SERVER_URL, {
+            transports: ["websocket", "polling"],
+          });
+
     socketRef.current = socket;
+
+    socket.on("connect", () =>
+      console.log("MULTIPLAYER CONNECTED:", socket.id),
+    );
 
     socket.on("self:init", ({ id, name, color, x, z }: any) => {
       setMyId(id);
       setMyName(name);
       setMyColor(color);
-      // Update local ref so character starts at server-assigned position
+      // Ensure y is initialized if using it locally
       playerPosRef.current = { ...playerPosRef.current, x, z };
     });
 
-    socket.on("players:snapshot", (list: RemotePlayer[]) => {
-      setOthers(new Map(list.map((p) => [p.id, p])));
+    socket.on("players:snapshot", (list: any[]) => {
+      // Sanitize coordinates on intake
+      const sanitized = list.map((p) => ({
+        ...p,
+        y: p.y || 0,
+        ry: p.ry || 0,
+      }));
+      setOthers(new Map(sanitized.map((p) => [p.id, p])));
     });
 
-    socket.on("player:join", (p: RemotePlayer) => {
-      setOthers((prev) => new Map(prev).set(p.id, p));
+    socket.on("player:join", (p: any) => {
+      setOthers((prev) => new Map(prev).set(p.id, { ...p, y: p.y || 0 }));
     });
 
-    socket.on(
-      "player:update",
-      (data: Partial<RemotePlayer> & { id: string }) => {
-        setOthers((prev) => {
-          const m = new Map(prev);
-          const existing = m.get(data.id);
-          if (existing) m.set(data.id, { ...existing, ...data });
-          return m;
-        });
-      },
-    );
+    socket.on("player:update", (data: any) => {
+      setOthers((prev) => {
+        const m = new Map(prev);
+        const existing = m.get(data.id);
+        if (existing) {
+          m.set(data.id, {
+            ...existing,
+            ...data,
+            y: data.y !== undefined ? data.y : existing.y || 0,
+          });
+        }
+        return m;
+      });
+    });
 
     socket.on("player:leave", (id: string) => {
       setOthers((prev) => {
@@ -67,14 +84,16 @@ export function useMultiplayer(
 
     socket.on("leaderboard", (list: LeaderEntry[]) => setLeaderboard(list));
 
-    // Throttled position broadcast ~20×/sec
     const interval = setInterval(() => {
       const now = Date.now();
       if (now - lastEmit.current < 50) return;
       lastEmit.current = now;
       const p = playerPosRef.current;
+
+      // Emit position - including y just in case server uses it for character height
       socket.emit("player:update", {
         x: p.x,
+        y: p.y || 0,
         z: p.z,
         ry: p.ry,
         moving: movingRef.current,
@@ -89,7 +108,6 @@ export function useMultiplayer(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Emit score whenever it changes
   useEffect(() => {
     if (score !== lastScore.current && socketRef.current) {
       lastScore.current = score;

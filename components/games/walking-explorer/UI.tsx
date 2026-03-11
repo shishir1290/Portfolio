@@ -42,12 +42,12 @@ export const TimeDisplay = ({
     <div
       style={{
         position: "absolute",
-        top: 68,
+        top: 20,
         left: 20,
-        zIndex: 10,
+        zIndex: 20,
         display: "flex",
         flexDirection: "column",
-        gap: 4,
+        gap: 6,
       }}
     >
       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -500,29 +500,49 @@ export const Leaderboard = ({
     <div
       style={{
         position: "absolute",
-        top: 80,
+        top: 65,
         left: 20,
         zIndex: 15,
         background: "rgba(2,6,16,0.88)",
-        padding: "10px 14px",
+        backdropFilter: "blur(14px)",
+        border: "1px solid rgba(255,255,255,0.07)",
         borderRadius: 4,
-        minWidth: 150,
+        padding: "10px 14px",
+        minWidth: 160,
+        boxShadow: "0 0 30px rgba(0,0,0,0.8)",
       }}
     >
+      <div
+        style={{
+          fontFamily: "monospace",
+          fontSize: 7,
+          letterSpacing: 3,
+          color: "rgba(255,255,255,0.3)",
+          marginBottom: 8,
+          textTransform: "uppercase",
+        }}
+      >
+        ⚑ Leaderboard
+      </div>
       {entries.map((e, i) => (
         <div
           key={e.name}
           style={{
             display: "flex",
             justifyContent: "space-between",
+            alignItems: "center",
             fontSize: 9,
-            color: e.name === myName ? "#fff" : "#888",
+            padding: "2px 0",
+            color: e.name === myName ? "#fff" : "rgba(255,255,255,0.65)",
+            fontWeight: e.name === myName ? "bold" : "normal",
           }}
         >
           <span>
             {i + 1}. {e.name}
           </span>
-          <span>{e.score}</span>
+          <span style={{ color: e.color || "#00f5d4", marginLeft: 8 }}>
+            {e.score}
+          </span>
         </div>
       ))}
     </div>

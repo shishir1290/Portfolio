@@ -28,7 +28,7 @@ import {
   Snow,
   Lightning,
 } from "./Environment";
-import { Character } from "./PlayerCharacter";
+import { Character, RemoteCharacter } from "./PlayerCharacter";
 import { TimeDisplay, HUD, Minimap, Leaderboard } from "./UI";
 import { FPSController } from "./FPSController";
 import { useMultiplayer } from "./useMultiplayer";
@@ -201,14 +201,7 @@ export default function WalkingExplorer() {
           color={myColor}
         />
         {Array.from(others.values()).map((p) => (
-          <Character
-            key={p.id}
-            playerPosRef={{ current: p } as any}
-            movingRef={{ current: p.moving } as any}
-            sprintingRef={{ current: p.sprinting } as any}
-            name={p.name}
-            color={p.color}
-          />
+          <RemoteCharacter key={p.id} player={p} />
         ))}
 
         <FPSController
