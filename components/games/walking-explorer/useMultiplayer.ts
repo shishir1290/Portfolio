@@ -1,6 +1,6 @@
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useCallback } from "react";
 import socketioClient from "socket.io-client";
-import { PlayerPos, RemotePlayer, LeaderEntry } from "./types";
+import { PlayerPos, RemotePlayer, LeaderEntry, Block } from "./types";
 
 // Robust socket factory type handling
 type SioInstance = ReturnType<typeof socketioClient>;
@@ -18,6 +18,7 @@ export function useMultiplayer(
   const [myColor, setMyColor] = useState("#2244aa");
   const [others, setOthers] = useState<Map<string, RemotePlayer>>(new Map());
   const [leaderboard, setLeaderboard] = useState<LeaderEntry[]>([]);
+  const [placedBlocks, setPlacedBlocks] = useState<Block[]>([]);
   const lastEmit = useRef(0);
   const lastScore = useRef(-1);
 
@@ -84,6 +85,12 @@ export function useMultiplayer(
 
     socket.on("leaderboard", (list: LeaderEntry[]) => setLeaderboard(list));
 
+    socket.on("blocks:snapshot", (list: Block[]) => setPlacedBlocks(list));
+
+    socket.on("block:place", (block: Block) => {
+      setPlacedBlocks((prev) => [...prev, block]);
+    });
+
     const interval = setInterval(() => {
       const now = Date.now();
       if (now - lastEmit.current < 50) return;
@@ -115,5 +122,21 @@ export function useMultiplayer(
     }
   }, [score]);
 
-  return { myId, myName, myColor, others, leaderboard };
+  const broadcastBlock = useCallback((block: Block) => {
+    if (socketRef.current) {
+      socketRef.current.emit("block:place", block);
+    }
+    // Optimistically update local state
+    setPlacedBlocks((prev) => [...prev, block]);
+  }, []);
+
+  return {
+    myId,
+    myName,
+    myColor,
+    others,
+    leaderboard,
+    placedBlocks,
+    broadcastBlock,
+  };
 }

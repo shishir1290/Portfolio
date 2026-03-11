@@ -28,7 +28,7 @@ interface FPSProps {
   stone: number;
   setStone: React.Dispatch<React.SetStateAction<number>>;
   placedBlocks: Block[];
-  setPlacedBlocks: React.Dispatch<React.SetStateAction<Block[]>>;
+  onBlockPlace: (block: Block) => void;
 }
 
 export function FPSController({
@@ -56,7 +56,7 @@ export function FPSController({
   stone,
   setStone,
   placedBlocks,
-  setPlacedBlocks,
+  onBlockPlace,
 }: FPSProps) {
   const { camera, gl } = useThree();
   const keys = useRef<Set<string>>(new Set());
@@ -389,16 +389,14 @@ export function FPSController({
         if (Math.abs(b.x - gx) < 0.1 && Math.abs(b.z - gz) < 0.1)
           gy = Math.max(gy, b.y + GRID_SIZE);
       }
-      setPlacedBlocks((prev) => [
-        ...prev,
-        {
-          id: Math.random().toString(36).substr(2, 9),
-          x: gx,
-          y: gy,
-          z: gz,
-          type,
-        },
-      ]);
+
+      onBlockPlace({
+        id: Math.random().toString(36).substr(2, 9),
+        x: gx,
+        y: gy,
+        z: gz,
+        type,
+      });
     }
     qWasDown.current = qDown;
   });

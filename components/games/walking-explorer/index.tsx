@@ -102,7 +102,7 @@ export default function WalkingExplorer() {
   const [stone, setStone] = useState(0);
   const [harvestedTrees, setHarvestedTrees] = useState<Set<number>>(new Set());
   const [harvestedRocks, setHarvestedRocks] = useState<Set<number>>(new Set());
-  const [placedBlocks, setPlacedBlocks] = useState<Block[]>([]);
+  // Removed local placedBlocks state to use multiplayer state instead
 
   const [trees, setTrees] = useState(() =>
     Array.from({ length: 50 }).map((_, i) => ({
@@ -135,12 +135,8 @@ export default function WalkingExplorer() {
   const lookJoyRef = useRef<JoyInput>({ x: 0, y: 0 });
 
   const { timeOfDay, timeRef, paused, setPaused } = useDayNight();
-  const { myName, myColor, others, leaderboard } = useMultiplayer(
-    playerPosRef,
-    movingRef,
-    sprintingRef,
-    collected,
-  );
+  const { myName, myColor, others, leaderboard, placedBlocks, broadcastBlock } =
+    useMultiplayer(playerPosRef, movingRef, sprintingRef, collected);
 
   return (
     <div
@@ -229,7 +225,7 @@ export default function WalkingExplorer() {
           stone={stone}
           setStone={setStone}
           placedBlocks={placedBlocks}
-          setPlacedBlocks={setPlacedBlocks}
+          onBlockPlace={broadcastBlock}
         />
         <CameraTracker playerPosRef={playerPosRef} />
       </Canvas>
