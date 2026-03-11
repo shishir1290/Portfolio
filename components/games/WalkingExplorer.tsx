@@ -1433,21 +1433,25 @@ function FPSController({
     const pp = playerPosRef.current;
     let nx = pp.x,
       nz = pp.z;
+
+    // Invert movement if we are looking at the character from the front
+    const moveDir = frontViewRef.current ? -1 : 1;
+
     if (keys.current.has("w") || keys.current.has("arrowup")) {
-      nx -= sinY * speed;
-      nz -= cosY * speed;
+      nx -= sinY * speed * moveDir;
+      nz -= cosY * speed * moveDir;
     }
     if (keys.current.has("s") || keys.current.has("arrowdown")) {
-      nx += sinY * speed * 0.8;
-      nz += cosY * speed * 0.8;
+      nx += sinY * speed * 0.8 * moveDir;
+      nz += cosY * speed * 0.8 * moveDir;
     }
     if (keys.current.has("a") || keys.current.has("arrowleft")) {
-      nx -= cosY * speed * 0.9;
-      nz += sinY * speed * 0.9;
+      nx -= cosY * speed * 0.9 * moveDir;
+      nz += sinY * speed * 0.9 * moveDir;
     }
     if (keys.current.has("d") || keys.current.has("arrowright")) {
-      nx += cosY * speed * 0.9;
-      nz -= sinY * speed * 0.9;
+      nx += cosY * speed * 0.9 * moveDir;
+      nz -= sinY * speed * 0.9 * moveDir;
     }
     if (mj && jMoving) {
       nx -= (sinY * -mj.y - cosY * mj.x) * speed * 1.1;
