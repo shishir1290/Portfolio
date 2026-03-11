@@ -2291,8 +2291,7 @@ function useMultiplayer(
   const lastScore = useRef(-1);
 
   useEffect(() => {
-    const SERVER_URL =
-      process.env.NEXT_PUBLIC_GAME_SERVER_URL || window.location.origin;
+    const SERVER_URL = "https://portfolio-6zko.onrender.com/";
     const socket = socketio.io(SERVER_URL, {
       transports: ["websocket", "polling"],
     });
