@@ -1373,7 +1373,7 @@ function FPSController({
   const frontViewRef = useRef(true);
   const eWasDown = useRef(false);
   const CAM_DIST = 3.4;
-  const CAM_H = 1.6;
+  const CAM_H = 2.2;
 
   useEffect(() => {
     const dn = (e: KeyboardEvent) => {
@@ -1481,9 +1481,9 @@ function FPSController({
     camera.position.z += (camTZ - camera.position.z) * camLerp;
 
     if (frontViewRef.current) {
-      camera.lookAt(nx, 1.2, nz); // Look more at the head/face
+      camera.lookAt(nx, 1.4, nz); // Look more at the head/face
     } else {
-      camera.lookAt(nx, 1.05, nz);
+      camera.lookAt(nx, 1.25, nz);
     }
 
     playerPosRef.current = { x: nx, z: nz, ry: yaw };
