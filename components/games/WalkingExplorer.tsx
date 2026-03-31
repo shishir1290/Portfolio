@@ -4,10 +4,7 @@ import { useRef, useState, useEffect, useCallback, RefObject } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import { Text } from "@react-three/drei";
-import socketioClient from "socket.io-client";
-type SioInstance = ReturnType<typeof socketioClient>;
-const socketio = socketioClient as unknown as { io(url: string, opts?: Record<string, unknown>): SioInstance };
-
+import { io, Socket } from "socket.io-client";
 /* ══════════════════════════════════════════════════════
    TYPES
 ══════════════════════════════════════════════════════ */
@@ -1388,7 +1385,7 @@ function useMultiplayer(
     sprintingRef: React.MutableRefObject<boolean>,
     score: number,
 ) {
-    const socketRef = useRef<ReturnType<typeof socketio.io> | null>(null);
+    const socketRef = useRef<Socket | null>(null);
     const [myId, setMyId] = useState<string>("");
     const [myName, setMyName] = useState<string>("");
     const [myColor, setMyColor] = useState<string>("#2244aa");
@@ -1398,7 +1395,7 @@ function useMultiplayer(
     const lastScore = useRef(-1);
 
     useEffect(() => {
-        const socket = socketio.io(window.location.origin, {
+        const socket = io(window.location.origin, {
             transports: ["websocket", "polling"],
         });
         socketRef.current = socket;
