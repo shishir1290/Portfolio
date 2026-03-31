@@ -1,10 +1,8 @@
 import { useRef, useEffect, useState, useCallback } from "react";
-import socketioClient from "socket.io-client";
+import { io, Socket } from "socket.io-client";
 import { PlayerPos, RemotePlayer, LeaderEntry, Block } from "./types";
 
-// Robust socket factory type handling
-type SioInstance = ReturnType<typeof socketioClient>;
-const socketio = (socketioClient as any).io || socketioClient;
+type SioInstance = Socket;
 
 export function useMultiplayer(
   playerPosRef: React.MutableRefObject<PlayerPos>,
@@ -23,14 +21,9 @@ export function useMultiplayer(
   const lastScore = useRef(-1);
 
   useEffect(() => {
-    const SERVER_URL = "https://portfolio-6zko.onrender.com/";
-    // Use the factory pattern that is most reliable
-    const socket: SioInstance =
-      typeof socketio === "function"
-        ? socketio(SERVER_URL, { transports: ["websocket", "polling"] })
-        : (socketio as any).connect(SERVER_URL, {
-            transports: ["websocket", "polling"],
-          });
+    // Connect natively to current host instead of Render URL
+    const SERVER_URL = window.location.origin;
+    const socket = io(SERVER_URL, { transports: ["websocket", "polling"] });
 
     socketRef.current = socket;
 
@@ -82,6 +75,8 @@ export function useMultiplayer(
         return m;
       });
     });
+
+    socket.on("leaderboard", (list: LeaderEntry[]) => setLeaderboard(list));
 
     socket.on("blocks:snapshot", (list: Block[]) => setPlacedBlocks(list));
 
