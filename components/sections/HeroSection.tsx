@@ -66,8 +66,8 @@ export default function HeroSection() {
       </div>
 
       {/* Gradient overlays */}
-      <div className="absolute inset-0 bg-gradient-to-b from-dark via-transparent to-dark pointer-events-none" />
-      <div className="absolute inset-0 bg-gradient-to-r from-dark via-transparent to-transparent pointer-events-none" />
+      <div className="absolute inset-0 bg-linear-to-b from-dark via-transparent to-dark pointer-events-none" />
+      <div className="absolute inset-0 bg-linear-to-r from-dark via-transparent to-transparent pointer-events-none" />
 
       {/* Glowing orbs */}
       <div
@@ -221,10 +221,10 @@ export default function HeroSection() {
 
               {/* Floating tech badges */}
               {[
-                { label: "Node.js", top: "5%", left: "10%", color: "#68a063" },
-                { label: "WebRTC", top: "15%", right: "5%", color: "#00f5d4" },
-                { label: "Next.js", bottom: "20%", left: "0%", color: "#fff" },
-                { label: "Socket.io", bottom: "5%", right: "10%", color: "#f72585" },
+                { label: "Node.js", top: "5%", left: "10%", color: "#68a063", duration: 4, delay: 0 },
+                { label: "WebRTC", top: "15%", right: "5%", color: "#00f5d4", duration: 5.3, delay: 0.7 },
+                { label: "Next.js", bottom: "20%", left: "0%", color: "#fff", duration: 6.6, delay: 1.4 },
+                { label: "Socket.io", bottom: "5%", right: "10%", color: "#f72585", duration: 4.9, delay: 0.1 },
               ].map((badge) => (
                 <div
                   key={badge.label}
@@ -234,8 +234,8 @@ export default function HeroSection() {
                     left: badge.left,
                     right: (badge as any).right,
                     bottom: badge.bottom,
-                    animation: `float ${4 + Math.random() * 3}s ease-in-out infinite`,
-                    animationDelay: `${Math.random() * 2}s`,
+                    animation: `float ${badge.duration}s ease-in-out infinite`,
+                    animationDelay: `${badge.delay}s`,
                   }}
                 >
                   <span
@@ -261,7 +261,7 @@ export default function HeroSection() {
           >
             SCROLL
           </span>
-          <div className="w-px h-12 bg-gradient-to-b from-primary/40 to-transparent" />
+          <div className="w-px h-12 bg-linear-to-b from-primary/40 to-transparent" />
         </div>
       </div>
     </section>

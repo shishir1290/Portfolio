@@ -239,7 +239,7 @@ export default function ProjectsSection() {
                       {project.highlights.map((h, j) => (
                         <li key={j} className="flex items-start gap-3">
                           <span
-                            className="mt-1.5 w-1.5 h-1.5 rounded-full flex-shrink-0"
+                            className="mt-1.5 w-1.5 h-1.5 rounded-full shrink-0"
                             style={{ backgroundColor: project.color }}
                           />
                           <span className="text-white/50 text-sm">{h}</span>
