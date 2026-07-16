@@ -79,7 +79,7 @@ export default function AboutSection() {
                 <span className="text-primary font-semibold">
                   Full-Stack Web Developer
                 </span>{" "}
-                currently working as a Junior Executive at{" "}
+                currently working as a Full-Stack Web Developer at{" "}
                 <span className="text-white/80">Pakiza Software Limited</span>{" "}
                 in Dhaka, Bangladesh. I specialize in building scalable
                 applications with modern architectures.
@@ -197,7 +197,7 @@ export default function AboutSection() {
                       className="text-primary/70 text-xs tracking-wider mt-1"
                       style={{ fontFamily: "Space Mono, monospace" }}
                     >
-                      JUNIOR EXECUTIVE @ PAKIZA SOFTWARE LIMITED
+                      FULL-STACK WEB DEVELOPER @ PAKIZA SOFTWARE LIMITED
                     </p>
                     <p className="text-white/30 text-xs mt-2">
                       College Gate, Konabari, Gazipur 1437
