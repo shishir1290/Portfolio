@@ -1,13 +1,18 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { getExperienceDuration } from "@/lib/experience";
 
 const experiences = [
   {
     title: "Full-Stack Web Developer",
     company: "Pakiza Software Limited",
     period: "September 2024 — Present",
-    duration: "1 Year 4 Months",
+    startDate: new Date(2024, 8, 1),
+    endDate: undefined, // Set to a Date object (e.g., new Date(2025, 11, 31)) if you leave the company, or leave undefined for "Present"
+    get duration() {
+      return getExperienceDuration(this.startDate, this.endDate);
+    },
     type: "Full-Time",
     location: "Dhanmondi, Dhaka",
     color: "#00f5d4",

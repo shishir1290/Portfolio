@@ -26,7 +26,7 @@ const FIELD_RIGHT = 5;
 const FIELD_TOP = 6;
 const FIELD_BOTTOM = -5;
 
-const BLOCK_COLORS = ["#f72585", "#7209b7", "#3a0ca3", "#4361ee", "#00f5d4"];
+const BLOCK_COLORS = ["#ff6b8b", "#b892ff", "#3a0ca3", "#4361ee", "#00f5d4"];
 
 function createBlocks(level: number): Block[] {
   const blocks: Block[] = [];
@@ -91,8 +91,8 @@ function Ball({ x, y }: { x: number; y: number }) {
     <mesh position={[x, y, 0]}>
       <sphereGeometry args={[BALL_RADIUS, 16, 16]} />
       <meshStandardMaterial
-        color="#f72585"
-        emissive="#f72585"
+        color="#ff6b8b"
+        emissive="#ff6b8b"
         emissiveIntensity={1}
       />
     </mesh>
@@ -311,7 +311,7 @@ function GameScene({
   return (
     <>
       <ambientLight intensity={0.3} />
-      <pointLight position={[0, 5, 5]} intensity={1} color="#7209b7" />
+      <pointLight position={[0, 5, 5]} intensity={1} color="#b892ff" />
       <pointLight position={[0, -3, 5]} intensity={0.5} color="#00f5d4" />
 
       <Walls />

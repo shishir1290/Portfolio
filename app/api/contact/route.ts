@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
           
           <!-- Header with gradient border -->
           <tr>
-            <td style="background: linear-gradient(135deg, #00f5d4, #7209b7, #f72585); padding: 2px; border-radius: 8px 8px 0 0;">
+            <td style="background: linear-gradient(135deg, #00f5d4, #b892ff, #ff6b8b); padding: 2px; border-radius: 8px 8px 0 0;">
               <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
                 <tr>
                   <td style="background-color: #0a0f1e; padding: 32px 40px; border-radius: 6px 6px 0 0;">
@@ -77,7 +77,7 @@ export async function POST(request: NextRequest) {
 
           <!-- Body -->
           <tr>
-            <td style="background: linear-gradient(135deg, #00f5d4, #7209b7, #f72585); padding: 0 2px;">
+            <td style="background: linear-gradient(135deg, #00f5d4, #b892ff, #ff6b8b); padding: 0 2px;">
               <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
                 <tr>
                   <td style="background-color: #0a0f1e; padding: 32px 40px;">
@@ -89,7 +89,7 @@ export async function POST(request: NextRequest) {
                           <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
                             <tr>
                               <td width="44" valign="top">
-                                <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #00f5d4, #7209b7); text-align: center; line-height: 40px; font-size: 18px; font-weight: bold; color: #020817;">
+                                <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #00f5d4, #b892ff); text-align: center; line-height: 40px; font-size: 18px; font-weight: bold; color: #020817;">
                                   ${name.charAt(0).toUpperCase()}
                                 </div>
                               </td>
@@ -111,7 +111,7 @@ export async function POST(request: NextRequest) {
                     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 24px;">
                       <tr>
                         <td>
-                          <p style="margin: 0 0 6px 0; font-size: 10px; letter-spacing: 3px; color: #f72585; text-transform: uppercase; font-family: 'Courier New', monospace;">
+                          <p style="margin: 0 0 6px 0; font-size: 10px; letter-spacing: 3px; color: #ff6b8b; text-transform: uppercase; font-family: 'Courier New', monospace;">
                             SUBJECT
                           </p>
                           <p style="margin: 0; font-size: 18px; font-weight: 600; color: #ffffff;">
@@ -124,7 +124,7 @@ export async function POST(request: NextRequest) {
                     <!-- Divider -->
                     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 24px;">
                       <tr>
-                        <td style="height: 1px; background: linear-gradient(to right, #00f5d4, #7209b7, #f72585, transparent);"></td>
+                        <td style="height: 1px; background: linear-gradient(to right, #00f5d4, #b892ff, #ff6b8b, transparent);"></td>
                       </tr>
                     </table>
 
@@ -152,7 +152,7 @@ export async function POST(request: NextRequest) {
 
           <!-- Footer -->
           <tr>
-            <td style="background: linear-gradient(135deg, #00f5d4, #7209b7, #f72585); padding: 0 2px 2px 2px; border-radius: 0 0 8px 8px;">
+            <td style="background: linear-gradient(135deg, #00f5d4, #b892ff, #ff6b8b); padding: 0 2px 2px 2px; border-radius: 0 0 8px 8px;">
               <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
                 <tr>
                   <td style="background-color: #0a0f1e; padding: 24px 40px; border-radius: 0 0 6px 6px;">

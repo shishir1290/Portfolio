@@ -10,8 +10,8 @@ const games = [
         emoji: "🏎️",
         description: "Dodge obstacles on an endless highway at breakneck speed.",
         controls: "← → steer · ↑ ↓ speed",
-        color: "#f72585",
-        gradient: "from-[#f72585] to-[#b5179e]",
+        color: "#ff6b8b",
+        gradient: "from-[#ff6b8b] to-[#b892ff]",
     },
     {
         slug: "tic-tac-toe",
@@ -28,8 +28,8 @@ const games = [
         emoji: "🚀",
         description: "Blast through waves of enemies in deep space.",
         controls: "WASD move · Space shoot",
-        color: "#7209b7",
-        gradient: "from-[#7209b7] to-[#560bad]",
+        color: "#b892ff",
+        gradient: "from-[#b892ff] to-[#a855f7]",
     },
     {
         slug: "walking-explorer",
@@ -104,7 +104,7 @@ export default function GamesPage() {
                     className="absolute top-0 right-1/4 w-96 h-96 rounded-full pointer-events-none"
                     style={{
                         background:
-                            "radial-gradient(circle, rgba(114,9,183,0.12) 0%, transparent 70%)",
+                            "radial-gradient(circle, rgba(184,146,255,0.12) 0%, transparent 70%)",
                         filter: "blur(60px)",
                     }}
                 />
@@ -112,7 +112,7 @@ export default function GamesPage() {
                     className="absolute bottom-0 left-1/3 w-64 h-64 rounded-full pointer-events-none"
                     style={{
                         background:
-                            "radial-gradient(circle, rgba(247,37,133,0.08) 0%, transparent 70%)",
+                            "radial-gradient(circle, rgba(255,107,139,0.08) 0%, transparent 70%)",
                         filter: "blur(60px)",
                     }}
                 />

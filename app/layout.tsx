@@ -96,7 +96,7 @@ const jsonLd = {
   telephone: "+8801946432534",
   address: {
     "@type": "PostalAddress",
-    addressLocality: "Mirpur 11, Dhaka",
+    addressLocality: "Konabari, Gazipur",
     addressCountry: "Bangladesh",
   },
   sameAs: [],
@@ -111,6 +111,8 @@ const jsonLd = {
     "UI/UX Design",
   ],
 };
+
+import ScrollToTop from "@/components/ScrollToTop";
 
 export default function RootLayout({
   children,
@@ -135,7 +137,10 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className="noise bg-dark antialiased">{children}</body>
+      <body className="noise bg-dark antialiased">
+        {children}
+        <ScrollToTop />
+      </body>
     </html>
   );
 }

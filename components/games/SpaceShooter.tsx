@@ -55,13 +55,13 @@ function PlayerShip({ x, y }: { x: number; y: number }) {
             {[-1, 1].map((s) => (
                 <mesh key={s} position={[s * 0.35, -0.2, 0]} rotation={[0, 0, s * 0.3]}>
                     <boxGeometry args={[0.3, 0.1, 0.15]} />
-                    <meshStandardMaterial color="#7209b7" emissive="#7209b7" emissiveIntensity={0.3} />
+                    <meshStandardMaterial color="#b892ff" emissive="#b892ff" emissiveIntensity={0.3} />
                 </mesh>
             ))}
             {/* Engine glow */}
             <mesh position={[0, -0.5, 0]}>
                 <sphereGeometry args={[0.08, 8, 8]} />
-                <meshStandardMaterial color="#f72585" emissive="#f72585" emissiveIntensity={3} />
+                <meshStandardMaterial color="#ff6b8b" emissive="#ff6b8b" emissiveIntensity={3} />
             </mesh>
         </group>
     );
@@ -86,7 +86,7 @@ function EnemyMesh({ x, y }: { x: number; y: number }) {
     return (
         <mesh ref={ref} position={[x, y, 0]}>
             <octahedronGeometry args={[0.3]} />
-            <meshStandardMaterial color="#f72585" emissive="#f72585" emissiveIntensity={0.5} metalness={0.6} roughness={0.3} />
+            <meshStandardMaterial color="#ff6b8b" emissive="#ff6b8b" emissiveIntensity={0.5} metalness={0.6} roughness={0.3} />
         </mesh>
     );
 }
@@ -238,7 +238,7 @@ function GameScene({
                             vx: (Math.random() - 0.5) * 4,
                             vy: (Math.random() - 0.5) * 4,
                             life: 1,
-                            color: Math.random() > 0.5 ? "#f72585" : "#00f5d4",
+                            color: Math.random() > 0.5 ? "#ff6b8b" : "#00f5d4",
                         }));
                         setParticles((prev) => [...prev, ...newP]);
                         break;
@@ -287,7 +287,7 @@ function GameScene({
     return (
         <>
             <ambientLight intensity={0.2} />
-            <pointLight position={[0, 0, 5]} intensity={1} color="#7209b7" />
+            <pointLight position={[0, 0, 5]} intensity={1} color="#b892ff" />
 
             <Starfield />
             <PlayerShip x={px} y={py} />

@@ -90,7 +90,7 @@ function OPiece({ position }: { position: [number, number, number] }) {
     return (
         <mesh position={position}>
             <torusGeometry args={[0.25, 0.05, 16, 32]} />
-            <meshStandardMaterial color="#f72585" emissive="#f72585" emissiveIntensity={0.5} />
+            <meshStandardMaterial color="#ff6b8b" emissive="#ff6b8b" emissiveIntensity={0.5} />
         </mesh>
     );
 }
@@ -107,7 +107,7 @@ function WinLine({ start, end }: { start: [number, number, number]; end: [number
     return (
         <mesh position={mid} rotation={[0, 0, Math.atan2(dir.y, dir.x)]}>
             <boxGeometry args={[len, 0.06, 0.06]} />
-            <meshStandardMaterial color="#7209b7" emissive="#7209b7" emissiveIntensity={2} />
+            <meshStandardMaterial color="#b892ff" emissive="#b892ff" emissiveIntensity={2} />
         </mesh>
     );
 }
@@ -196,7 +196,7 @@ function GameScene({
         <>
             <ambientLight intensity={0.5} />
             <pointLight position={[3, 3, 5]} intensity={1} color="#ffffff" />
-            <pointLight position={[-3, -3, 5]} intensity={0.5} color="#7209b7" />
+            <pointLight position={[-3, -3, 5]} intensity={0.5} color="#b892ff" />
 
             <group>
                 {board.map((val, i) => (
@@ -329,7 +329,7 @@ export default function TicTacToe() {
                             className="text-5xl font-bold mb-2"
                             style={{
                                 fontFamily: "Bebas Neue, sans-serif",
-                                color: winner === "X" ? "#00f5d4" : winner === "O" ? "#f72585" : "#7209b7",
+                                color: winner === "X" ? "#00f5d4" : winner === "O" ? "#ff6b8b" : "#b892ff",
                             }}
                         >
                             {winner === "draw" ? "IT'S A DRAW!" : winner === "X" ? "YOU WIN!" : "AI WINS!"}

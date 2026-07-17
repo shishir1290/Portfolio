@@ -4,22 +4,12 @@ import Image from "next/image";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { scrollTo } from "../Navbar";
 
-function getExperienceDuration(startDate: Date): string {
-  const now = new Date();
-  let years = now.getFullYear() - startDate.getFullYear();
-  let months = now.getMonth() - startDate.getMonth();
-  if (now.getDate() < startDate.getDate()) months--;
-  if (months < 0) { years--; months += 12; }
-  const parts: string[] = [];
-  if (years > 0) parts.push(`${years} Year${years > 1 ? "s" : ""}`);
-  if (months > 0) parts.push(`${months} Month${months > 1 ? "s" : ""}`);
-  return parts.length > 0 ? parts.join(" ") : "< 1 Month";
-}
+import { getExperienceDuration } from "@/lib/experience";
 
 export default function AboutSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const [visible, setVisible] = useState(false);
-  const experience = useMemo(() => getExperienceDuration(new Date(2024, 9, 1)), []);
+  const experience = useMemo(() => getExperienceDuration(), []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -43,7 +33,7 @@ export default function AboutSection() {
         className="absolute top-0 right-0 w-1/3 h-full pointer-events-none"
         style={{
           background:
-            "radial-gradient(ellipse at right, rgba(114,9,183,0.08) 0%, transparent 70%)",
+            "radial-gradient(ellipse at right, rgba(184,146,255,0.08) 0%, transparent 70%)",
         }}
       />
 
@@ -179,7 +169,7 @@ export default function AboutSection() {
                     className="w-20 h-20 rounded-sm flex items-center justify-center flex-shrink-0 text-3xl font-bold"
                     style={{
                       background:
-                        "linear-gradient(135deg, rgba(0,245,212,0.1), rgba(114,9,183,0.2))",
+                        "linear-gradient(135deg, rgba(0,245,212,0.1), rgba(184,146,255,0.2))",
                       border: "1px solid rgba(0,245,212,0.2)",
                       fontFamily: "Bebas Neue, sans-serif",
                     }}
@@ -227,14 +217,14 @@ export default function AboutSection() {
                         school: "Milestone College, Uttara",
                         result: "GPA 5.0",
                         year: "2017-2018",
-                        color: "#7209b7",
+                        color: "#b892ff",
                       },
                       {
                         degree: "SSC (Science)",
                         school: "Sristy Academic School",
                         result: "GPA 5.0",
                         year: "2015",
-                        color: "#f72585",
+                        color: "#ff6b8b",
                       },
                     ].map((edu, i) => (
                       <div key={i} className="flex gap-4 items-start">

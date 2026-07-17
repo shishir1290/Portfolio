@@ -19,6 +19,8 @@ const roles = [
   "Live Streaming Engineer",
 ];
 
+import { getYearsExperience } from "@/lib/experience";
+
 export default function HeroSection() {
   const [currentRole, setCurrentRole] = useState(0);
   const [displayText, setDisplayText] = useState("");
@@ -177,7 +179,7 @@ export default function HeroSection() {
             {/* Quick Stats */}
             <div className="flex gap-8">
               {[
-                { value: "1+", label: "Years Experience" },
+                { value: getYearsExperience(), label: "Years Experience" },
                 { value: "10+", label: "Technologies" },
                 { value: "5+", label: "Projects Built" },
               ].map((stat) => (
@@ -224,7 +226,7 @@ export default function HeroSection() {
                 { label: "Node.js", top: "5%", left: "10%", color: "#68a063", duration: "6s", delay: "0s" },
                 { label: "WebRTC", top: "15%", right: "5%", color: "#00f5d4", duration: "5s", delay: "1.5s" },
                 { label: "Next.js", bottom: "20%", left: "0%", color: "#fff", duration: "7s", delay: "0.5s" },
-                { label: "Socket.io", bottom: "3%", right: "20%", color: "#f72585", duration: "5.5s", delay: "1s" },
+                { label: "Socket.io", bottom: "3%", right: "20%", color: "#ff6b8b", duration: "5.5s", delay: "1s" },
                 { label: "Golang", top: "50%", right: "-6%", color: "#0ac2f0ff", duration: "10s", delay: "1s" },
               ].map((badge) => (
                 <div

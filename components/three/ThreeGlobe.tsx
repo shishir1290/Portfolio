@@ -44,7 +44,7 @@ export default function ThreeGlobe() {
         // Inner sphere
         const innerGeo = new THREE.IcosahedronGeometry(1.0, 2);
         const innerMat = new THREE.MeshBasicMaterial({
-          color: 0x7209b7,
+          color: 0xb892ff,
           wireframe: true,
           transparent: true,
           opacity: 0.08,
@@ -73,9 +73,9 @@ export default function ThreeGlobe() {
           if (i % 3 === 0) {
             colors[i * 3] = 0; colors[i * 3 + 1] = 0.96; colors[i * 3 + 2] = 0.83;
           } else if (i % 3 === 1) {
-            colors[i * 3] = 0.45; colors[i * 3 + 1] = 0.04; colors[i * 3 + 2] = 0.72;
+            colors[i * 3] = 0.72; colors[i * 3 + 1] = 0.57; colors[i * 3 + 2] = 1.0;
           } else {
-            colors[i * 3] = 0.97; colors[i * 3 + 1] = 0.15; colors[i * 3 + 2] = 0.51;
+            colors[i * 3] = 1.0; colors[i * 3 + 1] = 0.42; colors[i * 3 + 2] = 0.55;
           }
         }
 

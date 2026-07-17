@@ -12,13 +12,13 @@ const skillGroups = [
   {
     category: "Backend",
     icon: "◇",
-    color: "#7209b7",
+    color: "#b892ff",
     skills: ["Node.js", "Nest.js", "golang", "RESTful APIs", "PostgreSQL"],
   },
   {
     category: "Real-Time & Streaming",
     icon: "◆",
-    color: "#f72585",
+    color: "#ff6b8b",
     skills: ["WebRTC", "Socket.io", "RTMP", "HLS", "FFmpeg"],
   },
   {

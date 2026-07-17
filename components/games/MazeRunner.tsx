@@ -12,7 +12,7 @@ const THEMES = [
     accent: "#00f5d4",
     floor: "#0a0f1e",
     fog: "#020817",
-    light: "#7209b7",
+    light: "#b892ff",
   },
   {
     name: "MAGMA",
@@ -371,7 +371,7 @@ function MazeMinimap({
     ctx.fill();
 
     // Player
-    ctx.fillStyle = "#f72585";
+    ctx.fillStyle = "#ff6b8b";
     ctx.beginPath();
     ctx.arc(playerPos.x * cellW, playerPos.z * cellH, 3, 0, Math.PI * 2);
     ctx.fill();

@@ -48,7 +48,7 @@ export default function ParticleBackground() {
         this.vy = (Math.random() - 0.5) * 0.3;
         this.size = Math.random() * 1.5 + 0.5;
         this.alpha = Math.random() * 0.5 + 0.1;
-        const colors = ["#00f5d4", "#7209b7", "#f72585"];
+        const colors = ["#00f5d4", "#b892ff", "#ff6b8b"];
         this.color = colors[Math.floor(Math.random() * colors.length)];
       }
 
