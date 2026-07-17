@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "node server.js",
+    "dev": "next dev",
     "build": "next build",
-    "start": "NODE_ENV=production node server.js",
+    "start": "next start",
     "lint": "node eslint-runner.cjs ."
   },
   "dependencies": {
@@ -22,8 +22,6 @@
     "react-dom": "^19.2.7",
     "react-intersection-observer": "^10.1.0",
     "react-type-animation": "^3.2.0",
-    "socket.io": "^4.8.3",
-    "socket.io-client": "^4.8.3",
     "tailwind-merge": "^3.6.0",
     "three": "^0.185.1"
   },
@@ -43,9 +41,6 @@
   },
   "engines": {
     "node": ">=18 <21"
-  },
-  "overrides": {
-    "socket.io-parser": "4.2.6"
   },
   "optionalDependencies": {
     "lightningcss-linux-x64-gnu": "1.32.0",
