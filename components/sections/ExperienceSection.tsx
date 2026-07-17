@@ -122,7 +122,7 @@ export default function ExperienceSection() {
                         {exp.location}
                       </p>
                     </div>
-                    <div className="lg:text-right shrink-0">
+                    <div className="lg:text-right flex-shrink-0">
                       <div
                         className="inline-flex items-center gap-2 px-3 py-1 border rounded-sm mb-2"
                         style={{
@@ -172,7 +172,7 @@ export default function ExperienceSection() {
                       {exp.responsibilities.map((resp, j) => (
                         <li key={j} className="flex items-start gap-3 text-sm text-white/50">
                           <span
-                            className="mt-1.5 w-1 h-1 rounded-full shrink-0"
+                            className="mt-1.5 w-1 h-1 rounded-full flex-shrink-0"
                             style={{ backgroundColor: exp.color }}
                           />
                           {resp}

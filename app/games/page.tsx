@@ -166,7 +166,7 @@ export default function GamesPage() {
                                 >
                                     {/* Card top gradient bar */}
                                     <div
-                                        className={`h-1 w-full bg-linear-to-r ${game.gradient} opacity-60 group-hover:opacity-100 transition-opacity`}
+                                        className={`h-1 w-full bg-gradient-to-r ${game.gradient} opacity-60 group-hover:opacity-100 transition-opacity`}
                                     />
 
                                     <div className="p-6">

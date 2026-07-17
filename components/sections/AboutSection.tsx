@@ -176,7 +176,7 @@ export default function AboutSection() {
                 <div className="flex items-start gap-6 mb-8">
                   {/* Avatar placeholder */}
                   <div
-                    className="w-20 h-20 rounded-sm flex items-center justify-center shrink-0 text-3xl font-bold"
+                    className="w-20 h-20 rounded-sm flex items-center justify-center flex-shrink-0 text-3xl font-bold"
                     style={{
                       background:
                         "linear-gradient(135deg, rgba(0,245,212,0.1), rgba(114,9,183,0.2))",
@@ -239,7 +239,7 @@ export default function AboutSection() {
                     ].map((edu, i) => (
                       <div key={i} className="flex gap-4 items-start">
                         <div
-                          className="w-2 h-2 rounded-full mt-1.5 shrink-0"
+                          className="w-2 h-2 rounded-full mt-1.5 flex-shrink-0"
                           style={{ backgroundColor: edu.color }}
                         />
                         <div className="flex-1 min-w-0">
@@ -250,7 +250,7 @@ export default function AboutSection() {
                             {edu.school}
                           </p>
                         </div>
-                        <div className="text-right shrink-0">
+                        <div className="text-right flex-shrink-0">
                           <p
                             className="text-xs font-bold"
                             style={{ color: edu.color, fontFamily: "Space Mono, monospace" }}

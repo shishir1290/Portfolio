@@ -145,7 +145,7 @@ export default function ContactSection() {
                   className="flex items-center gap-4 glass-card p-4 rounded-sm group"
                 >
                   <div
-                    className="w-10 h-10 rounded-sm flex items-center justify-center shrink-0 transition-all group-hover:bg-primary/20"
+                    className="w-10 h-10 rounded-sm flex items-center justify-center flex-shrink-0 transition-all group-hover:bg-primary/20"
                     style={{ backgroundColor: "rgba(0,245,212,0.08)" }}
                   >
                     <svg
@@ -242,7 +242,7 @@ export default function ContactSection() {
                       fontFamily: "Space Mono, monospace",
                     }}
                   >
-                    <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 shrink-0">
+                    <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 flex-shrink-0">
                       <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
                     </svg>
                     <span>{error}</span>
