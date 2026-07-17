@@ -29,11 +29,11 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.2",
-    "@typescript/typescript6": "^6.0.2",
     "@types/node": "^26",
     "@types/nodemailer": "^8.0.1",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@typescript/typescript6": "^6.0.2",
     "autoprefixer": "^10.5.4",
     "eslint": "^9.14.0",
     "eslint-config-next": "^16.2.10",
@@ -43,5 +43,9 @@
   },
   "overrides": {
     "socket.io-parser": "4.2.6"
+  },
+  "optionalDependencies": {
+    "lightningcss-linux-x64-gnu": "1.32.0",
+    "lightningcss-linux-x64-musl": "1.32.0"
   }
 }
