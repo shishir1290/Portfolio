@@ -2,7 +2,40 @@
 layer(base);
 
 @import 'tailwindcss';
-@config "../tailwind.config.ts";
+
+@theme {
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+  --color-accent: var(--accent);
+  --color-dark: var(--dark);
+  --color-dark-2: var(--dark-2);
+  --color-dark-3: #111827;
+  --color-text-muted: #6b7280;
+
+  --font-sans: var(--font-syne), sans-serif;
+  --font-mono: var(--font-space-mono), monospace;
+  --font-display: var(--font-bebas), sans-serif;
+
+  --animate-gradient-x: gradient-x 15s ease infinite;
+  --animate-pulse-slow: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-border-beam: border-beam calc(var(--duration)*1s) infinite linear;
+
+  @keyframes gradient-x {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+  }
+  @keyframes border-beam {
+    100% { offset-distance: 100%; }
+  }
+
+  --background-image-gradient-radial: radial-gradient(var(--tw-gradient-stops));
+  --background-image-hero-pattern: linear-gradient(135deg, #020817 0%, #0a0f1e 50%, #020817 100%);
+}
 
 :root {
   --font-syne: "Syne", sans-serif;
