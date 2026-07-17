@@ -221,10 +221,11 @@ export default function HeroSection() {
 
               {/* Floating tech badges */}
               {[
-                { label: "Node.js", top: "5%", left: "10%", color: "#68a063" },
-                { label: "WebRTC", top: "15%", right: "5%", color: "#00f5d4" },
-                { label: "Next.js", bottom: "20%", left: "0%", color: "#fff" },
-                { label: "Socket.io", bottom: "5%", right: "10%", color: "#f72585" },
+                { label: "Node.js", top: "5%", left: "10%", color: "#68a063", duration: "6s", delay: "0s" },
+                { label: "WebRTC", top: "15%", right: "5%", color: "#00f5d4", duration: "5s", delay: "1.5s" },
+                { label: "Next.js", bottom: "20%", left: "0%", color: "#fff", duration: "7s", delay: "0.5s" },
+                { label: "Socket.io", bottom: "3%", right: "20%", color: "#f72585", duration: "5.5s", delay: "1s" },
+                { label: "Golang", top: "50%", right: "-6%", color: "#0ac2f0ff", duration: "10s", delay: "1s" },
               ].map((badge) => (
                 <div
                   key={badge.label}
@@ -234,8 +235,8 @@ export default function HeroSection() {
                     left: badge.left,
                     right: (badge as any).right,
                     bottom: badge.bottom,
-                    animation: `float ${4 + Math.random() * 3}s ease-in-out infinite`,
-                    animationDelay: `${Math.random() * 2}s`,
+                    animation: `float ${badge.duration} ease-in-out infinite`,
+                    animationDelay: badge.delay,
                   }}
                 >
                   <span
