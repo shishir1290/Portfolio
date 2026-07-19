@@ -124,7 +124,11 @@ export default function AboutSection() {
             {/* CTA */}
             <div className="mt-10 flex gap-4">
               <a
-                onClick={() => { scrollTo("#contact") }}
+                href="/#contact"
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollTo("#contact");
+                }}
                 className="btn-primary inline-block"
               >
                 <span>CONTACT ME</span>
