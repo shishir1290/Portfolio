@@ -125,6 +125,12 @@ export default function HeroSection() {
                   ISLAM SHISHIR
                 </span>
               </h1>
+              <h2
+                className="text-sm sm:text-base text-primary/80 font-semibold tracking-[0.15em] uppercase mb-4"
+                style={{ fontFamily: "Space Mono, monospace" }}
+              >
+                Full-Stack WebRTC, Socket & Real-Time Systems Developer
+              </h2>
             </div>
 
             {/* Typewriter */}

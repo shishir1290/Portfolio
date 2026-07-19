@@ -1,5 +1,27 @@
 import type { Metadata, Viewport } from "next";
+import { Bebas_Neue, Syne, Space_Mono } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
+
+const bebasNeue = Bebas_Neue({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-bebas",
+  display: "swap",
+});
+
+const syne = Syne({
+  subsets: ["latin"],
+  variable: "--font-syne",
+  display: "swap",
+});
+
+const spaceMono = Space_Mono({
+  weight: ["400", "700"],
+  subsets: ["latin"],
+  variable: "--font-space-mono",
+  display: "swap",
+});
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -11,11 +33,11 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL("https://shishir.click"),
   title: {
-    default: "Md Sadmanur Islam Shishir | Full-Stack Developer",
+    default: "Md Sadmanur Islam Shishir | Full-Stack WebRTC & Real-Time Socket Developer",
     template: "%s | Shishir",
   },
   description:
-    "Full-Stack Web Developer in Dhaka, Bangladesh. Specializing in Next.js, Node.js, WebRTC, real-time systems, and scalable web applications.",
+    "Full-Stack Web Developer specializing in WebRTC, Socket.io, real-time systems, and scalable applications. Based in Dhaka, Bangladesh.",
   keywords: [
     "Full-Stack Developer",
     "Web Developer",
@@ -76,7 +98,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Md Sadmanur Islam Shishir | Full-Stack Developer",
     description:
-      "Full-Stack Web Developer in Dhaka, Bangladesh. Specializing in Next.js, Node.js, WebRTC, real-time systems, and scalable web applications.",
+      "Full-Stack Web Developer specializing in WebRTC, Socket.io, real-time systems, and scalable applications. Based in Dhaka, Bangladesh.",
     url: "https://shishir.click",
     siteName: "Shishir — Portfolio",
     images: [
@@ -140,24 +162,31 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="scroll-smooth">
+    <html lang="en" className={`scroll-smooth ${bebasNeue.variable} ${syne.variable} ${spaceMono.variable}`}>
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap"
-          rel="stylesheet"
-        />
+        <link rel="icon" href="/favicon.ico" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
       <body className="noise bg-dark antialiased">
+        {process.env.NEXT_PUBLIC_GA_ID && (
+          <>
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}
+              strategy="afterInteractive"
+            />
+            <Script id="google-analytics" strategy="afterInteractive">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${process.env.NEXT_PUBLIC_GA_ID}');
+              `}
+            </Script>
+          </>
+        )}
         {children}
         <ScrollToTop />
       </body>
