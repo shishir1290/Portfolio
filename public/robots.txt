@@ -1,0 +1,5 @@
+# robots.txt for shishir.dev
+User-agent: *
+Allow: /
+
+Sitemap: https://shishir.dev/sitemap.xml

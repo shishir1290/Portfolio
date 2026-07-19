@@ -4,6 +4,9 @@ export const metadata: Metadata = {
     title: "Games Arcade",
     description:
         "Play 6 interactive Three.js games — Car Racing, Tic Tac Toe, Space Shooter, Walking Explorer, Maze Runner, and Ball Bounce.",
+    alternates: {
+        canonical: "https://shishir.click/games",
+    },
 };
 
 export default function GamesLayout({

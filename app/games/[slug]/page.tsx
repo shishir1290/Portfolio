@@ -82,6 +82,8 @@ export default function GamePage() {
         <div className="min-h-screen bg-dark relative">
             <title>{`${game.title} - Play Free Three.js Game`}</title>
             <meta name="description" content={`Play ${game.title} online. ${game.description} An interactive 3D WebGL game built with Three.js.`} />
+            <link rel="canonical" href={`https://shishir.click/games/${slug}`} />
+            <h1 className="sr-only">{game.title}</h1>
 
             {/* Game fills the viewport */}
             <div className="fixed inset-0">
