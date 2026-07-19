@@ -9,7 +9,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://shishir.dev"),
+  metadataBase: new URL("https://shishir.click"),
   title: {
     default: "Md Sadmanur Islam Shishir | Full-Stack Developer",
     template: "%s | Shishir",
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
     "Frontend Developer",
     "Backend Developer",
   ],
-  authors: [{ name: "Md Sadmanur Islam Shishir", url: "https://shishir.dev" }],
+  authors: [{ name: "Md Sadmanur Islam Shishir", url: "https://shishir.click" }],
   creator: "Md Sadmanur Islam Shishir",
   publisher: "Md Sadmanur Islam Shishir",
   robots: {
@@ -60,7 +60,7 @@ export const metadata: Metadata = {
     title: "Md Sadmanur Islam Shishir | Full-Stack Developer",
     description:
       "Full-Stack Web Developer specializing in scalable applications, real-time systems, WebRTC, and modern UI/UX. Based in Dhaka, Bangladesh.",
-    url: "https://shishir.dev",
+    url: "https://shishir.click",
     siteName: "Shishir — Portfolio",
     images: [
       {
@@ -81,7 +81,10 @@ export const metadata: Metadata = {
     images: ["/shishir.png"],
   },
   alternates: {
-    canonical: "https://shishir.dev",
+    canonical: "https://shishir.click",
+  },
+  verification: {
+    google: "kgRYRHOnCZ28DeLuYAczml10Xy6QT6CyOnBZ3vs_mkI",
   },
 };
 
@@ -90,7 +93,7 @@ const jsonLd = {
   "@context": "https://schema.org",
   "@type": "Person",
   name: "Md Sadmanur Islam Shishir",
-  url: "https://shishir.dev",
+  url: "https://shishir.click",
   jobTitle: "Full-Stack Web Developer",
   email: "shishir1290@gmail.com",
   telephone: "+8801946432534",

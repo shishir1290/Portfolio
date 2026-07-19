@@ -1,5 +1,5 @@
-# robots.txt for shishir.dev
+# robots.txt for shishir.click
 User-agent: *
 Allow: /
 
-Sitemap: https://shishir.dev/sitemap.xml
+Sitemap: https://shishir.click/sitemap.xml

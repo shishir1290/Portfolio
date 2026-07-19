@@ -1,42 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://shishir.dev/</loc>
+    <loc>https://shishir.click/</loc>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://shishir.dev/games</loc>
+    <loc>https://shishir.click/games</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://shishir.dev/games/car-racing</loc>
+    <loc>https://shishir.click/games/car-racing</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://shishir.dev/games/tic-tac-toe</loc>
+    <loc>https://shishir.click/games/tic-tac-toe</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://shishir.dev/games/space-shooter</loc>
+    <loc>https://shishir.click/games/space-shooter</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://shishir.dev/games/walking-explorer</loc>
+    <loc>https://shishir.click/games/walking-explorer</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://shishir.dev/games/maze-runner</loc>
+    <loc>https://shishir.click/games/maze-runner</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://shishir.dev/games/ball-bounce</loc>
+    <loc>https://shishir.click/games/ball-bounce</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
