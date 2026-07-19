@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     template: "%s | Shishir",
   },
   description:
-    "Full-Stack Web Developer specializing in scalable applications, real-time systems, WebRTC, and modern UI/UX. Expert in Next.js, Node.js, React, and cloud technologies. Based in Dhaka, Bangladesh.",
+    "Full-Stack Web Developer in Dhaka, Bangladesh. Specializing in Next.js, Node.js, WebRTC, real-time systems, and scalable web applications.",
   keywords: [
     "Full-Stack Developer",
     "Web Developer",
@@ -33,6 +33,23 @@ export const metadata: Metadata = {
     "Portfolio",
     "Frontend Developer",
     "Backend Developer",
+    "Nest.js",
+    "Golang",
+    "Go Developer",
+    "Socket.io",
+    "Real-Time Applications",
+    "WebRTC Engineer",
+    "RTMP",
+    "HLS Streaming",
+    "FFmpeg",
+    "PostgreSQL",
+    "MongoDB",
+    "Prisma ORM",
+    "Docker",
+    "Nginx",
+    "RESTful APIs",
+    "Responsive Web Design",
+    "UI/UX Developer",
   ],
   authors: [{ name: "Md Sadmanur Islam Shishir", url: "https://shishir.click" }],
   creator: "Md Sadmanur Islam Shishir",
@@ -59,7 +76,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Md Sadmanur Islam Shishir | Full-Stack Developer",
     description:
-      "Full-Stack Web Developer specializing in scalable applications, real-time systems, WebRTC, and modern UI/UX. Based in Dhaka, Bangladesh.",
+      "Full-Stack Web Developer in Dhaka, Bangladesh. Specializing in Next.js, Node.js, WebRTC, real-time systems, and scalable web applications.",
     url: "https://shishir.click",
     siteName: "Shishir — Portfolio",
     images: [
