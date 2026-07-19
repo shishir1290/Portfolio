@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 
 export default function Footer() {
@@ -22,7 +24,7 @@ export default function Footer() {
                 MD SADMANUR ISLAM SHISHIR
               </p>
               <p className="text-white/20 text-xs mt-0.5">
-                Full-Stack Developer · Dhaka, Bangladesh
+                Full-Stack Developer · College Gate, Konabari, Gazipur, Bangladesh
               </p>
             </div>
           </div>
@@ -56,7 +58,11 @@ export default function Footer() {
 
           <div className="flex items-center gap-4">
             <a
-              href="mailto:shishir1290@gmail.com"
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                window.location.href = "mailto:" + "shishir1290" + "@" + "gmail.com";
+              }}
               className="text-white/30 hover:text-primary transition-colors text-xs"
               style={{ fontFamily: "Space Mono, monospace" }}
             >

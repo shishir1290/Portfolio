@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 export default function ContactSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const [visible, setVisible] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const [formState, setFormState] = useState({
     name: "",
     email: "",
@@ -16,6 +17,7 @@ export default function ContactSection() {
   const [error, setError] = useState("");
 
   useEffect(() => {
+    setMounted(true);
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) setVisible(true);
@@ -56,8 +58,8 @@ export default function ContactSection() {
   const contactItems = [
     {
       label: "Email",
-      value: "shishir1290@gmail.com",
-      href: "mailto:shishir1290@gmail.com",
+      value: mounted ? "shishir1290@gmail.com" : "shishir1290 [at] gmail.com",
+      href: mounted ? "mailto:shishir1290@gmail.com" : "#",
       icon: (
         <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
       ),
@@ -72,8 +74,8 @@ export default function ContactSection() {
     },
     {
       label: "Alt Email",
-      value: "shishir1290@gmail.com",
-      href: "mailto:shishir1290@gmail.com",
+      value: mounted ? "shishir1290@gmail.com" : "shishir1290 [at] gmail.com",
+      href: mounted ? "mailto:shishir1290@gmail.com" : "#",
       icon: (
         <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
       ),

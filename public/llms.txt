@@ -1,0 +1,56 @@
+# Md Sadmanur Islam Shishir - Full-Stack Developer
+
+A comprehensive professional reference for Md Sadmanur Islam Shishir, Full-Stack Web Developer specializing in scalable applications, WebRTC, real-time communication systems, and modern UI/UX design.
+
+## Profile Summary
+- **Name**: Md Sadmanur Islam Shishir
+- **Job Title**: Full-Stack Web Developer
+- **Company**: Pakiza Software Limited
+- **Location**: Dhaka, Bangladesh
+- **Education**: B.Sc. in Software Engineering, American International University, Bangladesh (CGPA: 3.61)
+- **Website**: https://shishir.click
+- **LinkedIn**: https://linkedin.com/in/shishir1290
+- **GitHub**: https://github.com/shishir1290
+- **Contact**: shishir1290@gmail.com | +8801946432534
+
+## Technical Arsenal
+
+### Frontend
+- Next.js, React, TypeScript, JavaScript, Tailwind CSS
+
+### Backend
+- Node.js, Nest.js, Go (Golang), RESTful APIs, PostgreSQL
+
+### Real-Time & Streaming
+- WebRTC, Socket.io, RTMP, HLS, FFmpeg
+
+### Databases & ORM
+- MongoDB, MySQL, Mongoose, Prisma ORM, Sequelize
+
+### DevOps & Tools
+- Nginx, Git, Docker, Linux, Postman
+
+---
+
+## Selected Projects
+
+### Live Streaming Platform
+An enterprise-grade live video streaming solution with chat functionality.
+- **Tech Stack**: Next.js, Go (Golang), RTMP, HLS, WebRTC, MongoDB.
+
+### Video Conferencing App
+A peer-to-peer and SFU video conferencing solution with screen sharing and instant messaging.
+- **Tech Stack**: React, WebRTC, Socket.io, Node.js, Tailwind CSS.
+
+### Enterprise E-Commerce Platform
+A scalable shopping website with custom search, stripe billing integrations, and automated invoicing.
+- **Tech Stack**: Next.js, Nest.js, PostgreSQL, Prisma, Docker.
+
+---
+
+## Work Experience
+
+### Full-Stack Web Developer at Pakiza Software Limited
+*Dhaka, Bangladesh — 2024 to Present*
+- Build real-time streaming, WebRTC configurations, and scalable APIs.
+- Lead migrations to modern frontends (Next.js/React).

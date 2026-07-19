@@ -97,7 +97,11 @@ export default function Navbar() {
           {/* CTA */}
           <div className="hidden md:flex items-center gap-4">
             <a
-              href="mailto:shishir1290@gmail.com"
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                window.location.href = "mailto:" + "shishir1290" + "@" + "gmail.com";
+              }}
               className="btn-primary text-xs"
             >
               <span>HIRE ME</span>
@@ -150,9 +154,13 @@ export default function Navbar() {
           </Link>
         ))}
         <a
-          href="mailto:shishir1290@gmail.com"
+          href="#"
+          onClick={(e) => {
+            e.preventDefault();
+            setMenuOpen(false);
+            window.location.href = "mailto:" + "shishir1290" + "@" + "gmail.com";
+          }}
           className="btn-primary mt-4"
-          onClick={() => setMenuOpen(false)}
         >
           <span>HIRE ME</span>
         </a>

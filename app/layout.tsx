@@ -131,31 +131,54 @@ export const metadata: Metadata = {
 };
 
 // JSON-LD structured data for SEO
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "Person",
-  name: "Md Sadmanur Islam Shishir",
-  url: "https://shishir.click",
-  jobTitle: "Full-Stack Web Developer",
-  email: "shishir1290@gmail.com",
-  telephone: "+8801946432534",
-  address: {
-    "@type": "PostalAddress",
-    addressLocality: "Konabari, Gazipur",
-    addressCountry: "Bangladesh",
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    name: "Md Sadmanur Islam Shishir",
+    url: "https://shishir.click",
+    jobTitle: "Full-Stack Web Developer",
+    email: "shishir1290@gmail.com",
+    telephone: "+8801946432534",
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: "Konabari, Gazipur",
+      addressCountry: "Bangladesh",
+    },
+    sameAs: [
+      "https://github.com/shishir1290",
+      "https://linkedin.com/in/shishir1290",
+      "https://x.com/shishir1290"
+    ],
+    knowsAbout: [
+      "Full-Stack Development",
+      "Next.js",
+      "React",
+      "Node.js",
+      "WebRTC",
+      "TypeScript",
+      "JavaScript",
+      "UI/UX Design",
+    ],
   },
-  sameAs: [],
-  knowsAbout: [
-    "Full-Stack Development",
-    "Next.js",
-    "React",
-    "Node.js",
-    "WebRTC",
-    "TypeScript",
-    "JavaScript",
-    "UI/UX Design",
-  ],
-};
+  {
+    "@context": "https://schema.org",
+    "@type": "ProfessionalService",
+    name: "Md Sadmanur Islam Shishir — Full-Stack Developer",
+    image: "https://shishir.click/shishir.png",
+    url: "https://shishir.click",
+    telephone: "+8801946432534",
+    priceRange: "$$",
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "College Gate, Konabari",
+      addressLocality: "Gazipur",
+      addressRegion: "Dhaka",
+      postalCode: "1700",
+      addressCountry: "BD",
+    },
+  }
+];
 
 import ScrollToTop from "@/components/ScrollToTop";
 
