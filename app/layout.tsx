@@ -104,8 +104,8 @@ export const metadata: Metadata = {
     images: [
       {
         url: "/shishir.png",
-        width: 1200,
-        height: 630,
+        width: 673,
+        height: 835,
         alt: "Md Sadmanur Islam Shishir — Full-Stack Developer",
       },
     ],
@@ -196,7 +196,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className="noise bg-dark antialiased">
+      <body className="noise bg-dark antialiased" suppressHydrationWarning>
         {process.env.NEXT_PUBLIC_GA_ID && (
           <>
             <Script

@@ -8,10 +8,16 @@ A comprehensive professional reference for Md Sadmanur Islam Shishir, Full-Stack
 - **Company**: Pakiza Software Limited
 - **Location**: Dhaka, Bangladesh
 - **Education**: B.Sc. in Software Engineering, American International University, Bangladesh (CGPA: 3.61)
-- **Website**: https://shishir.click
-- **LinkedIn**: https://linkedin.com/in/shishir1290
-- **GitHub**: https://github.com/shishir1290
-- **Contact**: shishir1290@gmail.com | +8801946432534
+- **Website**: [https://shishir.click](https://shishir.click)
+- **LinkedIn**: [https://linkedin.com/in/shishir1290](https://linkedin.com/in/shishir1290)
+- **GitHub**: [https://github.com/shishir1290](https://github.com/shishir1290)
+- **Contact**: [shishir1290@gmail.com](mailto:shishir1290@gmail.com) | +8801946432534
+
+## Navigation Links
+- [Homepage](https://shishir.click)
+- [Games Center](https://shishir.click/games)
+- [GitHub Profile](https://github.com/shishir1290)
+- [LinkedIn Profile](https://linkedin.com/in/shishir1290)
 
 ## Technical Arsenal
 
