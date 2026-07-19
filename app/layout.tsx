@@ -122,7 +122,7 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://shishir.click",
     languages: {
-      "en-US": "https://shishir.click",
+      "en": "https://shishir.click",
     },
   },
   verification: {
