@@ -1,11 +1,17 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function ThreeGlobe() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
+    if (typeof window !== "undefined" && window.innerWidth < 768) {
+      setIsMobile(true);
+      return;
+    }
+
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -159,6 +165,17 @@ export default function ThreeGlobe() {
       cleanup.then((fn) => fn?.());
     };
   }, []);
+
+  if (isMobile) {
+    return (
+      <div className="absolute inset-0 flex items-center justify-center">
+        {/* CSS Mock Globe for mobile devices */}
+        <div className="w-56 h-56 rounded-full border border-primary/20 animate-pulse-slow flex items-center justify-center">
+          <div className="w-40 h-40 rounded-full border border-secondary/10 animate-ping-slow" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <canvas

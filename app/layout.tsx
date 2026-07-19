@@ -121,6 +121,9 @@ export const metadata: Metadata = {
   },
   alternates: {
     canonical: "https://shishir.click",
+    languages: {
+      "en-US": "https://shishir.click",
+    },
   },
   verification: {
     google: "kgRYRHOnCZ28DeLuYAczml10Xy6QT6CyOnBZ3vs_mkI",

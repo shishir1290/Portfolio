@@ -90,6 +90,46 @@ export default function Footer() {
             >
               LINKEDIN
             </a>
+            <span className="text-white/10">·</span>
+            <a
+              href="https://x.com/shishir1290"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-white/30 hover:text-primary transition-colors text-xs"
+              style={{ fontFamily: "Space Mono, monospace" }}
+            >
+              X
+            </a>
+            <span className="text-white/10">·</span>
+            <a
+              href="https://facebook.com/shishir1290"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-white/30 hover:text-primary transition-colors text-xs"
+              style={{ fontFamily: "Space Mono, monospace" }}
+            >
+              FACEBOOK
+            </a>
+            <span className="text-white/10">·</span>
+            <a
+              href="https://instagram.com/shishir1290"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-white/30 hover:text-primary transition-colors text-xs"
+              style={{ fontFamily: "Space Mono, monospace" }}
+            >
+              INSTAGRAM
+            </a>
+            <span className="text-white/10">·</span>
+            <a
+              href="https://youtube.com/@shishir1290"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-white/30 hover:text-primary transition-colors text-xs"
+              style={{ fontFamily: "Space Mono, monospace" }}
+            >
+              YOUTUBE
+            </a>
           </div>
         </div>
       </div>
