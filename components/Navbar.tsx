@@ -4,20 +4,24 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 
 const navItems = [
-  { label: "ABOUT", href: "#about" },
-  { label: "SKILLS", href: "#skills" },
-  { label: "EXPERIENCE", href: "#experience" },
-  { label: "PROJECTS", href: "#projects" },
-  { label: "CONTACT", href: "#contact" },
+  { label: "ABOUT", href: "/#about" },
+  { label: "SKILLS", href: "/#skills" },
+  { label: "EXPERIENCE", href: "/#experience" },
+  { label: "PROJECTS", href: "/#projects" },
+  { label: "CONTACT", href: "/#contact" },
   { label: "GAMES", href: "/games", isRoute: true },
 ];
 
 export const scrollTo = (href: string) => {
-  const el = document.querySelector(href);
-  if (el) {
-    el.scrollIntoView({ behavior: "smooth" });
+  const hash = href.includes("#") ? href.substring(href.indexOf("#")) : href;
+  try {
+    const el = document.querySelector(hash);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth" });
+    }
+  } catch (err) {
+    console.error("Scroll selector error:", err);
   }
-
 };
 
 export default function Navbar() {
@@ -45,8 +49,14 @@ export default function Navbar() {
       >
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           {/* Logo */}
-          <button
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          <Link
+            href="/"
+            onClick={(e) => {
+              if (window.location.pathname === "/") {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }
+            }}
             className="flex items-center gap-3 group"
           >
             <div className="w-8 h-8 border border-primary/50 flex items-center justify-center group-hover:border-primary transition-colors">
@@ -63,29 +73,25 @@ export default function Navbar() {
             >
               SHISHIR
             </span>
-          </button>
+          </Link>
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-8">
-            {navItems.map((item) =>
-              (item as any).isRoute ? (
-                <Link
-                  key={item.label}
-                  href={item.href}
-                  className="nav-link"
-                >
-                  {item.label}
-                </Link>
-              ) : (
-                <button
-                  key={item.label}
-                  onClick={() => scrollTo(item.href)}
-                  className="nav-link"
-                >
-                  {item.label}
-                </button>
-              )
-            )}
+            {navItems.map((item) => (
+              <Link
+                key={item.label}
+                href={item.href}
+                className="nav-link"
+                onClick={(e) => {
+                  if (!item.isRoute && window.location.pathname === "/") {
+                    e.preventDefault();
+                    scrollTo(item.href);
+                  }
+                }}
+              >
+                {item.label}
+              </Link>
+            ))}
           </div>
 
           {/* CTA */}
@@ -123,34 +129,26 @@ export default function Navbar() {
           : "opacity-0 pointer-events-none"
           }`}
       >
-        {navItems.map((item, i) =>
-          (item as any).isRoute ? (
-            <Link
-              key={item.label}
-              href={item.href}
-              onClick={() => setMenuOpen(false)}
-              className="text-3xl font-display text-white/60 hover:text-primary transition-colors tracking-widest"
-              style={{
-                fontFamily: "Bebas Neue, sans-serif",
-                transitionDelay: `${i * 50}ms`,
-              }}
-            >
-              {item.label}
-            </Link>
-          ) : (
-            <button
-              key={item.label}
-              onClick={() => { scrollTo(item.href); setMenuOpen(false) }}
-              className="text-3xl font-display text-white/60 hover:text-primary transition-colors tracking-widest"
-              style={{
-                fontFamily: "Bebas Neue, sans-serif",
-                transitionDelay: `${i * 50}ms`,
-              }}
-            >
-              {item.label}
-            </button>
-          )
-        )}
+        {navItems.map((item, i) => (
+          <Link
+            key={item.label}
+            href={item.href}
+            onClick={(e) => {
+              setMenuOpen(false);
+              if (!item.isRoute && window.location.pathname === "/") {
+                e.preventDefault();
+                scrollTo(item.href);
+              }
+            }}
+            className="text-3xl font-display text-white/60 hover:text-primary transition-colors tracking-widest"
+            style={{
+              fontFamily: "Bebas Neue, sans-serif",
+              transitionDelay: `${i * 50}ms`,
+            }}
+          >
+            {item.label}
+          </Link>
+        ))}
         <a
           href="mailto:shishir1290@gmail.com"
           className="btn-primary mt-4"

@@ -1,8 +1,10 @@
+import Link from "next/link";
+
 export default function Footer() {
   return (
     <footer className="relative border-t border-white/5 py-12 overflow-hidden">
       <div className="max-w-7xl mx-auto px-6">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-6 pb-8 mb-8 border-b border-white/5">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 border border-primary/30 flex items-center justify-center">
               <span
@@ -25,6 +27,26 @@ export default function Footer() {
             </div>
           </div>
 
+          <div className="flex flex-wrap items-center justify-center gap-6">
+            <Link href="/#about" className="text-white/30 hover:text-primary transition-colors text-xs tracking-wider" style={{ fontFamily: "Space Mono, monospace" }}>
+              ABOUT
+            </Link>
+            <Link href="/#skills" className="text-white/30 hover:text-primary transition-colors text-xs tracking-wider" style={{ fontFamily: "Space Mono, monospace" }}>
+              SKILLS
+            </Link>
+            <Link href="/#experience" className="text-white/30 hover:text-primary transition-colors text-xs tracking-wider" style={{ fontFamily: "Space Mono, monospace" }}>
+              EXPERIENCE
+            </Link>
+            <Link href="/#projects" className="text-white/30 hover:text-primary transition-colors text-xs tracking-wider" style={{ fontFamily: "Space Mono, monospace" }}>
+              PROJECTS
+            </Link>
+            <Link href="/games" className="text-white/30 hover:text-primary transition-colors text-xs tracking-wider" style={{ fontFamily: "Space Mono, monospace" }}>
+              GAMES
+            </Link>
+          </div>
+        </div>
+
+        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           <p
             className="text-white/20 text-xs text-center"
             style={{ fontFamily: "Space Mono, monospace" }}
@@ -47,6 +69,26 @@ export default function Footer() {
               style={{ fontFamily: "Space Mono, monospace" }}
             >
               PHONE
+            </a>
+            <span className="text-white/10">·</span>
+            <a
+              href="https://github.com/shishir1290"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-white/30 hover:text-primary transition-colors text-xs"
+              style={{ fontFamily: "Space Mono, monospace" }}
+            >
+              GITHUB
+            </a>
+            <span className="text-white/10">·</span>
+            <a
+              href="https://linkedin.com/in/shishir1290"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-white/30 hover:text-primary transition-colors text-xs"
+              style={{ fontFamily: "Space Mono, monospace" }}
+            >
+              LINKEDIN
             </a>
           </div>
         </div>
