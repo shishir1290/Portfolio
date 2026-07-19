@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/sections/HeroSection";
 import AboutSection from "@/components/sections/AboutSection";
@@ -7,6 +8,13 @@ import ProjectsSection from "@/components/sections/ProjectsSection";
 import ContactSection from "@/components/sections/ContactSection";
 import Footer from "@/components/Footer";
 import SmoothScroll from "@/components/SmoothScroll";
+
+export const metadata: Metadata = {
+  title: "Md Sadmanur Islam Shishir | Full-Stack Developer",
+  description:
+    "Full-Stack Web Developer specializing in scalable applications, real-time systems, WebRTC, and modern UI/UX. Expert in Next.js, Node.js, React, and cloud technologies. Based in Dhaka, Bangladesh.",
+};
+
 
 export default function Home() {
   return (

@@ -165,6 +165,8 @@ export default function ThreeGlobe() {
       ref={canvasRef}
       className="w-full h-full"
       style={{ opacity: 0.9 }}
+      role="img"
+      aria-label="Interactive 3D wireframe globe representing the developer's global reach and full-stack capabilities"
     />
   );
 }

@@ -11,13 +11,46 @@ const WalkingExplorer = dynamic(() => import("@/components/games/WalkingExplorer
 const MazeRunner = dynamic(() => import("@/components/games/MazeRunner"), { ssr: false });
 const BallBounce = dynamic(() => import("@/components/games/BallBounce"), { ssr: false });
 
-const gameMap: Record<string, { component: React.ComponentType; title: string; controls: string }> = {
-    "car-racing": { component: CarRacing, title: "🏎️ Car Racing", controls: "← → steer · ↑ ↓ speed · Dodge red obstacles" },
-    "tic-tac-toe": { component: TicTacToe, title: "⭕ Tic Tac Toe", controls: "Click cell to play · Drag to rotate board" },
-    "space-shooter": { component: SpaceShooter, title: "🚀 Space Shooter", controls: "WASD move · Space to shoot · Survive waves" },
-    "walking-explorer": { component: WalkingExplorer, title: "🚶 Walking Explorer", controls: "WASD + mouse look · Click to lock pointer · Collect orbs" },
-    "maze-runner": { component: MazeRunner, title: "🌀 Maze Runner", controls: "WASD + mouse look · Click to lock pointer · Find the exit" },
-    "ball-bounce": { component: BallBounce, title: "🏓 Ball Bounce", controls: "Mouse to move paddle · Click to launch ball" },
+const gameMap: Record<
+    string,
+    { component: React.ComponentType; title: string; description: string; controls: string }
+> = {
+    "car-racing": {
+        component: CarRacing,
+        title: "🏎️ Car Racing",
+        description: "Dodge obstacles on an endless highway at breakneck speed.",
+        controls: "← → steer · ↑ ↓ speed · Dodge red obstacles",
+    },
+    "tic-tac-toe": {
+        component: TicTacToe,
+        title: "⭕ Tic Tac Toe",
+        description: "Challenge an unbeatable AI on a 3D rotating board.",
+        controls: "Click cell to play · Drag to rotate board",
+    },
+    "space-shooter": {
+        component: SpaceShooter,
+        title: "🚀 Space Shooter",
+        description: "Blast through waves of enemies in deep space.",
+        controls: "WASD move · Space to shoot · Survive waves",
+    },
+    "walking-explorer": {
+        component: WalkingExplorer,
+        title: "🚶 Walking Explorer",
+        description: "Explore a first-person world and collect glowing orbs.",
+        controls: "WASD + mouse look · Click to lock pointer · Collect orbs",
+    },
+    "maze-runner": {
+        component: MazeRunner,
+        title: "🌀 Maze Runner",
+        description: "Navigate a procedural maze before time runs out.",
+        controls: "WASD + mouse look · Click to lock pointer · Find the exit",
+    },
+    "ball-bounce": {
+        component: BallBounce,
+        title: "🏓 Ball Bounce",
+        description: "Classic breakout — destroy all blocks with your paddle.",
+        controls: "Mouse to move paddle · Click to launch ball",
+    },
 };
 
 export default function GamePage() {
@@ -47,6 +80,9 @@ export default function GamePage() {
 
     return (
         <div className="min-h-screen bg-dark relative">
+            <title>{`${game.title} - Play Free Three.js Game`}</title>
+            <meta name="description" content={`Play ${game.title} online. ${game.description} An interactive 3D WebGL game built with Three.js.`} />
+
             {/* Game fills the viewport */}
             <div className="fixed inset-0">
                 <GameComponent />

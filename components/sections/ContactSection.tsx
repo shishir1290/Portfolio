@@ -152,6 +152,7 @@ export default function ContactSection() {
                       viewBox="0 0 24 24"
                       fill="currentColor"
                       className="w-4 h-4 text-primary"
+                      aria-hidden="true"
                     >
                       {item.icon}
                     </svg>
@@ -202,7 +203,7 @@ export default function ContactSection() {
                   className="w-16 h-16 rounded-full flex items-center justify-center mb-6"
                   style={{ backgroundColor: "rgba(0,245,212,0.1)" }}
                 >
-                  <svg viewBox="0 0 24 24" fill="none" className="w-8 h-8 text-primary" stroke="currentColor" strokeWidth="2">
+                  <svg viewBox="0 0 24 24" fill="none" className="w-8 h-8 text-primary" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                     <polyline points="20 6 9 17 4 12" />
                   </svg>
                 </div>
@@ -242,7 +243,7 @@ export default function ContactSection() {
                       fontFamily: "Space Mono, monospace",
                     }}
                   >
-                    <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 flex-shrink-0">
+                    <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 flex-shrink-0" aria-hidden="true">
                       <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
                     </svg>
                     <span>{error}</span>
@@ -336,7 +337,7 @@ export default function ContactSection() {
                   <span className="flex items-center justify-center gap-2">
                     {sending ? (
                       <>
-                        <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none">
+                        <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                         </svg>

@@ -38,6 +38,7 @@ export default function ScrollToTop() {
         stroke="currentColor"
         strokeWidth="2.5"
         className="w-5 h-5 animate-pulse"
+        aria-hidden="true"
       >
         <path d="M18 15l-6-6-6 6" />
       </svg>
