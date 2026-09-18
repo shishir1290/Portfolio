@@ -3,7 +3,8 @@
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
+import type { ComponentType } from "react";
 
 const CarRacing = dynamic(() => import("@/components/games/CarRacing"), { ssr: false });
 const TicTacToe = dynamic(() => import("@/components/games/TicTacToe"), { ssr: false });
@@ -98,7 +99,7 @@ function MobileControls({ slug }: { slug: string }) {
 
 const gameMap: Record<
     string,
-    { component: React.ComponentType; title: string; description: string; controls: string }
+    { component: ComponentType; title: string; description: string; controls: string }
 > = {
     "car-racing": {
         component: CarRacing,
@@ -143,6 +144,11 @@ export default function GamePage() {
     const slug = params.slug as string;
     const game = gameMap[slug];
 
+    useEffect(() => {
+        if (game) document.title = `${game.title} - Play Free Three.js Game`;
+        return () => { document.title = "Games Arcade"; };
+    }, [game, slug]);
+
     if (!game) {
         return (
             <div className="min-h-screen bg-dark flex items-center justify-center">
@@ -165,9 +171,6 @@ export default function GamePage() {
 
     return (
         <div className="min-h-[100dvh] bg-dark relative overflow-hidden overscroll-none">
-            <title>{`${game.title} - Play Free Three.js Game`}</title>
-            <meta name="description" content={`Play ${game.title} online. ${game.description} An interactive 3D WebGL game built with Three.js.`} />
-            <link rel="canonical" href={`https://shishir.click/games/${slug}`} />
             <h1 className="sr-only">{game.title}</h1>
 
             {/* Game fills the viewport */}
