@@ -79,23 +79,23 @@ export default function GamePage() {
     const GameComponent = game.component;
 
     return (
-        <div className="min-h-screen bg-dark relative">
+        <div className="min-h-[100dvh] bg-dark relative overflow-hidden overscroll-none">
             <title>{`${game.title} - Play Free Three.js Game`}</title>
             <meta name="description" content={`Play ${game.title} online. ${game.description} An interactive 3D WebGL game built with Three.js.`} />
             <link rel="canonical" href={`https://shishir.click/games/${slug}`} />
             <h1 className="sr-only">{game.title}</h1>
 
             {/* Game fills the viewport */}
-            <div className="fixed inset-0">
+            <div className="fixed inset-0 touch-none">
                 <GameComponent />
             </div>
 
             {/* HUD Overlay */}
             <div className="fixed top-0 left-0 right-0 z-50 pointer-events-none">
-                <div className="flex items-center justify-between px-4 py-3">
+                <div className="flex items-center justify-between px-3 sm:px-4 py-3">
                     <Link
                         href="/games"
-                        className="pointer-events-auto flex items-center gap-2 px-3 py-1.5 bg-dark/80 backdrop-blur-md border border-primary/20 rounded-sm hover:border-primary/50 transition-colors"
+                        className="pointer-events-auto flex items-center gap-2 px-3 py-2 min-h-10 bg-dark/80 backdrop-blur-md border border-primary/20 rounded-sm hover:border-primary/50 transition-colors"
                     >
                         <span
                             className="text-primary text-xs tracking-widest"
@@ -105,7 +105,7 @@ export default function GamePage() {
                         </span>
                     </Link>
 
-                    <div className="px-3 py-1.5 bg-dark/80 backdrop-blur-md border border-white/10 rounded-sm">
+                    <div className="hidden sm:block px-3 py-1.5 bg-dark/80 backdrop-blur-md border border-white/10 rounded-sm">
                         <span
                             className="text-white/80 text-xs tracking-wider"
                             style={{ fontFamily: "Space Mono, monospace" }}
@@ -116,7 +116,7 @@ export default function GamePage() {
                 </div>
 
                 {/* Controls hint */}
-                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 bg-dark/80 backdrop-blur-md border border-white/10 rounded-sm">
+                <div className="hidden sm:block absolute bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 bg-dark/80 backdrop-blur-md border border-white/10 rounded-sm">
                     <span
                         className="text-white/40 text-[10px] tracking-widest"
                         style={{ fontFamily: "Space Mono, monospace" }}
