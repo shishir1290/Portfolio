@@ -64,10 +64,10 @@ export default function GamesPage() {
     const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
 
     return (
-        <div className="min-h-screen bg-dark noise grid-bg">
+        <div className="min-h-screen bg-dark noise grid-bg selection:bg-primary\/20 selection:text-white overflow-x-hidden">
             {/* Header */}
             <header className="relative border-b border-white/5">
-                <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
                     <Link
                         href="/"
                         className="flex items-center gap-3 group"
@@ -90,7 +90,7 @@ export default function GamesPage() {
 
                     <Link
                         href="/"
-                        className="nav-link flex items-center gap-2"
+                        className="nav-link flex items-center gap-2 text-[10px] sm:text-xs whitespace-nowrap"
                     >
                         ← BACK TO PORTFOLIO
                     </Link>
@@ -98,7 +98,7 @@ export default function GamesPage() {
             </header>
 
             {/* Hero */}
-            <section className="relative py-20 overflow-hidden">
+            <section className="relative py-14 sm:py-20 lg:py-24 overflow-hidden">
                 {/* Glowing orbs */}
                 <div
                     className="absolute top-0 right-1/4 w-96 h-96 rounded-full pointer-events-none"
@@ -117,7 +117,7 @@ export default function GamesPage() {
                     }}
                 />
 
-                <div className="max-w-7xl mx-auto px-6 text-center relative z-10">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center relative z-10">
                     <p
                         className="text-sm text-primary/60 tracking-[0.3em] mb-4"
                         style={{ fontFamily: "Space Mono, monospace" }}
@@ -125,13 +125,13 @@ export default function GamesPage() {
                         INTERACTIVE PLAYGROUND
                     </p>
                     <h1
-                        className="text-6xl sm:text-7xl lg:text-8xl font-bold gradient-text text-glow leading-none mb-6"
+                        className="text-5xl sm:text-7xl lg:text-8xl font-bold gradient-text text-glow leading-none mb-5 sm:mb-6"
                         style={{ fontFamily: "Bebas Neue, sans-serif" }}
                     >
                         GAME ARCADE
                     </h1>
                     <p
-                        className="text-white/40 max-w-xl mx-auto text-base leading-relaxed"
+                        className="text-white/40 max-w-xl mx-auto text-sm sm:text-base leading-relaxed px-2"
                     >
                         Six immersive Three.js games built from scratch — play them
                         right here in your browser. No downloads, no installs.
@@ -141,8 +141,8 @@ export default function GamesPage() {
 
             {/* Game Grid */}
             <section className="relative pb-24">
-                <div className="max-w-7xl mx-auto px-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                         {games.map((game, idx) => (
                             <Link
                                 key={game.slug}
@@ -152,7 +152,7 @@ export default function GamesPage() {
                                 onMouseLeave={() => setHoveredIdx(null)}
                             >
                                 <div
-                                    className="glass-card rounded-lg overflow-hidden transition-all duration-500"
+                                    className="glass-card rounded-xl overflow-hidden transition-all duration-300 active:scale-[0.99] h-full"
                                     style={{
                                         borderColor:
                                             hoveredIdx === idx
@@ -169,10 +169,10 @@ export default function GamesPage() {
                                         className={`h-1 w-full bg-gradient-to-r ${game.gradient} opacity-60 group-hover:opacity-100 transition-opacity`}
                                     />
 
-                                    <div className="p-6">
+                                    <div className="p-5 sm:p-6 h-full flex flex-col">
                                         {/* Emoji + Title */}
-                                        <div className="flex items-center gap-4 mb-4">
-                                            <span className="text-4xl">{game.emoji}</span>
+                                        <div className="flex items-center gap-3 sm:gap-4 mb-4">
+                                            <span className="text-3xl sm:text-4xl">{game.emoji}</span>
                                             <div>
                                                 <h3
                                                     className="text-2xl font-bold text-white group-hover:text-primary transition-colors"
@@ -199,7 +199,7 @@ export default function GamesPage() {
                                         </p>
 
                                         {/* Controls */}
-                                        <div className="flex items-center gap-2 mb-5">
+                                        <div className="flex items-start gap-2 mb-5 mt-auto">
                                             <span
                                                 className="text-[10px] text-white/20 tracking-widest uppercase"
                                                 style={{ fontFamily: "Space Mono, monospace" }}
@@ -207,7 +207,7 @@ export default function GamesPage() {
                                                 Controls:
                                             </span>
                                             <span
-                                                className="text-xs text-white/50"
+                                                className="text-[11px] sm:text-xs text-white/50"
                                                 style={{ fontFamily: "Space Mono, monospace" }}
                                             >
                                                 {game.controls}
