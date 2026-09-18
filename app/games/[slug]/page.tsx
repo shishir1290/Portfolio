@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { useCallback } from "react";
 
 const CarRacing = dynamic(() => import("@/components/games/CarRacing"), { ssr: false });
 const TicTacToe = dynamic(() => import("@/components/games/TicTacToe"), { ssr: false });
@@ -10,6 +11,34 @@ const SpaceShooter = dynamic(() => import("@/components/games/SpaceShooter"), { 
 const WalkingExplorer = dynamic(() => import("@/components/games/WalkingExplorer"), { ssr: false });
 const MazeRunner = dynamic(() => import("@/components/games/MazeRunner"), { ssr: false });
 const BallBounce = dynamic(() => import("@/components/games/BallBounce"), { ssr: false });
+
+function MobileControls({ slug }: { slug: string }) {
+    const press = useCallback((key: string, down: boolean) => {
+        window.dispatchEvent(new KeyboardEvent(down ? "keydown" : "keyup", { key, bubbles: true }));
+    }, []);
+
+    if (slug === "tic-tac-toe") return null;
+
+    const keys = slug === "car-racing"
+        ? [["←", "ArrowLeft"], ["↑", "ArrowUp"], ["↓", "ArrowDown"], ["→", "ArrowRight"]]
+        : [["W", "w"], ["A", "a"], ["S", "s"], ["D", "d"]];
+
+    return (
+        <div className="fixed bottom-3 left-0 right-0 z-50 flex items-end justify-between px-4 sm:hidden pointer-events-none select-none">
+            <div className="pointer-events-auto grid grid-cols-3 gap-2 w-36">
+                <span />
+                <button aria-label="Move up" className="h-12 rounded-xl bg-black/70 border border-white/15 text-white text-lg backdrop-blur-md active:scale-90" onPointerDown={() => press(keys[1][1], true)} onPointerUp={() => press(keys[1][1], false)} onPointerCancel={() => press(keys[1][1], false)}>{keys[1][0]}</button>
+                <span />
+                <button aria-label="Move left" className="h-12 rounded-xl bg-black/70 border border-white/15 text-white text-lg backdrop-blur-md active:scale-90" onPointerDown={() => press(keys[2][1], true)} onPointerUp={() => press(keys[2][1], false)} onPointerCancel={() => press(keys[2][1], false)}>{keys[2][0]}</button>
+                <button aria-label="Move down" className="h-12 rounded-xl bg-black/70 border border-white/15 text-white text-lg backdrop-blur-md active:scale-90" onPointerDown={() => press(keys[3][1], true)} onPointerUp={() => press(keys[3][1], false)} onPointerCancel={() => press(keys[3][1], false)}>{keys[3][0]}</button>
+                <button aria-label="Move right" className="h-12 rounded-xl bg-black/70 border border-white/15 text-white text-lg backdrop-blur-md active:scale-90" onPointerDown={() => press(keys[4][1], true)} onPointerUp={() => press(keys[4][1], false)} onPointerCancel={() => press(keys[4][1], false)}>{keys[4][0]}</button>
+            </div>
+            {slug === "space-shooter" || slug === "ball-bounce" ? (
+                <button aria-label={slug === "space-shooter" ? "Shoot" : "Launch"} className="pointer-events-auto w-20 h-20 rounded-full bg-primary/20 border border-primary/50 text-primary font-bold text-xs backdrop-blur-md active:scale-90" onPointerDown={() => press(slug === "space-shooter" ? " " : "Enter", true)} onPointerUp={() => press(slug === "space-shooter" ? " " : "Enter", false)} onPointerCancel={() => press(slug === "space-shooter" ? " " : "Enter", false)}>{slug === "space-shooter" ? "FIRE" : "LAUNCH"}</button>
+            ) : null}
+        </div>
+    );
+}
 
 const gameMap: Record<
     string,
@@ -89,6 +118,8 @@ export default function GamePage() {
             <div className="fixed inset-0 touch-none">
                 <GameComponent />
             </div>
+
+            <MobileControls slug={slug} />
 
             {/* HUD Overlay */}
             <div className="fixed top-0 left-0 right-0 z-50 pointer-events-none">
