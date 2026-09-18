@@ -14,28 +14,84 @@ const BallBounce = dynamic(() => import("@/components/games/BallBounce"), { ssr:
 
 function MobileControls({ slug }: { slug: string }) {
     const press = useCallback((key: string, down: boolean) => {
-        window.dispatchEvent(new KeyboardEvent(down ? "keydown" : "keyup", { key, bubbles: true }));
+        window.dispatchEvent(
+            new KeyboardEvent(down ? "keydown" : "keyup", { key, bubbles: true }),
+        );
     }, []);
 
     if (slug === "tic-tac-toe") return null;
 
-    const keys = slug === "car-racing"
-        ? [["←", "ArrowLeft"], ["↑", "ArrowUp"], ["↓", "ArrowDown"], ["→", "ArrowRight"]]
-        : [["W", "w"], ["A", "a"], ["S", "s"], ["D", "d"]];
+    const controls =
+        slug === "car-racing"
+            ? [
+                  ["←", "ArrowLeft"],
+                  ["↑", "ArrowUp"],
+                  ["↓", "ArrowDown"],
+                  ["→", "ArrowRight"],
+              ]
+            : [
+                  ["W", "w"],
+                  ["A", "a"],
+                  ["S", "s"],
+                  ["D", "d"],
+              ];
+
+    const Button = ({ index }: { index: number }) => {
+        const label = controls[index][0];
+        const key = controls[index][1];
+        return (
+            <button
+                type="button"
+                aria-label={"Move " + label}
+                className="h-12 w-12 rounded-xl bg-black/70 border border-white/15 text-white text-lg backdrop-blur-md active:scale-90 touch-none select-none"
+                onPointerDown={(e) => {
+                    e.preventDefault();
+                    e.currentTarget.setPointerCapture(e.pointerId);
+                    press(key, true);
+                }}
+                onPointerUp={(e) => {
+                    e.preventDefault();
+                    press(key, false);
+                }}
+                onPointerCancel={() => press(key, false)}
+            >
+                {label}
+            </button>
+        );
+    };
 
     return (
-        <div className="fixed bottom-3 left-0 right-0 z-50 flex items-end justify-between px-4 sm:hidden pointer-events-none select-none">
-            <div className="pointer-events-auto grid grid-cols-3 gap-2 w-36">
+        <div className="fixed bottom-3 left-0 right-0 z-[60] flex items-end justify-between px-4 sm:hidden pointer-events-none select-none">
+            <div className="pointer-events-auto grid grid-cols-3 gap-2 w-40">
                 <span />
-                <button aria-label="Move up" className="h-12 rounded-xl bg-black/70 border border-white/15 text-white text-lg backdrop-blur-md active:scale-90" onPointerDown={() => press(keys[1][1], true)} onPointerUp={() => press(keys[1][1], false)} onPointerCancel={() => press(keys[1][1], false)}>{keys[1][0]}</button>
+                <Button index={1} />
                 <span />
-                <button aria-label="Move left" className="h-12 rounded-xl bg-black/70 border border-white/15 text-white text-lg backdrop-blur-md active:scale-90" onPointerDown={() => press(keys[2][1], true)} onPointerUp={() => press(keys[2][1], false)} onPointerCancel={() => press(keys[2][1], false)}>{keys[2][0]}</button>
-                <button aria-label="Move down" className="h-12 rounded-xl bg-black/70 border border-white/15 text-white text-lg backdrop-blur-md active:scale-90" onPointerDown={() => press(keys[3][1], true)} onPointerUp={() => press(keys[3][1], false)} onPointerCancel={() => press(keys[3][1], false)}>{keys[3][0]}</button>
-                <button aria-label="Move right" className="h-12 rounded-xl bg-black/70 border border-white/15 text-white text-lg backdrop-blur-md active:scale-90" onPointerDown={() => press(keys[4][1], true)} onPointerUp={() => press(keys[4][1], false)} onPointerCancel={() => press(keys[4][1], false)}>{keys[4][0]}</button>
+                <Button index={0} />
+                <Button index={2} />
+                <Button index={3} />
             </div>
-            {slug === "space-shooter" || slug === "ball-bounce" ? (
-                <button aria-label={slug === "space-shooter" ? "Shoot" : "Launch"} className="pointer-events-auto w-20 h-20 rounded-full bg-primary/20 border border-primary/50 text-primary font-bold text-xs backdrop-blur-md active:scale-90" onPointerDown={() => press(slug === "space-shooter" ? " " : "Enter", true)} onPointerUp={() => press(slug === "space-shooter" ? " " : "Enter", false)} onPointerCancel={() => press(slug === "space-shooter" ? " " : "Enter", false)}>{slug === "space-shooter" ? "FIRE" : "LAUNCH"}</button>
-            ) : null}
+
+            {(slug === "space-shooter" || slug === "ball-bounce") && (
+                <button
+                    type="button"
+                    aria-label={slug === "space-shooter" ? "Shoot" : "Launch"}
+                    className="pointer-events-auto w-20 h-20 rounded-full bg-primary/20 border border-primary/50 text-primary font-bold text-xs backdrop-blur-md active:scale-90 touch-none select-none"
+                    onPointerDown={(e) => {
+                        e.preventDefault();
+                        e.currentTarget.setPointerCapture(e.pointerId);
+                        press(slug === "space-shooter" ? " " : "Enter", true);
+                    }}
+                    onPointerUp={(e) => {
+                        e.preventDefault();
+                        press(slug === "space-shooter" ? " " : "Enter", false);
+                    }}
+                    onPointerCancel={() =>
+                        press(slug === "space-shooter" ? " " : "Enter", false)
+                    }
+                >
+                    {slug === "space-shooter" ? "FIRE" : "LAUNCH"}
+                </button>
+            )}
         </div>
     );
 }
