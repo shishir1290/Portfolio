@@ -28,8 +28,8 @@ const projects = [
     category: "Open Source / Go Framework",
     description:
       "A Go implementation of Socket.IO and Engine.IO designed to enable real-time, event-driven communication between Go servers and compatible clients.",
-    image: "https://image.thum.io/get/width/1400/crop/850/https://gsocket.vercel.app",
-    url: "https://gsocket.vercel.app",
+    image: "https://image.thum.io/get/width/1400/crop/850/https://gsocketio.vercel.app",
+    url: "https://gsocketio.vercel.app",
     technologies: ["Go", "WebSocket", "Socket.IO v4", "Engine.IO v4", "Real-Time Systems"],
     highlights: [
       "Socket.IO v4 and Engine.IO v4 compatibility focus",
