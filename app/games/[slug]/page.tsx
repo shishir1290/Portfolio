@@ -103,37 +103,37 @@ const gameMap: Record<
 > = {
     "car-racing": {
         component: CarRacing,
-        title: "🏎️ Car Racing",
+        title: "Car Racing",
         description: "Dodge obstacles on an endless highway at breakneck speed.",
         controls: "← → steer · ↑ ↓ speed · Dodge red obstacles",
     },
     "tic-tac-toe": {
         component: TicTacToe,
-        title: "⭕ Tic Tac Toe",
+        title: "Tic Tac Toe",
         description: "Challenge an unbeatable AI on a 3D rotating board.",
         controls: "Click cell to play · Drag to rotate board",
     },
     "space-shooter": {
         component: SpaceShooter,
-        title: "🚀 Space Shooter",
+        title: "Space Shooter",
         description: "Blast through waves of enemies in deep space.",
         controls: "WASD move · Space to shoot · Survive waves",
     },
     "walking-explorer": {
         component: WalkingExplorer,
-        title: "🚶 Walking Explorer",
+        title: "Walking Explorer",
         description: "Explore a first-person world and collect glowing orbs.",
         controls: "WASD + mouse look · Click to lock pointer · Collect orbs",
     },
     "maze-runner": {
         component: MazeRunner,
-        title: "🌀 Maze Runner",
+        title: "Maze Runner",
         description: "Navigate a procedural maze before time runs out.",
         controls: "WASD + mouse look · Click to lock pointer · Find the exit",
     },
     "ball-bounce": {
         component: BallBounce,
-        title: "🏓 Ball Bounce",
+        title: "Ball Bounce",
         description: "Classic breakout — destroy all blocks with your paddle.",
         controls: "Mouse to move paddle · Click to launch ball",
     },

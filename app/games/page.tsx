@@ -7,7 +7,7 @@ const games = [
     {
         slug: "car-racing",
         title: "Car Racing",
-        emoji: "🏎️",
+        tag: "RACER",
         description: "Dodge obstacles on an endless highway at breakneck speed.",
         controls: "← → steer · ↑ ↓ speed",
         color: "#ff6b8b",
@@ -16,7 +16,7 @@ const games = [
     {
         slug: "tic-tac-toe",
         title: "Tic Tac Toe",
-        emoji: "⭕",
+        tag: "AI 3D",
         description: "Challenge an unbeatable AI on a 3D rotating board.",
         controls: "Mouse click · Drag to rotate",
         color: "#00f5d4",
@@ -25,7 +25,7 @@ const games = [
     {
         slug: "space-shooter",
         title: "Space Shooter",
-        emoji: "🚀",
+        tag: "SHOOTER",
         description: "Blast through waves of enemies in deep space.",
         controls: "WASD move · Space shoot",
         color: "#b892ff",
@@ -34,7 +34,7 @@ const games = [
     {
         slug: "walking-explorer",
         title: "Walking Explorer",
-        emoji: "🚶",
+        tag: "EXPLORER",
         description: "Explore a first-person world and collect glowing orbs.",
         controls: "WASD + mouse look · Collect orbs",
         color: "#4cc9f0",
@@ -43,7 +43,7 @@ const games = [
     {
         slug: "maze-runner",
         title: "Maze Runner",
-        emoji: "🌀",
+        tag: "LABYRINTH",
         description: "Navigate a procedural maze before time runs out.",
         controls: "WASD + mouse look · Find the exit",
         color: "#f77f00",
@@ -52,7 +52,7 @@ const games = [
     {
         slug: "ball-bounce",
         title: "Ball Bounce",
-        emoji: "🏓",
+        tag: "BREAKOUT",
         description: "Classic breakout — destroy all blocks with your paddle.",
         controls: "Mouse paddle · Click to launch",
         color: "#06d6a0",
@@ -170,9 +170,18 @@ export default function GamesPage() {
                                     />
 
                                     <div className="p-5 sm:p-6 h-full flex flex-col">
-                                        {/* Emoji + Title */}
+                                        {/* Tag + Title */}
                                         <div className="flex items-center gap-3 sm:gap-4 mb-4">
-                                            <span className="text-3xl sm:text-4xl">{game.emoji}</span>
+                                            <div
+                                                className="px-2.5 py-1.5 border rounded-sm font-mono text-xs font-bold tracking-wider"
+                                                style={{
+                                                    borderColor: `${game.color}50`,
+                                                    color: game.color,
+                                                    backgroundColor: `${game.color}15`,
+                                                }}
+                                            >
+                                                {game.tag}
+                                            </div>
                                             <div>
                                                 <h3
                                                     className="text-2xl font-bold text-white group-hover:text-primary transition-colors"
