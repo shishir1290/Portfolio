@@ -33,15 +33,19 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL("https://shishir.click"),
   title: {
-    default: "Md Sadmanur Islam Shishir | Full-Stack Software Engineer",
+    default: "Shishir | Full-Stack Developer in Bangladesh",
     template: "%s | Shishir",
   },
   description:
-    "Full-Stack Software Engineer based in Bangladesh, building web applications and backend systems with Next.js, React, Node.js, NestJS, and Go. Open to Dubai opportunities.",
+    "Md Sadmanur Islam Shishir is a Bangladesh-based full-stack developer specializing in Next.js, React, Node.js, NestJS, Go, APIs, and real-time applications.",
   keywords: [
     "Full-Stack Developer",
     "Web Developer",
     "Software Engineer",
+    "Full-Stack Developer Bangladesh",
+    "Full-Stack Developer Dhaka",
+    "Golang Developer Bangladesh",
+    "Backend Developer Bangladesh",
     "WebRTC",
     "Next.js",
     "React",
@@ -116,7 +120,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Md Sadmanur Islam Shishir | Full-Stack Developer",
     description:
-      "Full-Stack Web Developer specializing in scalable applications, real-time systems, and WebRTC.",
+      "Portfolio of Md Sadmanur Islam Shishir, a full-stack developer in Bangladesh building web applications, Go backends, and real-time systems.",
     images: ["/shishir.png"],
   },
   alternates: {
@@ -130,58 +134,54 @@ export const metadata: Metadata = {
   },
 };
 
-// JSON-LD structured data for SEO
-const jsonLd = [
-  {
-    "@context": "https://schema.org",
-    "@type": "Person",
-    name: "Md Sadmanur Islam Shishir",
-    url: "https://shishir.click",
-    jobTitle: "Full-Stack Software Engineer",
-    email: "shishir1290@gmail.com",
-    telephone: "+8801946432534",
-    address: {
-      "@type": "PostalAddress",
-      addressLocality: "Konabari, Gazipur",
-      addressCountry: "Bangladesh",
+// JSON-LD structured data for the developer profile and portfolio website.
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": "https://shishir.click/#person",
+      name: "Md Sadmanur Islam Shishir",
+      url: "https://shishir.click/",
+      image: "https://shishir.click/shishir.png",
+      jobTitle: "Full-Stack Software Developer",
+      email: "shishir1290@gmail.com",
+      telephone: "+8801946432534",
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: "Konabari, Gazipur",
+        addressCountry: "BD"
+      },
+      sameAs: [
+        "https://github.com/shishir1290",
+        "https://linkedin.com/in/shishir1290",
+        "https://x.com/shishir1290"
+      ],
+      knowsAbout: [
+        "Full-Stack Development", "Next.js", "React", "Node.js", "NestJS",
+        "Go", "Golang", "REST APIs", "WebRTC", "WebSockets", "Socket.IO",
+        "Real-Time Applications", "RTMP", "HLS Streaming", "TypeScript"
+      ]
     },
-    sameAs: [
-      "https://github.com/shishir1290",
-      "https://linkedin.com/in/shishir1290",
-      "https://x.com/shishir1290"
-    ],
-    knowsAbout: [
-      "Full-Stack Development",
-      "NestJS",
-      "Golang",
-      "Backend Engineering",
-      "Next.js",
-      "React",
-      "Node.js",
-      "WebRTC",
-      "TypeScript",
-      "JavaScript",
-      "UI/UX Design",
-    ],
-  },
-  {
-    "@context": "https://schema.org",
-    "@type": "ProfessionalService",
-    name: "Md Sadmanur Islam Shishir — Full-Stack Developer",
-    image: "https://shishir.click/shishir.png",
-    url: "https://shishir.click",
-    telephone: "+8801946432534",
-    priceRange: "$$",
-    address: {
-      "@type": "PostalAddress",
-      streetAddress: "College Gate, Konabari",
-      addressLocality: "Gazipur",
-      addressRegion: "Dhaka",
-      postalCode: "1700",
-      addressCountry: "BD",
+    {
+      "@type": "WebSite",
+      "@id": "https://shishir.click/#website",
+      url: "https://shishir.click/",
+      name: "Shishir — Full-Stack Developer Portfolio",
+      description: "Professional portfolio of Md Sadmanur Islam Shishir, a full-stack software developer based in Bangladesh.",
+      inLanguage: "en",
+      publisher: { "@id": "https://shishir.click/#person" }
     },
-  }
-];
+    {
+      "@type": "ProfilePage",
+      "@id": "https://shishir.click/#profile",
+      url: "https://shishir.click/",
+      name: "Md Sadmanur Islam Shishir — Full-Stack Developer",
+      mainEntity: { "@id": "https://shishir.click/#person" },
+      isPartOf: { "@id": "https://shishir.click/#website" }
+    }
+  ]
+};
 
 import ScrollToTop from "@/components/ScrollToTop";
 
