@@ -225,7 +225,7 @@ export default function ProjectsSection() {
   }, []);
 
   const groupProjects = projects.filter((project) => ["Vehicle Management System", "Complete ERP System by Pakiza Software Limited"].includes(project.title));
-  const personalProjects = projects.filter((project) => !["Vehicle Management System", "Pakiza Knit"].includes(project.title));
+  const personalProjects = projects.filter((project) => !["Vehicle Management System", "Complete ERP System by Pakiza Software Limited"].includes(project.title));
 
   return (
     <section id="projects" ref={sectionRef} className="relative py-32 overflow-hidden">
