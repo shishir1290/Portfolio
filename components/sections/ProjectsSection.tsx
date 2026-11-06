@@ -31,7 +31,7 @@ const projects = [
   },
   {
     id: "08",
-    title: "Pakiza Knit",
+    title: "Complete ERP System by Pakiza Software Limited",
     category: "Backend / Enterprise Software",
     description:
       "An enterprise software project for Pakiza Knit, built as part of the software solutions delivered by Pakiza Software Limited.",
@@ -224,7 +224,7 @@ export default function ProjectsSection() {
     return () => observer.disconnect();
   }, []);
 
-  const groupProjects = projects.filter((project) => ["Vehicle Management System", "Pakiza Knit"].includes(project.title));
+  const groupProjects = projects.filter((project) => ["Vehicle Management System", "Complete ERP System by Pakiza Software Limited"].includes(project.title));
   const personalProjects = projects.filter((project) => !["Vehicle Management System", "Pakiza Knit"].includes(project.title));
 
   return (
