@@ -13,7 +13,7 @@ const skillGroups = [
     category: "Backend",
     icon: "◇",
     color: "#b892ff",
-    skills: ["Node.js", "Nest.js", "golang", "RESTful APIs", "PostgreSQL"],
+    skills: ["Node.js", "NestJS", "Golang", "RESTful APIs", "PostgreSQL", "Redis"],
   },
   {
     category: "Real-Time & Streaming",
@@ -31,7 +31,7 @@ const skillGroups = [
     category: "DevOps & Tools",
     icon: "⬡",
     color: "#f8961e",
-    skills: ["Nginx", "Git", "Docker", "Linux", "Postman"],
+    skills: ["Docker", "Nginx", "Git", "Linux", "CI/CD", "Postman"],
   },
   {
     category: "Design & UX",
@@ -173,9 +173,9 @@ export default function SkillsSection() {
           </p>
           <div className="flex flex-wrap justify-center gap-3">
             {[
-              "Node.js", "golang", "WebRTC", "Socket.io", "RTMP", "HLS",
+              "Node.js", "NestJS", "Golang", "WebRTC", "Socket.IO", "RTMP", "HLS",
               "TypeScript", "Tailwind CSS", "Next.js", "MongoDB",
-              "Mongoose", "MySQL", "JavaScript", "Nest.js",
+              "Mongoose", "MySQL", "JavaScript", "Redis", "Docker",
               "PostgreSQL", "Prisma ORM", "Nginx", "React",
             ].map((skill) => (
               <span key={skill} className="skill-tag">

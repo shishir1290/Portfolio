@@ -17,15 +17,16 @@ const experiences = [
     location: "Dhanmondi, Dhaka",
     color: "#00f5d4",
     description:
-      "Working on enterprise-grade full-stack web applications serving business clients across Bangladesh. Key role in architecting and building real-time communication features.",
+      "Building and maintaining full-stack business applications, contributing to frontend experiences, backend services, API integrations, and real-time communication features.",
     responsibilities: [
-      "Design and develop scalable full-stack web applications using Next.js, Node.js, and Tailwind CSS.",
-      "Implement and maintain real-time communication features using WebRTC and Socket.io.",
+      "Develop and maintain full-stack applications using Next.js, React, Node.js, NestJS, and Go.",
+      "Build and integrate REST APIs, business logic, and database-backed workflows.",
+      "Implement real-time communication features using WebRTC, Socket.IO, and WebSockets.",
       "Collaborate with UI/UX designers to build modern, responsive interfaces that enhance user experience.",
       "Optimize application performance and ensure code quality through testing and best practices.",
       "Integrate RESTful APIs and manage database operations using Sequelize and PostgreSQL/MySQL.",
     ],
-    technologies: ["Next.js", "Node.js", "WebRTC", "Socket.io", "PostgreSQL", "MySQL", "Tailwind CSS", "TypeScript"],
+    technologies: ["Next.js", "React", "Node.js", "NestJS", "Golang", "TypeScript", "WebRTC", "Socket.IO", "PostgreSQL", "MySQL", "Tailwind CSS"],
   },
 ];
 

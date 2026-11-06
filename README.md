@@ -1,10 +1,10 @@
 # Shishir Portfolio — Next.js + Three.js
 
-A futuristic, dark-themed portfolio website for **Md Sadmanur Islam Shishir**, Full-Stack Developer.
+A dark, interactive portfolio for **Md Sadmanur Islam Shishir**, Full-Stack Software Engineer based in Bangladesh. The site highlights full-stack application development, Go backend engineering, real-time communication, and selected professional projects.
 
 ## Tech Stack
 
-- **Next.js 14** (App Router)
+- **Next.js 16** (App Router)
 - **Three.js** — 3D icosahedron globe animation on hero
 - **Canvas API** — interactive particle network background
 - **Tailwind CSS** — utility-first styling
@@ -70,7 +70,7 @@ shishir-portfolio/
 3. **Skills** — Grouped by category with animated skill tags
 4. **Experience** — Timeline with Pakiza Software Limited role
 5. **Projects** — Featured + other projects with tech stack
-6. **Contact** — Contact form + direct contact info
+6. **Contact** — Contact form, direct contact information, and international relocation availability
 
 ## Customization
 
