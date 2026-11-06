@@ -63,6 +63,44 @@ const projects = [
   },
   {
     id: "04",
+    title: "SliceFlow Vibes",
+    category: "Full-Stack / Video Processing",
+    description:
+      "A video splitting and publishing workflow that helps creators divide long videos into consistently sized clips, prepare them for social platforms, and manage sequential uploads.",
+    image: "https://image.thum.io/get/width/1400/crop/850/https://sliceflowvibes.vercel.app",
+    url: "https://sliceflowvibes.vercel.app",
+    technologies: ["Next.js", "React", "Node.js", "FFmpeg", "Video Processing"],
+    highlights: [
+      "Split long videos into sequential clips",
+      "Configurable clip duration and remainder handling",
+      "Batch export for generated video segments",
+      "Creator-focused workflow for social publishing",
+    ],
+    color: "#ff9f43",
+    featured: true,
+    status: "Live",
+  },
+  {
+    id: "05",
+    title: "PeerDrops",
+    category: "Web App / Peer-to-Peer Sharing",
+    description:
+      "A browser-based file-sharing experience designed to make sending files between devices simple, fast, and convenient without relying on a traditional cloud-drive workflow.",
+    image: "https://image.thum.io/get/width/1400/crop/850/https://peerdrops.vercel.app",
+    url: "https://peerdrops.vercel.app",
+    technologies: ["Next.js", "React", "TypeScript", "Tailwind CSS", "WebRTC"],
+    highlights: [
+      "Simple file-sharing experience across devices",
+      "Peer-to-peer transfer technology",
+      "Responsive interface for desktop and mobile",
+      "Designed for quick, direct file sharing",
+    ],
+    color: "#58d6c5",
+    featured: true,
+    status: "Live",
+  },
+  {
+    id: "06",
     title: "Live Streaming Platform",
     category: "Full-Stack / Real-Time",
     description:
@@ -74,7 +112,7 @@ const projects = [
     status: "Completed",
   },
   {
-    id: "05",
+    id: "07",
     title: "Enterprise E-Commerce Platform",
     category: "Full-Stack / E-Commerce",
     description:
