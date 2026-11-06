@@ -137,8 +137,8 @@ export default function ProjectsSection() {
     return () => observer.disconnect();
   }, []);
 
-  const featured = projects.filter((project) => project.featured);
-  const others = projects.filter((project) => !project.featured);
+  const groupProjects = projects.filter((project) => project.title === "Vehicle Management System");
+  const personalProjects = projects.filter((project) => project.title !== "Vehicle Management System");
 
   return (
     <section id="projects" ref={sectionRef} className="relative py-32 overflow-hidden">
@@ -151,8 +151,13 @@ export default function ProjectsSection() {
           <div className="w-16 h-px bg-primary mt-4" />
         </div>
 
-        <div className="space-y-8 mb-16">
-          {featured.map((project, index) => (
+        <div className="mb-16">
+          <div className="mb-8">
+            <p className="text-primary text-xs tracking-[0.3em] mb-2" style={{ fontFamily: "Space Mono, monospace" }}>COLLABORATIVE WORK</p>
+            <h3 className="text-3xl lg:text-4xl font-bold text-white" style={{ fontFamily: "Bebas Neue, sans-serif" }}>GROUP PROJECTS</h3>
+          </div>
+                  <div className="space-y-8 mb-16">
+          {groupProjects.map((project, index) => (
             <article key={project.id} className={`glass-card rounded-sm overflow-hidden transition-all duration-700 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`} style={{ transitionDelay: `${index * 150}ms`, borderColor: `${project.color}20` }}>
               <div className="grid lg:grid-cols-5 gap-0">
                 <a href={project.url} target="_blank" rel="noreferrer" className="lg:col-span-2 block overflow-hidden min-h-[240px] bg-black/20">
@@ -177,9 +182,47 @@ export default function ProjectsSection() {
           ))}
         </div>
 
-        <p className="text-xs text-white/20 tracking-widest mb-6" style={{ fontFamily: "Space Mono, monospace" }}>OTHER PROJECTS</p>
+        <p className="text-xs text-white/20 tracking-widest mb-6" style={{ fontFamily: "Space Mono, monospace" }}>OTHER groupProjects</p>
         <div className="grid md:grid-cols-2 gap-5">
           {others.map((project) => <article key={project.id} className="glass-card p-6 rounded-sm"><div className="flex items-start justify-between mb-4"><span className="text-3xl font-bold opacity-20" style={{ color: project.color }}>{project.id}</span><span className="text-xs px-2 py-1" style={{ color: project.color, backgroundColor: `${project.color}15` }}>{project.status}</span></div><h4 className="text-xl font-bold text-white mb-2" style={{ fontFamily: "Bebas Neue, sans-serif" }}>{project.title}</h4><p className="text-white/40 text-xs mb-4 leading-relaxed">{project.description}</p><div className="flex flex-wrap gap-1.5">{project.technologies.slice(0, 4).map((tech) => <span key={tech} className="text-xs px-2 py-1" style={{ color: `${project.color}99`, backgroundColor: `${project.color}10` }}>{tech}</span>)}</div></article>)}
+        </div>
+        </div>
+
+        <div>
+          <div className="mb-8">
+            <p className="text-primary text-xs tracking-[0.3em] mb-2" style={{ fontFamily: "Space Mono, monospace" }}>INDEPENDENT BUILDS</p>
+            <h3 className="text-3xl lg:text-4xl font-bold text-white" style={{ fontFamily: "Bebas Neue, sans-serif" }}>PERSONAL PROJECTS</h3>
+          </div>
+                  <div className="space-y-8 mb-16">
+          {personalProjects.map((project, index) => (
+            <article key={project.id} className={`glass-card rounded-sm overflow-hidden transition-all duration-700 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`} style={{ transitionDelay: `${index * 150}ms`, borderColor: `${project.color}20` }}>
+              <div className="grid lg:grid-cols-5 gap-0">
+                <a href={project.url} target="_blank" rel="noreferrer" className="lg:col-span-2 block overflow-hidden min-h-[240px] bg-black/20">
+                  <img src={project.image} alt={`${project.title} project preview`} className="w-full h-full min-h-[240px] object-cover transition-transform duration-500 hover:scale-105" loading="lazy" />
+                </a>
+                <div className="lg:col-span-3 p-8 lg:p-10">
+                  <div className="flex items-center justify-between gap-3 mb-4">
+                    <div className="flex items-center gap-3"><span className="text-4xl font-bold opacity-20" style={{ fontFamily: "Bebas Neue, sans-serif", color: project.color }}>{project.id}</span><span className="text-xs tracking-wider" style={{ color: project.color, fontFamily: "Space Mono, monospace" }}>{project.category}</span></div>
+                    <span className="text-xs px-3 py-1 rounded-sm whitespace-nowrap" style={{ backgroundColor: `${project.color}15`, color: project.color }}>{project.status}</span>
+                  </div>
+                  <h3 className="text-3xl lg:text-4xl font-bold text-white mb-4" style={{ fontFamily: "Bebas Neue, sans-serif" }}>{project.title}</h3>
+                  <p className="text-white/50 leading-relaxed mb-6 text-sm">{project.description}</p>
+                  <ul className="space-y-2 mb-6">{project.highlights.map((highlight) => <li key={highlight} className="flex items-start gap-3 text-sm text-white/50"><span className="mt-2 w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: project.color }} />{highlight}</li>)}</ul>
+                  <div className="flex flex-wrap gap-2 mb-6">{project.technologies.map((tech) => <span key={tech} className="text-xs px-2.5 py-1 rounded-sm" style={{ backgroundColor: `${project.color}10`, border: `1px solid ${project.color}20`, color: `${project.color}CC` }}>{tech}</span>)}</div>
+                  <div className="flex flex-wrap gap-5">
+                    <a href={project.url} target="_blank" rel="noreferrer" className="inline-flex text-xs tracking-widest text-primary hover:underline">VIEW PROJECT ↗</a>
+                    {"githubUrl" in project && project.githubUrl && <a href={project.githubUrl} target="_blank" rel="noreferrer" className="inline-flex text-xs tracking-widest text-white/50 hover:text-white hover:underline">SOURCE CODE ↗</a>}
+                  </div>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+
+        <p className="text-xs text-white/20 tracking-widest mb-6" style={{ fontFamily: "Space Mono, monospace" }}>OTHER personalProjects</p>
+        <div className="grid md:grid-cols-2 gap-5">
+          {others.map((project) => <article key={project.id} className="glass-card p-6 rounded-sm"><div className="flex items-start justify-between mb-4"><span className="text-3xl font-bold opacity-20" style={{ color: project.color }}>{project.id}</span><span className="text-xs px-2 py-1" style={{ color: project.color, backgroundColor: `${project.color}15` }}>{project.status}</span></div><h4 className="text-xl font-bold text-white mb-2" style={{ fontFamily: "Bebas Neue, sans-serif" }}>{project.title}</h4><p className="text-white/40 text-xs mb-4 leading-relaxed">{project.description}</p><div className="flex flex-wrap gap-1.5">{project.technologies.slice(0, 4).map((tech) => <span key={tech} className="text-xs px-2 py-1" style={{ color: `${project.color}99`, backgroundColor: `${project.color}10` }}>{tech}</span>)}</div></article>)}
+        </div>
         </div>
       </div>
     </section>
