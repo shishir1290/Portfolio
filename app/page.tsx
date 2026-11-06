@@ -12,7 +12,7 @@ import SmoothScroll from "@/components/SmoothScroll";
 export const metadata: Metadata = {
   title: "Md Sadmanur Islam Shishir | Full-Stack Developer",
   description:
-    "Full-Stack Web Developer specializing in scalable applications, real-time systems, WebRTC, and modern UI/UX. Expert in Next.js, Node.js, React, and cloud technologies. Based in Dhaka, Bangladesh.",
+    "Full-Stack Software Engineer based in Bangladesh, specializing in Next.js, React, Node.js, NestJS, Golang, backend APIs, and real-time systems. Open to Dubai opportunities.",
 };
 
 

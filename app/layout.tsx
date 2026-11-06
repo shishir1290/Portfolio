@@ -33,11 +33,11 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL("https://shishir.click"),
   title: {
-    default: "Md Sadmanur Islam Shishir | Full-Stack WebRTC & Real-Time Socket Developer",
+    default: "Md Sadmanur Islam Shishir | Full-Stack Software Engineer",
     template: "%s | Shishir",
   },
   description:
-    "Full-Stack Web Developer specializing in WebRTC, Socket.io, real-time systems, and scalable applications. Based in Dhaka, Bangladesh.",
+    "Full-Stack Software Engineer based in Bangladesh, building web applications and backend systems with Next.js, React, Node.js, NestJS, and Go. Open to Dubai opportunities.",
   keywords: [
     "Full-Stack Developer",
     "Web Developer",
@@ -98,7 +98,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Md Sadmanur Islam Shishir | Full-Stack Developer",
     description:
-      "Full-Stack Web Developer specializing in WebRTC, Socket.io, real-time systems, and scalable applications. Based in Dhaka, Bangladesh.",
+      "Full-Stack Software Engineer based in Bangladesh, building web applications and backend systems with Next.js, React, Node.js, NestJS, and Go. Open to Dubai opportunities.",
     url: "https://shishir.click",
     siteName: "Shishir — Portfolio",
     images: [
@@ -137,7 +137,7 @@ const jsonLd = [
     "@type": "Person",
     name: "Md Sadmanur Islam Shishir",
     url: "https://shishir.click",
-    jobTitle: "Full-Stack Web Developer",
+    jobTitle: "Full-Stack Software Engineer",
     email: "shishir1290@gmail.com",
     telephone: "+8801946432534",
     address: {
@@ -152,6 +152,9 @@ const jsonLd = [
     ],
     knowsAbout: [
       "Full-Stack Development",
+      "NestJS",
+      "Golang",
+      "Backend Engineering",
       "Next.js",
       "React",
       "Node.js",

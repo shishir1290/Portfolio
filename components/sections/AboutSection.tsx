@@ -71,25 +71,24 @@ export default function AboutSection() {
                 </span>{" "}
                 currently working as a Full-Stack Web Developer at{" "}
                 <span className="text-white/80">Pakiza Software Limited</span>{" "}
-                in Dhaka, Bangladesh. I specialize in building scalable
-                applications with modern architectures.
+                in Dhaka, Bangladesh. I build and maintain web applications across the frontend and backend,
+                working with Next.js, React, Node.js, NestJS, and Go.
               </p>
               <p>
                 My passion lies in{" "}
                 <span className="text-secondary font-semibold">
                   real-time communication systems
                 </span>{" "}
-                — from WebRTC peer-to-peer connections to live streaming
-                pipelines using RTMP and HLS protocols. I&apos;ve delivered
-                enterprise-grade solutions for live streaming, e-commerce, and
-                business platforms.
+                — including WebRTC, Socket.IO, WebSockets, and media workflows using
+                RTMP and HLS. I enjoy solving backend, integration, and
+                performance challenges in business applications.
               </p>
               <p>
                 I hold a{" "}
                 <span className="text-white/80">
-                  B.Sc in Software Engineering
+                  B.Sc. in Computer Science & Engineering
                 </span>{" "}
-                from American International University, Bangladesh (CGPA: 3.61),
+                from American International University-Bangladesh (AIUB), with a CGPA of 3.60.,
                 and I continuously push my limits by exploring new technologies
                 and best practices.
               </p>
@@ -103,10 +102,10 @@ export default function AboutSection() {
             {/* Personal info grid */}
             <div className="mt-10 grid grid-cols-2 gap-4">
               {[
-                { label: "Location", value: "Dhaka, Bangladesh" },
+                { label: "Location", value: "Konabari, Gazipur, Bangladesh" },
                 { label: "Email", value: "shishir1290@gmail.com" },
                 { label: "Phone", value: "+880 1946-432534" },
-                { label: "Available", value: "Full-Time / Remote" },
+                { label: "Availability", value: "Full-time · Dubai relocation" },
                 { label: "Experience", value: experience },
               ].map((item) => (
                 <div key={item.label} className="border-l border-primary/20 pl-4">
@@ -211,10 +210,10 @@ export default function AboutSection() {
                   <div className="space-y-4">
                     {[
                       {
-                        degree: "B.Sc Software Engineering",
-                        school: "AIUB, Bangladesh",
-                        result: "CGPA 3.61",
-                        year: "2019-2024",
+                        degree: "B.Sc. in Computer Science & Engineering",
+                        school: "American International University-Bangladesh",
+                        result: "CGPA 3.60",
+                        year: "2020-2024",
                         color: "#00f5d4",
                       },
                       {

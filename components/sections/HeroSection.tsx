@@ -13,10 +13,10 @@ const ThreeGlobe = dynamic(() => import("@/components/three/ThreeGlobe"), {
 });
 
 const roles = [
-  "Full-Stack Developer",
-  "Node.js Developer",
-  "WebRTC Specialist",
-  "Live Streaming Engineer",
+  "Full-Stack Software Engineer",
+  "Node.js & NestJS Developer",
+  "Golang Backend Developer",
+  "Real-Time Systems Engineer",
 ];
 
 import { getYearsExperience } from "@/lib/experience";
@@ -103,7 +103,7 @@ export default function HeroSection() {
                   className="text-primary text-xs tracking-widest"
                   style={{ fontFamily: "Space Mono, monospace" }}
                 >
-                  AVAILABLE FOR WORK
+                  OPEN TO FULL-TIME ROLES · DUBAI RELOCATION
                 </span>
               </div>
             </div>
@@ -129,7 +129,7 @@ export default function HeroSection() {
                 className="text-sm sm:text-base text-primary/80 font-semibold tracking-[0.15em] uppercase mb-4"
                 style={{ fontFamily: "Space Mono, monospace" }}
               >
-                Full-Stack WebRTC, Socket & Real-Time Systems Developer
+                FULL-STACK SOFTWARE ENGINEER
               </h2>
             </div>
 
@@ -152,9 +152,10 @@ export default function HeroSection() {
 
             {/* Description */}
             <p className="text-white/50 text-base leading-relaxed max-w-lg mb-10 font-light">
-              Crafting scalable web applications with a passion for real-time
-              systems, live streaming, and modern UI/UX. Based in Dhaka,
-              Bangladesh — building the future, one commit at a time.
+              Building full-stack web applications and backend services with Next.js,
+              React, Node.js, NestJS, and Go. I also work on real-time communication
+              and media systems. Based in Bangladesh and open to employer-sponsored
+              relocation to Dubai, UAE.
             </p>
 
             {/* CTA Buttons */}

@@ -30,6 +30,7 @@ const projects = [
       "A Go implementation of Socket.IO and Engine.IO designed to enable real-time, event-driven communication between Go servers and compatible clients.",
     image: "https://image.thum.io/get/width/1400/crop/850/https://gsocketio.vercel.app",
     url: "https://gsocketio.vercel.app",
+    githubUrl: "https://github.com/shishir1290/gsocketio",
     technologies: ["Go", "WebSocket", "Socket.IO v4", "Engine.IO v4", "Real-Time Systems"],
     highlights: [
       "Socket.IO v4 and Engine.IO v4 compatibility focus",
@@ -128,7 +129,10 @@ export default function ProjectsSection() {
                   <p className="text-white/50 leading-relaxed mb-6 text-sm">{project.description}</p>
                   <ul className="space-y-2 mb-6">{project.highlights.map((highlight) => <li key={highlight} className="flex items-start gap-3 text-sm text-white/50"><span className="mt-2 w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: project.color }} />{highlight}</li>)}</ul>
                   <div className="flex flex-wrap gap-2 mb-6">{project.technologies.map((tech) => <span key={tech} className="text-xs px-2.5 py-1 rounded-sm" style={{ backgroundColor: `${project.color}10`, border: `1px solid ${project.color}20`, color: `${project.color}CC` }}>{tech}</span>)}</div>
-                  <a href={project.url} target="_blank" rel="noreferrer" className="inline-flex text-xs tracking-widest text-primary hover:underline">VIEW LIVE PROJECT ↗</a>
+                  <div className="flex flex-wrap gap-5">
+                    <a href={project.url} target="_blank" rel="noreferrer" className="inline-flex text-xs tracking-widest text-primary hover:underline">VIEW PROJECT ↗</a>
+                    {"githubUrl" in project && project.githubUrl && <a href={project.githubUrl} target="_blank" rel="noreferrer" className="inline-flex text-xs tracking-widest text-white/50 hover:text-white hover:underline">SOURCE CODE ↗</a>}
+                  </div>
                 </div>
               </div>
             </article>

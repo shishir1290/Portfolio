@@ -73,17 +73,9 @@ export default function ContactSection() {
       ),
     },
     {
-      label: "Alt Email",
-      value: mounted ? "shishir1290@gmail.com" : "shishir1290 [at] gmail.com",
-      href: mounted ? "mailto:shishir1290@gmail.com" : "#",
-      icon: (
-        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-      ),
-    },
-    {
       label: "Location",
       value: "Konabari, Gazipur, Bangladesh",
-      href: "https://maps.google.com/?q=Mirpur+11,+Dhaka",
+      href: "https://maps.google.com/?q=College+Gate,+Konabari,+Gazipur,+Bangladesh",
       icon: (
         <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
       ),
@@ -126,9 +118,9 @@ export default function ContactSection() {
             <span className="gradient-text">CONNECT</span>
           </h2>
           <p className="text-white/40 max-w-xl mx-auto text-sm leading-relaxed">
-            I&apos;m currently open to new opportunities and collaborations.
-            Whether you have a project in mind or just want to chat — my inbox
-            is always open.
+            I&apos;m open to full-time software engineering opportunities and
+            international collaboration. I&apos;m based in Bangladesh and interested
+            in employer-sponsored relocation to Dubai, UAE.
           </p>
         </div>
 
@@ -174,24 +166,11 @@ export default function ContactSection() {
               ))}
             </div>
 
-            {/* Reference */}
+            {/* International availability */}
             <div className="glass-card p-6 rounded-sm">
-              <p
-                className="text-xs text-white/30 tracking-wider mb-4"
-                style={{ fontFamily: "Space Mono, monospace" }}
-              >
-                REFERENCE
-              </p>
-              <div>
-                <p className="text-white/80 font-semibold">Md Anik Islam</p>
-                <p className="text-primary/70 text-xs mt-1" style={{ fontFamily: "Space Mono, monospace" }}>
-                  Deputy Manager, Pakiza Software Limited
-                </p>
-                <p className="text-white/30 text-xs mt-2">
-                  anik.ba@pakizasoftware.com
-                </p>
-                <p className="text-white/30 text-xs">+880 1687-893691</p>
-              </div>
+              <p className="text-xs text-white/30 tracking-wider mb-3" style={{ fontFamily: "Space Mono, monospace" }}>INTERNATIONAL OPPORTUNITIES</p>
+              <p className="text-white/80 font-semibold">Open to Dubai, UAE</p>
+              <p className="text-white/40 text-sm mt-2 leading-relaxed">Currently based in Bangladesh. Available for online interviews and interested in full-time roles with employer-sponsored relocation.</p>
             </div>
           </div>
 
