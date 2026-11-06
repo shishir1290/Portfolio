@@ -10,9 +10,9 @@ import Footer from "@/components/Footer";
 import SmoothScroll from "@/components/SmoothScroll";
 
 export const metadata: Metadata = {
-  title: "Md Sadmanur Islam Shishir | Full-Stack Developer",
+  title: "Full-Stack Developer in Bangladesh",
   description:
-    "Full-Stack Software Engineer based in Bangladesh, specializing in Next.js, React, Node.js, NestJS, Golang, backend APIs, and real-time systems. Open to Dubai opportunities.",
+    "Explore the portfolio of Md Sadmanur Islam Shishir: a full-stack developer in Bangladesh building Next.js applications, Node.js and Go backends, APIs, and real-time systems. Open to remote roles and Dubai relocation.",
 };
 
 
