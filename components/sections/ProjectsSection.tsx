@@ -126,6 +126,24 @@ const projects = [
     status: "Live",
   },
   {
+    id: "09",
+    title: "DrivePlay",
+    category: "Web App / Media Player",
+    description:
+      "A web-based media platform for browsing and playing video content through a dedicated playback experience.",
+    image: "https://image.thum.io/get/width/1400/crop/850/https://driveplay.netlify.app",
+    url: "https://driveplay.netlify.app/",
+    technologies: ["Web Application", "Media Playback", "Responsive UI"],
+    highlights: [
+      "Dedicated video playback experience",
+      "Browser-based media access",
+      "Responsive web interface",
+    ],
+    color: "#7c9cff",
+    featured: true,
+    status: "Live",
+  },
+  {
     id: "06",
     title: "Live Streaming Platform",
     category: "Full-Stack / Real-Time",
