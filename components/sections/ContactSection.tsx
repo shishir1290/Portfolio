@@ -119,8 +119,7 @@ export default function ContactSection() {
           </h2>
           <p className="text-white/40 max-w-xl mx-auto text-sm leading-relaxed">
             I&apos;m open to full-time software engineering opportunities and
-            international collaboration. I&apos;m based in Bangladesh and interested
-            in employer-sponsored relocation to Dubai, UAE.
+            international collaboration.
           </p>
         </div>
 
@@ -166,12 +165,6 @@ export default function ContactSection() {
               ))}
             </div>
 
-            {/* International availability */}
-            <div className="glass-card p-6 rounded-sm">
-              <p className="text-xs text-white/30 tracking-wider mb-3" style={{ fontFamily: "Space Mono, monospace" }}>INTERNATIONAL OPPORTUNITIES</p>
-              <p className="text-white/80 font-semibold">Open to Dubai, UAE</p>
-              <p className="text-white/40 text-sm mt-2 leading-relaxed">Currently based in Bangladesh. Available for online interviews and interested in full-time roles with employer-sponsored relocation.</p>
-            </div>
           </div>
 
           {/* Contact Form */}
