@@ -8,6 +8,7 @@ import ProjectsSection from "@/components/sections/ProjectsSection";
 import ContactSection from "@/components/sections/ContactSection";
 import Footer from "@/components/Footer";
 import SmoothScroll from "@/components/SmoothScroll";
+import SwarmRebuild from "@/components/SwarmRebuild";
 
 export const metadata: Metadata = {
   title: "Full-Stack Developer in Bangladesh",
@@ -15,20 +16,21 @@ export const metadata: Metadata = {
     "Explore the portfolio of Md Sadmanur Islam Shishir: a full-stack developer in Bangladesh building Next.js applications, Node.js and Go backends, APIs, and real-time systems. Open to remote roles and Dubai relocation.",
 };
 
-
 export default function Home() {
   return (
-    <SmoothScroll>
-      <main className="relative min-h-screen">
-        <Navbar />
-        <HeroSection />
-        <AboutSection />
-        <SkillsSection />
-        <ExperienceSection />
-        <ProjectsSection />
-        <ContactSection />
-        <Footer />
-      </main>
-    </SmoothScroll>
+    <SwarmRebuild>
+      <SmoothScroll>
+        <main className="relative min-h-screen">
+          <Navbar />
+          <HeroSection />
+          <AboutSection />
+          <SkillsSection />
+          <ExperienceSection />
+          <ProjectsSection />
+          <ContactSection />
+          <Footer />
+        </main>
+      </SmoothScroll>
+    </SwarmRebuild>
   );
 }
