@@ -214,13 +214,11 @@ export default function SwarmRebuild({ children }: { children: React.ReactNode }
         context.globalAlpha = task.opacity;
         if (task.kind === "box") {
           if (task.background) {
-            context.fillStyle = task.background;
-            roundedRect(context, x, y, task.width, task.height, task.radius ?? 0);
             context.save();
-            context.beginPath();
-            context.rect(x, y, task.width * p, task.height);
+            roundedRect(context, x, y, task.width, task.height, task.radius ?? 0);
             context.clip();
-            context.fill();
+            context.fillStyle = task.background;
+            context.fillRect(x, y, task.width * p, task.height);
             context.restore();
           }
           if (task.borderColor && task.borderWidth) {
