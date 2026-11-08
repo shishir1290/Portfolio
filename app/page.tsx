@@ -8,6 +8,7 @@ import ProjectsSection from "@/components/sections/ProjectsSection";
 import ContactSection from "@/components/sections/ContactSection";
 import Footer from "@/components/Footer";
 import SmoothScroll from "@/components/SmoothScroll";
+import SectionReveal from "@/components/SectionReveal";
 
 export const metadata: Metadata = {
   title: "Full-Stack Developer in Bangladesh",
@@ -21,12 +22,12 @@ export default function Home() {
     <SmoothScroll>
       <main className="relative min-h-screen">
         <Navbar />
-        <HeroSection />
-        <AboutSection />
-        <SkillsSection />
-        <ExperienceSection />
-        <ProjectsSection />
-        <ContactSection />
+        <SectionReveal><HeroSection /></SectionReveal>
+        <SectionReveal><AboutSection /></SectionReveal>
+        <SectionReveal><SkillsSection /></SectionReveal>
+        <SectionReveal><ExperienceSection /></SectionReveal>
+        <SectionReveal><ProjectsSection /></SectionReveal>
+        <SectionReveal><ContactSection /></SectionReveal>
         <Footer />
       </main>
     </SmoothScroll>
