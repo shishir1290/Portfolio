@@ -92,6 +92,8 @@ export default function SectionReveal({ children }: { children: ReactNode }) {
       node.style.visibility = "hidden";
     });
 
+    stage.appendChild(clone);
+
     const points = pairedTargets.map(({ original, visual }, index) => {
       const rect = original.getBoundingClientRect();
       const x = rect.left - rootRect.left;
@@ -109,6 +111,9 @@ export default function SectionReveal({ children }: { children: ReactNode }) {
       badge.style.position = "absolute";
       badge.style.left = `${x}px`;
       badge.style.top = `${y + height + 4}px`;
+      badge.style.bottom = "auto";
+      badge.style.height = "auto";
+      badge.style.zIndex = "5";
       stage.appendChild(badge);
 
       const outline = document.createElement("i");
@@ -119,6 +124,18 @@ export default function SectionReveal({ children }: { children: ReactNode }) {
       outline.style.height = `${height}px`;
       outline.style.setProperty("--swarm-delay", `${(index * 115) / speed}ms`);
       outline.style.setProperty("--swarm-duration", `${560 / speed}ms`);
+      outline.style.position = "absolute";
+      outline.style.boxSizing = "border-box";
+      outline.style.border = "1px solid rgba(52,155,255,.96)";
+      outline.style.outline = "1px solid rgba(52,155,255,.28)";
+      outline.style.boxShadow = "0 0 16px rgba(52,155,255,.16)";
+      outline.style.pointerEvents = "none";
+      outline.style.zIndex = "4";
+      const outlineAnimation = outline.animate(
+        [{ opacity: 0, transform: "scale(.985)" }, { opacity: 1, transform: "scale(1)", offset: 0.22 }, { opacity: 0, transform: "scale(1)" }],
+        { duration: 760 / speed, delay: (index * 115) / speed, easing: "ease-out", fill: "forwards" },
+      );
+      animations.push(outlineAnimation);
       stage.appendChild(outline);
 
       const animation = visual.animate(
@@ -170,7 +187,6 @@ export default function SectionReveal({ children }: { children: ReactNode }) {
       }
     });
 
-    stage.appendChild(clone);
     root.appendChild(stage);
     setActive(true);
 
