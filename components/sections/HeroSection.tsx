@@ -1,25 +1,18 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
+import { getYearsExperience } from "@/lib/experience";
 
-const ParticleBackground = dynamic(
-  () => import("@/components/three/ParticleBackground"),
-  { ssr: false }
-);
-
-const ThreeGlobe = dynamic(() => import("@/components/three/ThreeGlobe"), {
-  ssr: false,
-});
+const ParticleBackground = dynamic(() => import("@/components/three/ParticleBackground"), { ssr: false });
+const ThreeGlobe = dynamic(() => import("@/components/three/ThreeGlobe"), { ssr: false });
 
 const roles = [
   "Full-Stack Software Engineer",
-  "Node.js & NestJS Developer",
   "Golang Backend Developer",
+  "Node.js & NestJS Developer",
   "Real-Time Systems Engineer",
 ];
-
-import { getYearsExperience } from "@/lib/experience";
 
 export default function HeroSection() {
   const [currentRole, setCurrentRole] = useState(0);
@@ -27,252 +20,97 @@ export default function HeroSection() {
   const [isDeleting, setIsDeleting] = useState(false);
   const [mounted, setMounted] = useState(false);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  useEffect(() => setMounted(true), []);
 
   useEffect(() => {
     const role = roles[currentRole];
-    let timeout: NodeJS.Timeout;
-
-    if (!isDeleting) {
-      if (displayText.length < role.length) {
-        timeout = setTimeout(() => {
-          setDisplayText(role.slice(0, displayText.length + 1));
-        }, 80);
-      } else {
-        timeout = setTimeout(() => setIsDeleting(true), 2000);
-      }
+    let timeout: ReturnType<typeof setTimeout>;
+    if (!isDeleting && displayText.length < role.length) {
+      timeout = setTimeout(() => setDisplayText(role.slice(0, displayText.length + 1)), 72);
+    } else if (!isDeleting) {
+      timeout = setTimeout(() => setIsDeleting(true), 1900);
+    } else if (displayText.length > 0) {
+      timeout = setTimeout(() => setDisplayText(displayText.slice(0, -1)), 30);
     } else {
-      if (displayText.length > 0) {
-        timeout = setTimeout(() => {
-          setDisplayText(displayText.slice(0, -1));
-        }, 40);
-      } else {
-        setIsDeleting(false);
-        setCurrentRole((prev) => (prev + 1) % roles.length);
-      }
+      setIsDeleting(false);
+      setCurrentRole((value) => (value + 1) % roles.length);
     }
-
     return () => clearTimeout(timeout);
   }, [displayText, isDeleting, currentRole]);
 
   return (
-    <section
-      id="home"
-      className="relative min-h-screen flex items-center overflow-hidden grid-bg"
-    >
-      {/* Particle Background */}
-      <div className="absolute inset-0">
-        <ParticleBackground />
-      </div>
+    <section id="home" className="hero-console relative min-h-screen flex items-center overflow-hidden grid-bg">
+      <div className="absolute inset-0 pointer-events-none"><ParticleBackground /></div>
+      <div className="hero-vignette absolute inset-0 pointer-events-none" />
+      <div className="hero-orbit-glow absolute pointer-events-none" />
 
-      {/* Gradient overlays */}
-      <div className="absolute inset-0 bg-gradient-to-b from-dark via-transparent to-dark pointer-events-none" />
-      <div className="absolute inset-0 bg-gradient-to-r from-dark via-transparent to-transparent pointer-events-none" />
-
-      {/* Glowing orbs */}
-      <div
-        className="absolute top-1/4 right-1/4 w-96 h-96 rounded-full pointer-events-none"
-        style={{
-          background:
-            "radial-gradient(circle, rgba(114,9,183,0.15) 0%, transparent 70%)",
-          filter: "blur(40px)",
-        }}
-      />
-      <div
-        className="absolute bottom-1/4 left-1/4 w-64 h-64 rounded-full pointer-events-none"
-        style={{
-          background:
-            "radial-gradient(circle, rgba(247,37,133,0.1) 0%, transparent 70%)",
-          filter: "blur(40px)",
-        }}
-      />
-
-      <div className="relative z-10 max-w-7xl mx-auto px-6 w-full">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Text Content */}
-          <div
-            className={`transition-all duration-1000 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
-          >
-            {/* Status badge */}
-            <div className="flex items-center gap-3 mb-8">
-              <div className="flex items-center gap-2 px-3 py-1.5 border border-primary/30 bg-primary/5 rounded-sm">
-                <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                <span
-                  className="text-primary text-xs tracking-widest"
-                  style={{ fontFamily: "Space Mono, monospace" }}
-                >
-                  OPEN TO FULL-TIME ROLES · DUBAI RELOCATION
-                </span>
-              </div>
+      <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-8 w-full pt-24 pb-24 lg:pt-28">
+        <div className="grid lg:grid-cols-[1.08fr_.92fr] gap-10 xl:gap-14 items-center">
+          <div className={`hero-copy transition-all duration-1000 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+            <div className="hero-status inline-flex items-center gap-2 mb-9">
+              <span className="hero-status-dot" />
+              <span>OPEN TO FULL-TIME ROLES</span>
             </div>
 
-            {/* Main heading */}
-            <div className="mb-6">
-              <p
-                className="text-sm text-primary/60 tracking-[0.3em] mb-2"
-                style={{ fontFamily: "Space Mono, monospace" }}
-              >
-                HELLO, I&apos;M
-              </p>
-              <h1
-                className="text-5xl sm:text-6xl lg:text-7xl font-bold leading-none mb-4"
-                style={{ fontFamily: "Bebas Neue, sans-serif" }}
-              >
-                <span className="block text-white">MD SADMANUR</span>
-                <span className="block gradient-text text-glow">
-                  ISLAM SHISHIR
-                </span>
-              </h1>
-              <h2
-                className="text-sm sm:text-base text-primary/80 font-semibold tracking-[0.15em] uppercase mb-4"
-                style={{ fontFamily: "Space Mono, monospace" }}
-              >
-                FULL-STACK SOFTWARE ENGINEER
-              </h2>
+            <p className="hero-eyebrow">HELLO, I&apos;M</p>
+            <h1 className="hero-name">
+              <span>MD SADMANUR</span>
+              <small>ISLAM SHISHIR</small>
+            </h1>
+            <p className="hero-role">FULL-STACK SOFTWARE ENGINEER</p>
+
+            <div className="hero-type-line" aria-label={displayText}>
+              <span className="hero-prompt">&gt;</span>
+              <span>{displayText}</span><span className="hero-caret" />
             </div>
 
-            {/* Typewriter */}
-            <div className="flex items-center gap-2 mb-8 h-8">
-              <span
-                className="text-lg text-white/40"
-                style={{ fontFamily: "Space Mono, monospace" }}
-              >
-                &gt;
-              </span>
-              <span
-                className="text-lg text-primary"
-                style={{ fontFamily: "Space Mono, monospace" }}
-              >
-                {displayText}
-                <span className="animate-pulse">|</span>
-              </span>
-            </div>
-
-            {/* Description */}
-            <p className="text-white/50 text-base leading-relaxed max-w-lg mb-10 font-light">
-              Building full-stack web applications and backend services with Next.js,
-              React, Node.js, NestJS, and Go. I also work on real-time communication
-              and media systems. Based in Bangladesh and open to employer-sponsored
-              relocation to Dubai, UAE.
+            <p className="hero-description">
+              Building full-stack web applications and backend systems with Go, React,
+              Next.js, Node.js and real-time technologies. I turn complex ideas into
+              reliable products and scalable digital experiences.
             </p>
 
-            {/* CTA Buttons */}
             <div className="flex flex-wrap gap-4 mb-12">
               <button
-                onClick={() => {
-                  document
-                    .querySelector("#projects")
-                    ?.scrollIntoView({ behavior: "smooth" });
-                }}
-                className="btn-primary"
-              >
-                <span>VIEW MY WORK</span>
-              </button>
+                onClick={() => document.querySelector("#projects")?.scrollIntoView({ behavior: "smooth" })}
+                className="hero-cta hero-cta-primary"
+              >VIEW MY WORK <span>↗</span></button>
               <button
-                onClick={() => {
-                  document
-                    .querySelector("#contact")
-                    ?.scrollIntoView({ behavior: "smooth" });
-                }}
-                className="px-8 py-3 text-white/60 border border-white/10 text-xs tracking-widest hover:text-white hover:border-white/30 transition-all"
-                style={{ fontFamily: "Space Mono, monospace" }}
-              >
-                GET IN TOUCH
-              </button>
+                onClick={() => document.querySelector("#contact")?.scrollIntoView({ behavior: "smooth" })}
+                className="hero-cta"
+              >GET IN TOUCH</button>
             </div>
 
-            {/* Quick Stats */}
-            <div className="flex gap-8">
+            <div className="hero-stats">
               {[
-                { value: getYearsExperience(), label: "Years Experience" },
-                { value: "10+", label: "Technologies" },
-                { value: "5+", label: "Projects Built" },
+                { value: getYearsExperience(), label: "YEARS EXPERIENCE" },
+                { value: "10+", label: "TECHNOLOGIES" },
+                { value: "5+", label: "PROJECTS BUILT" },
               ].map((stat) => (
-                <div key={stat.label}>
-                  <p
-                    className="text-2xl font-bold text-primary"
-                    style={{ fontFamily: "Bebas Neue, sans-serif" }}
-                  >
-                    {stat.value}
-                  </p>
-                  <p
-                    className="text-xs text-white/30 tracking-wider mt-1"
-                    style={{ fontFamily: "Space Mono, monospace" }}
-                  >
-                    {stat.label}
-                  </p>
+                <div className="hero-stat" key={stat.label}>
+                  <strong>{stat.value}</strong><span>{stat.label}</span>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Three.js Globe */}
-          <div
-            className={`relative flex items-center justify-center transition-all duration-1000 delay-300 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
-          >
-            <div className="relative w-80 h-80 lg:w-[450px] lg:h-[450px]">
-              {/* Outer ring */}
-              <div
-                className="absolute inset-0 rounded-full border border-primary/10 animate-pulse-slow"
-                style={{ boxShadow: "0 0 60px rgba(0,245,212,0.05)" }}
-              />
-              <div
-                className="absolute inset-4 rounded-full border border-primary/5"
-                style={{ animation: "float 8s ease-in-out infinite" }}
-              />
-
-              {/* Globe canvas */}
-              <div className="absolute inset-0">
-                <ThreeGlobe />
-              </div>
-
-              {/* Floating tech badges */}
+          <div className={`hero-visual relative flex items-center justify-center transition-all duration-1000 delay-200 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+            <div className="hero-globe-wrap">
+              <div className="hero-globe-ring hero-globe-ring-one" />
+              <div className="hero-globe-ring hero-globe-ring-two" />
+              <div className="absolute inset-0"><ThreeGlobe /></div>
               {[
-                { label: "Node.js", top: "5%", left: "10%", color: "#68a063", duration: "6s", delay: "0s" },
-                { label: "WebRTC", top: "15%", right: "5%", color: "#00f5d4", duration: "5s", delay: "1.5s" },
-                { label: "Next.js", bottom: "20%", left: "0%", color: "#fff", duration: "7s", delay: "0.5s" },
-                { label: "Socket.io", bottom: "3%", right: "20%", color: "#ff6b8b", duration: "5.5s", delay: "1s" },
-                { label: "Golang", top: "50%", right: "-6%", color: "#0ac2f0ff", duration: "10s", delay: "1s" },
-              ].map((badge) => (
-                <div
-                  key={badge.label}
-                  className="absolute glass-card px-3 py-1.5 rounded-sm"
-                  style={{
-                    top: badge.top,
-                    left: badge.left,
-                    right: (badge as any).right,
-                    bottom: badge.bottom,
-                    animation: `float ${badge.duration} ease-in-out infinite`,
-                    animationDelay: badge.delay,
-                  }}
-                >
-                  <span
-                    className="text-xs font-bold"
-                    style={{
-                      fontFamily: "Space Mono, monospace",
-                      color: badge.color,
-                    }}
-                  >
-                    {badge.label}
-                  </span>
-                </div>
-              ))}
+                { label: "Go", className: "hero-tech hero-tech-one" },
+                { label: "Node.js", className: "hero-tech hero-tech-two" },
+                { label: "React", className: "hero-tech hero-tech-three" },
+                { label: "WebRTC", className: "hero-tech hero-tech-four" },
+                { label: "Next.js", className: "hero-tech hero-tech-five" },
+              ].map((item) => <span className={item.className} key={item.label}>{item.label}</span>)}
             </div>
+            <div className="hero-availability"><i /> AVAILABLE FOR SELECT PROJECTS</div>
           </div>
         </div>
-
-        {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
-          <span
-            className="text-xs text-white/20 tracking-widest"
-            style={{ fontFamily: "Space Mono, monospace" }}
-          >
-            SCROLL
-          </span>
-          <div className="w-px h-12 bg-gradient-to-b from-primary/40 to-transparent" />
-        </div>
+        <div className="hero-scroll-cue"><span>SCROLL TO EXPLORE</span><i /></div>
       </div>
     </section>
   );
