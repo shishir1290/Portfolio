@@ -14,162 +14,74 @@ const navItems = [
 
 export const scrollTo = (href: string) => {
   const hash = href.includes("#") ? href.substring(href.indexOf("#")) : href;
-  try {
-    const el = document.querySelector(hash);
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth" });
-    }
-  } catch (err) {
-    console.error("Scroll selector error:", err);
-  }
+  const element = document.querySelector(hash);
+  element?.scrollIntoView({ behavior: "smooth" });
 };
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState("");
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-    };
-    window.addEventListener("scroll", handleScroll);
+    const handleScroll = () => setScrolled(window.scrollY > 24);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-
+  const goToContact = () => {
+    window.location.href = "mailto:shishir1290@gmail.com";
+  };
 
   return (
     <>
-      <nav
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled
-          ? "bg-dark/80 backdrop-blur-xl border-b border-primary/10"
-          : "bg-transparent"
-          }`}
-      >
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          {/* Logo */}
-          <Link
-            href="/"
-            onClick={(e) => {
-              if (window.location.pathname === "/") {
-                e.preventDefault();
-                window.scrollTo({ top: 0, behavior: "smooth" });
-              }
-            }}
-            className="flex items-center gap-3 group"
-          >
-            <div className="w-8 h-8 border border-primary/50 flex items-center justify-center group-hover:border-primary transition-colors">
-              <span
-                className="text-primary font-mono text-xs font-bold"
-                style={{ fontFamily: "Space Mono, monospace" }}
-              >
-                S
-              </span>
-            </div>
-            <span
-              className="text-white/80 text-sm font-medium tracking-widest group-hover:text-primary transition-colors"
-              style={{ fontFamily: "Space Mono, monospace" }}
-            >
-              SHISHIR
-            </span>
+      <nav className={`site-nav fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "site-nav-scrolled" : ""}`}>
+        <div className="site-nav-inner max-w-7xl mx-auto px-6 sm:px-8 flex items-center justify-between">
+          <Link href="/" className="site-brand" onClick={(event) => {
+            if (window.location.pathname === "/") {
+              event.preventDefault();
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }
+          }}>
+            <span className="site-brand-mark">S</span><span>SHISHIR</span>
           </Link>
 
-          {/* Desktop Nav */}
-          <div className="hidden md:flex items-center gap-8">
+          <div className="hidden md:flex items-center site-nav-links">
             {navItems.map((item) => (
-              <Link
-                key={item.label}
-                href={item.href}
-                className="nav-link"
-                onClick={(e) => {
-                  if (!item.isRoute && window.location.pathname === "/") {
-                    e.preventDefault();
-                    scrollTo(item.href);
-                  }
-                }}
-              >
-                {item.label}
-              </Link>
+              <Link key={item.label} href={item.href} className="nav-link" onClick={(event) => {
+                if (!item.isRoute && window.location.pathname === "/") {
+                  event.preventDefault();
+                  scrollTo(item.href);
+                }
+              }}>{item.label}</Link>
             ))}
           </div>
 
-          {/* CTA */}
-          <div className="hidden md:flex items-center gap-4">
-            <a
-              href="#"
-              onClick={(e) => {
-                e.preventDefault();
-                window.location.href = "mailto:" + "shishir1290" + "@" + "gmail.com";
-              }}
-              className="btn-primary text-xs"
-            >
-              <span>HIRE ME</span>
-            </a>
-          </div>
-
-          {/* Mobile Menu Button */}
+          <button type="button" onClick={goToContact} className="site-hire hidden md:inline-flex">HIRE ME <span>↗</span></button>
           <button
-            className="md:hidden flex flex-col gap-1.5 p-2 min-w-11 min-h-11 items-center justify-center"
+            className="md:hidden site-menu-button"
             type="button"
             aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"}
             aria-expanded={menuOpen}
             aria-controls="mobile-navigation"
             onClick={() => setMenuOpen(!menuOpen)}
           >
-            <span
-              className={`block w-6 h-px bg-primary transition-all duration-300 ${menuOpen ? "rotate-45 translate-y-2" : ""}`}
-            />
-            <span
-              className={`block w-6 h-px bg-primary transition-all duration-300 ${menuOpen ? "opacity-0" : ""}`}
-            />
-            <span
-              className={`block w-6 h-px bg-primary transition-all duration-300 ${menuOpen ? "-rotate-45 -translate-y-2" : ""}`}
-            />
+            <span className={menuOpen ? "menu-line menu-line-one open" : "menu-line menu-line-one"} />
+            <span className={menuOpen ? "menu-line menu-line-two open" : "menu-line menu-line-two"} />
           </button>
         </div>
       </nav>
 
-      {/* Mobile Menu */}
-      <div
-        id="mobile-navigation"
-        aria-label="Mobile navigation"
-        className={`fixed inset-0 z-40 overflow-y-auto px-5 py-24 bg-dark/95 backdrop-blur-xl flex flex-col items-center justify-center gap-6 transition-all duration-500 md:hidden ${menuOpen
-          ? "opacity-100 pointer-events-auto"
-          : "opacity-0 pointer-events-none"
-          }`}
-      >
-        {navItems.map((item, i) => (
-          <Link
-            key={item.label}
-            href={item.href}
-            onClick={(e) => {
-              setMenuOpen(false);
-              if (!item.isRoute && window.location.pathname === "/") {
-                e.preventDefault();
-                scrollTo(item.href);
-              }
-            }}
-            className="text-3xl font-display text-white/60 hover:text-primary transition-colors tracking-widest"
-            style={{
-              fontFamily: "Bebas Neue, sans-serif",
-              transitionDelay: `${i * 50}ms`,
-            }}
-          >
-            {item.label}
-          </Link>
-        ))}
-        <a
-          href="#"
-          onClick={(e) => {
-            e.preventDefault();
+      <div id="mobile-navigation" aria-label="Mobile navigation" className={`site-mobile-menu fixed inset-0 z-40 md:hidden ${menuOpen ? "is-open" : ""}`}>
+        {navItems.map((item) => (
+          <Link key={item.label} href={item.href} onClick={(event) => {
             setMenuOpen(false);
-            window.location.href = "mailto:" + "shishir1290" + "@" + "gmail.com";
-          }}
-          className="btn-primary mt-4"
-        >
-          <span>HIRE ME</span>
-        </a>
+            if (!item.isRoute && window.location.pathname === "/") {
+              event.preventDefault();
+              scrollTo(item.href);
+            }
+          }}>{item.label}</Link>
+        ))}
+        <button type="button" onClick={() => { setMenuOpen(false); goToContact(); }}>HIRE ME ↗</button>
       </div>
     </>
   );
