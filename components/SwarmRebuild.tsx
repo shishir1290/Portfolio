@@ -157,7 +157,7 @@ export default function SwarmRebuild({ children }: { children: React.ReactNode }
   const frameRef = useRef<number | null>(null);
   const [running, setRunning] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [speed, setSpeed] = useState(1);
+  const speed = 1;
   const startRef = useRef(0);
   const durationRef = useRef(0);
 
@@ -165,7 +165,7 @@ export default function SwarmRebuild({ children }: { children: React.ReactNode }
     if (!contentRef.current) return;
     const tasks = buildBlueprint(contentRef.current);
     tasksRef.current = tasks;
-    durationRef.current = Math.max(...tasks.map((task) => task.start + task.duration), 0);
+    durationRef.current = tasks.reduce((latest, task) => Math.max(latest, task.start + task.duration), 0);
     startRef.current = performance.now();
     setProgress(0);
     setRunning(true);
