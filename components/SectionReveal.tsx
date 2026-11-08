@@ -15,62 +15,6 @@ const agents = [
   { name: "K", color: "#f472b6" },
 ];
 
-function copyStyles(source: Element, target: Element) {
-  const computed = window.getComputedStyle(source);
-  for (let index = 0; index < computed.length; index += 1) {
-    const property = computed.item(index);
-    target instanceof HTMLElement || target instanceof SVGElement
-      ? target.style.setProperty(property, computed.getPropertyValue(property))
-      : null;
-  }
-
-  const sourceChildren = Array.from(source.children);
-  const targetChildren = Array.from(target.children);
-  sourceChildren.forEach((child, index) => {
-    if (targetChildren[index]) copyStyles(child, targetChildren[index]);
-  });
-}
-
-function createVisualClone(source: HTMLElement, boxOnly: boolean) {
-  const clone = source.cloneNode(!boxOnly) as HTMLElement;
-  if (!boxOnly) copyStyles(source, clone);
-  const style = window.getComputedStyle(source);
-
-  clone.style.setProperty("position", "relative", "important");
-  clone.style.setProperty("inset", "auto", "important");
-  clone.style.setProperty("left", "auto", "important");
-  clone.style.setProperty("top", "auto", "important");
-  clone.style.setProperty("width", "100%", "important");
-  clone.style.setProperty("height", "100%", "important");
-  clone.style.setProperty("max-width", "none", "important");
-  clone.style.setProperty("max-height", "none", "important");
-  clone.style.setProperty("margin", "0", "important");
-  clone.style.setProperty("transform", "none", "important");
-  clone.style.setProperty("animation", "none", "important");
-  clone.style.setProperty("visibility", "visible", "important");
-  clone.style.setProperty("opacity", "1", "important");
-  clone.style.setProperty("pointer-events", "none", "important");
-
-  if (boxOnly) {
-    clone.textContent = "";
-    clone.style.setProperty("background", style.background, "important");
-    clone.style.setProperty("border", style.border, "important");
-    clone.style.setProperty("border-radius", style.borderRadius, "important");
-    clone.style.setProperty("box-shadow", style.boxShadow, "important");
-  }
-
-  if (source instanceof HTMLCanvasElement && clone instanceof HTMLCanvasElement) {
-    try {
-      clone.width = source.width;
-      clone.height = source.height;
-      clone.getContext("2d")?.drawImage(source, 0, 0);
-    } catch {
-      // Cross-origin or WebGL canvases remain a styled placeholder.
-    }
-  }
-  return clone;
-}
-
 export default function SectionReveal({ children }: { children: ReactNode }) {
   const rootRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(rootRef, { once: true, amount: 0.06 });
@@ -104,16 +48,12 @@ export default function SectionReveal({ children }: { children: ReactNode }) {
     stage.className = "swarm-stage";
     stage.setAttribute("aria-hidden", "true");
 
-    const section = root.firstElementChild as HTMLElement | null;
-    const background = section ? getComputedStyle(section).backgroundColor : "";
-    stage.style.background =
-      background && background !== "rgba(0, 0, 0, 0)" ? background : "rgba(2, 8, 23, .97)";
-
-    const candidates = Array.from(root.querySelectorAll<HTMLElement>(selectors))
+    const rootRect = root.getBoundingClientRect();
+    const targets = Array.from(root.querySelectorAll<HTMLElement>(selectors))
       .filter((element) => {
         if (element.closest("[data-swarm-ignore]")) return false;
         const rect = element.getBoundingClientRect();
-        return rect.width > 3 && rect.height > 3;
+        return rect.width > 8 && rect.height > 8;
       })
       .sort((a, b) => {
         const first = a.getBoundingClientRect();
@@ -121,37 +61,29 @@ export default function SectionReveal({ children }: { children: ReactNode }) {
         return first.top - second.top || first.left - second.left;
       });
 
-    const rootRect = root.getBoundingClientRect();
-    const tasks: Array<{ x: number; y: number; width: number; height: number; layer: HTMLDivElement }> = [];
-
-    candidates.forEach((element, index) => {
+    const points = targets.map((element, index) => {
       const rect = element.getBoundingClientRect();
-      const boxOnly = ["ARTICLE", "FORM", "LI", "BLOCKQUOTE"].includes(element.tagName);
-      const layer = document.createElement("div");
-      layer.className = "swarm-build-layer";
-      layer.style.left = `${rect.left - rootRect.left}px`;
-      layer.style.top = `${rect.top - rootRect.top}px`;
-      layer.style.width = `${rect.width}px`;
-      layer.style.height = `${rect.height}px`;
-      layer.style.setProperty("--swarm-delay", `${(index * 58) / speed}ms`);
-      layer.style.setProperty("--swarm-duration", `${650 / speed}ms`);
+      const x = rect.left - rootRect.left;
+      const y = rect.top - rootRect.top;
+      const marker = document.createElement("div");
+      marker.className = "swarm-target-outline";
+      marker.style.left = `${x}px`;
+      marker.style.top = `${y}px`;
+      marker.style.width = `${rect.width}px`;
+      marker.style.height = `${rect.height}px`;
+      marker.style.setProperty("--swarm-delay", `${(index * 95) / speed}ms`);
+      marker.style.setProperty("--swarm-duration", `${520 / speed}ms`);
 
-      const clone = createVisualClone(element, boxOnly);
-      layer.appendChild(clone);
+      const badge = document.createElement("span");
+      badge.className = "swarm-size-badge";
+      badge.textContent = `${Math.round(rect.width)} × ${Math.round(rect.height)}`;
+      marker.appendChild(badge);
+      stage.appendChild(marker);
 
-      const size = document.createElement("span");
-      size.className = "swarm-size-badge";
-      size.textContent = `${Math.round(rect.width)} × ${Math.round(rect.height)}`;
-      layer.appendChild(size);
-      stage.appendChild(layer);
-
-      tasks.push({
-        x: rect.left - rootRect.left + rect.width / 2,
-        y: rect.top - rootRect.top + rect.height / 2,
-        width: rect.width,
-        height: rect.height,
-        layer,
-      });
+      return {
+        x: x + rect.width / 2,
+        y: y + rect.height / 2,
+      };
     });
 
     const guideX = document.createElement("i");
@@ -160,42 +92,39 @@ export default function SectionReveal({ children }: { children: ReactNode }) {
     guideY.className = "swarm-guide swarm-guide-y";
     stage.append(guideX, guideY);
 
-    const cursorNodes: HTMLDivElement[] = [];
     agents.forEach((agent, agentIndex) => {
       const cursor = document.createElement("div");
       cursor.className = "swarm-agent-cursor";
       cursor.style.setProperty("--agent-color", agent.color);
       cursor.innerHTML = `<svg viewBox="0 0 24 28" aria-hidden="true"><path d="M3 2.5 20.5 17l-7.2 1.1-3.5 6.5L3 2.5Z" fill="${agent.color}" stroke="white" stroke-width="1.7" stroke-linejoin="round"/></svg><span>${agent.name}</span>`;
       stage.appendChild(cursor);
-      cursorNodes.push(cursor);
 
-      const route = tasks.filter((_, taskIndex) => taskIndex % agents.length === agentIndex);
-      const points = route.length ? route : tasks.slice(0, 1);
-      if (points.length) {
-        const frames = [
-          { transform: "translate(50px, 30px)" },
-          ...points.map((point) => ({
-            transform: `translate(${point.x}px, ${point.y}px)`,
-          })),
-        ];
-        cursor.animate(frames, {
-          duration: Math.max(1800, (points.length * 900) / speed),
-          delay: agentIndex * 110,
-          fill: "forwards",
-          easing: "cubic-bezier(.45,0,.2,1)",
-        });
+      const route = points.filter((_, pointIndex) => pointIndex % agents.length === agentIndex);
+      const path = route.length ? route : points.slice(agentIndex, agentIndex + 1);
+      if (path.length) {
+        cursor.animate(
+          [
+            { transform: "translate(24px, 18px)" },
+            ...path.map((point) => ({ transform: `translate(${point.x}px, ${point.y}px)` })),
+          ],
+          {
+            duration: Math.max(1500, (path.length * 780) / speed),
+            delay: agentIndex * 90,
+            fill: "forwards",
+            easing: "cubic-bezier(.45,0,.2,1)",
+          },
+        );
       }
     });
 
-    root.classList.add("swarm-original-hidden");
+    // The real section remains visible throughout. Only measurement overlays and cursors are added.
     root.appendChild(stage);
     setActive(true);
 
-    const duration = Math.max(1900, ((tasks.length - 1) * 58 + 900) / speed);
+    const duration = Math.max(1700, ((points.length - 1) * 95 + 950) / speed);
     finishTimer = window.setTimeout(() => {
       if (cancelled) return;
       stage.remove();
-      root.classList.remove("swarm-original-hidden");
       setActive(false);
       setFinished(true);
     }, duration);
@@ -204,7 +133,6 @@ export default function SectionReveal({ children }: { children: ReactNode }) {
       cancelled = true;
       window.clearTimeout(finishTimer);
       stage.remove();
-      root.classList.remove("swarm-original-hidden");
     };
   }, [isInView, finished, reducedMotion, speed, run]);
 
