@@ -712,7 +712,6 @@ section[id] {
 
 /* DOM blueprint + cursor-swarm reconstruction stage */
 .swarm-reveal { position:relative;isolation:isolate; }
-.swarm-reveal.swarm-original-hidden > :not(.swarm-stage) { visibility:hidden!important; }
 .swarm-stage {
   position:absolute;inset:0;z-index:80;overflow:hidden;pointer-events:none;
   isolation:isolate;contain:layout paint style;
@@ -791,4 +790,26 @@ section[id] {
 }
 @media(prefers-reduced-motion:reduce) {
   .swarm-build-layer,.swarm-build-layer::before,.swarm-size-badge,.swarm-guide { animation:none!important;opacity:1!important; }
+}
+
+/* Keep the actual page visible; swarm is an overlay pass, not a replacement DOM. */
+.swarm-target-outline {
+  position:absolute;box-sizing:border-box;pointer-events:none;opacity:0;
+  outline:1px solid rgba(52,155,255,.96);
+  box-shadow:0 0 0 1px rgba(52,155,255,.16),0 0 16px rgba(52,155,255,.12);
+  animation:swarm-target-scan var(--swarm-duration,520ms) ease-out var(--swarm-delay,0ms) both;
+}
+.swarm-target-outline::before {
+  content:"";position:absolute;inset:-3px;border:1px solid rgba(255,79,59,.9);
+  opacity:0;animation:swarm-target-measure 650ms ease-out var(--swarm-delay,0ms) both;
+}
+@keyframes swarm-target-scan {
+  0% { opacity:0;clip-path:inset(0 100% 0 0); }
+  18% { opacity:1;clip-path:inset(0 75% 0 0); }
+  70% { opacity:1;clip-path:inset(0); }
+  100% { opacity:0;clip-path:inset(0); }
+}
+@keyframes swarm-target-measure {
+  0%,100% { opacity:0;transform:scale(.985); }
+  20%,70% { opacity:.95;transform:scale(1); }
 }
