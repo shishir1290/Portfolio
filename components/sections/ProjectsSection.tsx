@@ -177,8 +177,18 @@ function ProjectCard({ project, index, visible }: { project: (typeof projects)[n
     >
       <div className="grid lg:grid-cols-5 gap-0">
         {project.image ? (
-          <a href={project.url || "#"} target="_blank" rel="noreferrer" className="lg:col-span-2 block overflow-hidden min-h-[240px] bg-black/20">
-            <img src={project.image} alt={`${project.title} project preview`} className="w-full h-full min-h-[240px] object-cover transition-transform duration-500 hover:scale-105" loading="lazy" />
+          <a
+            href={project.url || "#"}
+            target="_blank"
+            rel="noreferrer"
+            className="lg:col-span-2 flex min-h-[240px] items-center justify-center overflow-hidden bg-black/30 p-3"
+          >
+            <img
+              src={project.image}
+              alt={`${project.title} project preview`}
+              className="block h-auto max-h-[520px] w-full object-contain"
+              loading="lazy"
+            />
           </a>
         ) : (
           <div className="lg:col-span-2 min-h-[240px] flex items-center justify-center bg-black/20 p-8">
